@@ -1,5 +1,5 @@
 import '@/app/ui/global.css'
-import { jetBrainsMono } from './ui/fonts';
+import { jetBrainsMono, lusitana } from './ui/fonts';
 
 export default function RootLayout({
   children,
