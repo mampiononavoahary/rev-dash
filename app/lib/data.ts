@@ -1,5 +1,6 @@
 import { sql, createClient } from '@vercel/postgres';
-import client from '../lib/db'
+import axios from 'axios';
+import client, { BASE_URL } from '../lib/db';
 import {
   CustomerField,
   CustomersTableType,

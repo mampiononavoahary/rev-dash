@@ -8,4 +8,5 @@ const client = new Pool({
     port: 5432,
   });
 
+  export const BASE_URL="http://localhost:8080"
   export default client;

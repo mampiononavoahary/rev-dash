@@ -1,4 +1,5 @@
 import '@/app/ui/global.css'
+import { AuthProvider } from './lib/userContext';
 import { jetBrainsMono, lusitana } from './ui/fonts';
 
 export default function RootLayout({
@@ -7,8 +8,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${jetBrainsMono.className} antialiased`}>{children}</body>
-    </html>
+    <AuthProvider>
+       <html lang="en">
+         <body className={`${jetBrainsMono.className} antialiased`}>{children}</body>
+       </html>
+    </AuthProvider>
+   
   );
 }
