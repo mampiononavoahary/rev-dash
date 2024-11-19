@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleVerifying = ():any => {
-    return JSON.parse(localStorage.getItem('token') || '""')
+    return localStorage.getItem("token");
   };
 
   return (
@@ -62,4 +62,3 @@ export const useAuth = () => {
   }
   return context;
 };
-

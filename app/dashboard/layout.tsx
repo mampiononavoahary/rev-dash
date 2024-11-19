@@ -1,7 +1,23 @@
-import SideNav from '@/app/ui/dashboard/sidenav';
+"use client";
+
+import SideNav from "@/app/ui/dashboard/sidenav";
+import { useAuth } from "@/app/lib/userContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 export const experimental_ppr = true;
- 
+
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { verify } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = verify();
+    if (!token) {
+      router.push("/"); // Redirige vers la page de connexion si non authentifié
+    }
+  }, [router, verify]);
+
   return (
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
       <div className="w-full flex-none md:w-64">
