@@ -1,5 +1,5 @@
 import Produits from '@/app/ui/produits/produits-detail';
-import InitializeToken from '@/app/lib/produitts/initializer';
+import InitializeToken from '@/app/lib/initializer';
 import React from 'react';
 
 const Page = () => {

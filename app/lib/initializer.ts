@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { getTokenFromLocalStorage, setToken } from '@/app/lib/produitts/getToken';
+import { getTokenFromLocalStorage, setToken } from '@/app/lib/getToken';
 
 export default function InitializeToken() {
   useEffect(() => {
