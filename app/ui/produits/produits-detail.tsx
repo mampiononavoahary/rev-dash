@@ -4,17 +4,12 @@ import { DeleteProduct, UpdateProduct } from './buttons';
 export default async function Produits() {
   try {
     const produits = await getAllProduitsWithDetail();
-
-    if (!Array.isArray(produits)) {
-      throw new Error('Les données retournées ne sont pas un tableau.');
-    }
-
     return (
       <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {produits?.map((produit) => (
+            {produits?.map((produit:any) => (
               <div
                 key={produit.id_detail_produit}
                 className="mb-2 w-full rounded-md bg-white p-4"
@@ -69,7 +64,7 @@ export default async function Produits() {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {produits?.map((produit) => (
+              {produits?.map((produit:any) => (
                 <tr
                   key={produit.id_detail_produit}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
