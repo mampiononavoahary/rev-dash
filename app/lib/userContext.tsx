@@ -32,7 +32,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setToken(null);
     setAuthToken(null);
-    localStorage.removeItem("token");
+    setTimeout(()=>{
+      localStorage.removeItem("token");
+    },0)
+    
   };
 
   const handleVerifying = ():any => {

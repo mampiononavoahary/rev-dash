@@ -5,25 +5,23 @@ import { cookies } from 'next/headers';
 export async function getAllProduitsWithDetail() {
   try {
     const token = (await cookies()).get('token');
-    console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
-  
-    if (!token) {
-      throw new Error('Token introuvable dans les cookies.');
+    
+    if (!token?.value) {
+      console.warn('Le token est introuvable. Essayez d’attendre qu’il soit défini.');
+      return null; // Ou renvoyer une structure vide pour gérer ce cas
     }
-  
+
     const produits = await axios.get(`${BASE_URL}/api/detailproduits`, {
       headers: {
-        Authorization: `Bearer ${token?.value}`,
+        Authorization: `Bearer ${token.value}`,
       },
     });
-  
-    const res = produits.data;
-    console.log("Données des produits :", res);
-    return res;
+
+    return produits.data;
   } catch (error) {
-    console.error('Erreur lors de la récupération des produits:', error);
-    throw error;
+    return null;
   }
 }
+
 
   
