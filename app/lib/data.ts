@@ -10,6 +10,7 @@ import {
   Revenue,
 } from './definitions';
 import { formatCurrency } from './utils';
+import { useAuth } from './userContext';
 
 // Exemple pour fetchRevenue
 export async function fetchRevenue() {

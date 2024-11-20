@@ -36,9 +36,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleVerifying = ():any => {
-    return localStorage.getItem("token");
-  };
+    setTimeout(() => {
+      return localStorage.removeItem("token");
+  }, 3000*100);
 
+    setIsLoading(false);
+    return localStorage.getItem("token");
+    
+  };
+  
   return (
     <AuthContext.Provider
       value={{
