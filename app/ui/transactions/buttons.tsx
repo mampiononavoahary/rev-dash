@@ -13,7 +13,7 @@ export function CreateTransaction() {
   );
 }
 
-export function UpdateTransaction({ id }: { id: string }) {
+export function UpdateTransaction({ id_transaction }: { id_transaction: number }) {
   return (
     <Link
       href="/dashboard/transactions"
@@ -24,7 +24,7 @@ export function UpdateTransaction({ id }: { id: string }) {
   );
 }
 
-export function DeleteTransaction({ id }: { id: string }) {
+export function DeleteTransaction({ id_transaction }: { id_transaction: number }) {
   return (
     <>
       <button className="rounded-md border p-2 hover:bg-red-300">

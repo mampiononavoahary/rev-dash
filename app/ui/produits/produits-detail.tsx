@@ -1,4 +1,4 @@
-import { getAllProduitsWithDetail } from '@/app/lib/produitts/getproduits';
+import { getAllProduitsWithDetail } from '@/app/ui/produits/getproduits';
 import { DeleteProduct, UpdateProduct } from './buttons';
 
 export default async function Produits() {
@@ -103,7 +103,7 @@ export default async function Produits() {
     );
   } catch (error) {
     console.error('Erreur dans le composant Produits:', error);
-    return <p>Impossible de charger les produits.</p>;
+    return <p>Actualiser la page s'il vous plaît...</p>;
   }
 }
 

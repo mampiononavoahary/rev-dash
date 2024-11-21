@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BASE_URL } from '../db';
+import { BASE_URL } from '../../lib/db';
 import { cookies } from 'next/headers';
 
 export async function getAllProduitsWithDetail() {

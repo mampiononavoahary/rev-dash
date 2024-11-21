@@ -4,6 +4,8 @@ import React from 'react';
 import Search from '@/app/ui/search';
 import { CreateDetailProuit } from '@/app/ui/produits/buttons';
 import { lusitana } from '@/app/ui/fonts';
+import { Suspense } from 'react';
+import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 
 const Page = () => {
   return (
@@ -16,7 +18,9 @@ const Page = () => {
         <Search placeholder="Rechercher un produit..." />
         <CreateDetailProuit />
       </div>
-      <Produits />
+      <Suspense fallback={<InvoicesTableSkeleton/>}>
+        <Produits />
+      </Suspense>
     </div>
   );
 };

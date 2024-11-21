@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const handleVerifying = ():any => {
     setTimeout(() => {
       return localStorage.removeItem("token");
-  }, (3000*100)*5);
+  }, 86400000);
 
     setIsLoading(false);
     return localStorage.getItem("token");

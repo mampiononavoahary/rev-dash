@@ -44,6 +44,17 @@ export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
   amount: number;
 };
 
+export interface Transaction {
+  id_transaction: number;
+  nom_client: string;
+  nom_produit: string;
+  date_transaction: string;
+  lieu_transaction?: string; // Optional field
+  quantite: number;
+  unite: string;
+  status: string;
+}
+
 export type InvoicesTable = {
   id: string;
   customer_id: string;

@@ -1,6 +1,7 @@
-import { getAllTransactions } from '@/app/lib/transactions/gettransaction';
+import { getAllTransactions } from '@/app/ui/transactions/gettransaction';
 import { DeleteTransaction, UpdateTransaction } from './buttons';
 import TransactionStatus from './status';
+import { Transaction } from '@/app/lib/definitions';
 
 export default async function Transactions() {
   try {
@@ -12,7 +13,7 @@ export default async function Transactions() {
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {transactions?.map((transactions:any) => (
+            {transactions?.map((transactions:Transaction) => (
               <div
                 key={transactions.id_transaction}
                 className="mb-2 w-full rounded-md bg-white p-4"
@@ -35,8 +36,8 @@ export default async function Transactions() {
                     <p>{transactions.status}</p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateTransaction id={transactions.id_transaction} />
-                    <DeleteTransaction id={transactions.id_transaction} />
+                    <UpdateTransaction id_transaction={transactions.id_transaction} />
+                    <DeleteTransaction id_transaction={transactions.id_transaction} />
                   </div>
                 </div>
               </div>
@@ -100,8 +101,8 @@ export default async function Transactions() {
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateTransaction id={transaction.id_transaction} />
-                      <DeleteTransaction id={transaction.id_transaction} />
+                      <UpdateTransaction id_transaction={transaction.id_transaction} />
+                      <DeleteTransaction id_transaction={transaction.id_transaction} />
                     </div>
                   </td>
                 </tr>
@@ -114,7 +115,7 @@ export default async function Transactions() {
     );
   } catch (error) {
     console.error('Erreur dans le composant Produits:', error);
-    return <p>Impossible de charger les produits.</p>;
+    return <p>Actualiser la page s'il vous plaît.</p>;
   }
 }
 
