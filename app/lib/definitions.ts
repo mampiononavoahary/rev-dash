@@ -43,6 +43,9 @@ export type LatestInvoice = {
 export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
   amount: number;
 };
+export type transactionTotal = {
+  total: number,
+}
 
 export interface Transaction {
   id_transaction: number;

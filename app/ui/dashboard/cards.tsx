@@ -5,34 +5,31 @@ import {
   InboxIcon,
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchCardData } from '@/app/lib/data';
+import { getAllTransactionsEnter, getAllTransactionsExit, getSumTransactionsEnter, getSumTransactionsExit } from './getAllGeneralPage';
+import { formatCurrency } from '@/app/lib/utils';
 
 const iconMap = {
-  collected: BanknotesIcon,
-  customers: UserGroupIcon,
-  pending: ClockIcon,
-  invoices: InboxIcon,
+  vente: BanknotesIcon,
+  achat: InboxIcon,
+  sumAchat: ClockIcon,
+  sumVente:UserGroupIcon
 };
 
 export default async function CardWrapper() {
-  const {
-    numberOfInvoices,
-    numberOfCustomers,
-    totalPaidInvoices,
-    totalPendingInvoices,
-  } = await fetchCardData();
+  const enter = await getAllTransactionsEnter();
+  const exit = await getAllTransactionsExit();
+  const sumEnter = await getSumTransactionsEnter();
+  const sumExit = await getSumTransactionsExit();
+  const enterWithCurency = formatCurrency(sumEnter?? '0');
+  const exitWithCurrency = formatCurrency(sumExit?? '0');
   return (
     <>
       {/* NOTE: Uncomment this code in Chapter 9 */}
 
-       <Card title="Payé" value={totalPaidInvoices} type="collected" />
-      <Card title="En Attente" value={totalPendingInvoices} type="pending" />
-      <Card title="Total Transactions" value={numberOfInvoices} type="invoices" />
-      <Card
-        title="Total Clients"
-        value={numberOfCustomers}
-        type="customers"
-      /> 
+       <Card title="Nombre total de vente" value={enter} type="vente" />
+      <Card title="Nombre d'achat" value={exit} type="achat" />
+      <Card title="Nombre total de vente" value={enterWithCurency} type="vente" />
+      <Card title="Nombre d'achat" value={exitWithCurrency} type="achat" />
     </>
   );
 }
@@ -43,8 +40,8 @@ export function Card({
   type,
 }: {
   title: string;
-  value: number | string;
-  type: 'invoices' | 'customers' | 'pending' | 'collected';
+  value: BigInteger | string;
+  type: 'vente' | 'achat' | 'sumAchat' | 'sumVente';
 }) {
   const Icon = iconMap[type];
 

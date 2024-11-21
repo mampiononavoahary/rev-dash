@@ -1,11 +1,13 @@
 import { Revenue } from './definitions';
 
 export const formatCurrency = (amount: number) => {
-  return (amount / 100).toLocaleString('en-US', {
+  return amount.toLocaleString('fr-MG', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'MGA', // Code pour Ariary
+    minimumFractionDigits: 0, // Les Ariary n'ont pas de sous-unité officielle
   });
 };
+
 
 export const formatDateToLocal = (
   dateStr: string,
