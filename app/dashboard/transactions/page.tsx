@@ -5,6 +5,8 @@ import { CreateTransaction } from '@/app/ui/transactions/buttons'
 import Transactions from '@/app/ui/transactions/transaction'
 import React from 'react'
 
+export const dynamic = 'force-dynamic';
+
 const page = () => {
   return (
     <div>

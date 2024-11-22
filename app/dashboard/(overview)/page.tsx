@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton,CardsSkeleton } from '@/app/ui/skeletons';
 import InitializeToken from '@/app/lib/initializer';
 
+export const dynamic = 'force-dynamic';
 
 export default async function Page() { 
 

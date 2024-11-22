@@ -7,6 +7,8 @@ import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 
+export const dynamic = 'force-dynamic';
+
 const Page = () => {
   return (
     <div>
