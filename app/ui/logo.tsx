@@ -27,8 +27,8 @@ const Logo: React.FC = () => {
         }}
         style={{
           position: "relative",
-          width: "20vw",
-          height: "20vw",
+          width: "15vw",
+          height: "15vw",
           maxWidth: "200px",
           maxHeight: "200px",
         }}

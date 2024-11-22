@@ -1,18 +1,16 @@
 import {
+  GlobeAltIcon,
   BanknotesIcon,
-  ClockIcon,
-  UserGroupIcon,
-  InboxIcon,
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import { getAllTransactionsEnter, getAllTransactionsExit, getSumTransactionsEnter, getSumTransactionsExit } from './getAllGeneralPage';
 import { formatCurrency } from '@/app/lib/utils';
 
 const iconMap = {
-  vente: BanknotesIcon,
-  achat: InboxIcon,
-  sumAchat: ClockIcon,
-  sumVente:UserGroupIcon
+  vente: GlobeAltIcon,
+  achat: GlobeAltIcon,
+  sumAchat: BanknotesIcon,
+  sumVente:BanknotesIcon
 };
 
 export default async function CardWrapper() {
@@ -27,9 +25,9 @@ export default async function CardWrapper() {
       {/* NOTE: Uncomment this code in Chapter 9 */}
 
        <Card title="Nombre total de vente" value={enter} type="vente" />
-      <Card title="Nombre d'achat" value={exit} type="achat" />
-      <Card title="Nombre total de vente" value={enterWithCurency} type="vente" />
-      <Card title="Nombre d'achat" value={exitWithCurrency} type="achat" />
+      <Card title="Nombre total d'achat" value={exit} type="achat" />
+      <Card title="Somme des ventes" value={enterWithCurency} type="sumVente" />
+      <Card title="Somme d'achat" value={exitWithCurrency} type="sumAchat" />
     </>
   );
 }

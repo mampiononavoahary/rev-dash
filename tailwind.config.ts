@@ -12,6 +12,10 @@ const config: Config = {
   		gridTemplateColumns: {
   			'13': 'repeat(13, minmax(0, 1fr))'
   		},
+		screens:{
+			'custom-lg': { 'raw': '(max-width: 1341px)' },
+        	'custom-sm': { 'raw': '(max-height: 760px)' },
+		},
   		colors: {
   			blue: {
   				'400': '#2589FE',

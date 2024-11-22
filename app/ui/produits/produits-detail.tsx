@@ -8,7 +8,7 @@ export default async function Produits() {
       <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
+          <div className="custom-sm:block custom-lg:block xl:hidden">
             {produits?.map((produit:any) => (
               <div
                 key={produit.id_detail_produit}
@@ -37,7 +37,7 @@ export default async function Produits() {
               </div>
             ))}
           </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
+          <table className="hidden min-w-full text-gray-900 custom-sm:hidden custom-lg:hidden md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
