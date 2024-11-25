@@ -4,7 +4,6 @@ const apiClient = axios.create({
   baseURL: 'https://gestionofstock.onrender.com', // Remplace par l'URL de ton backend
   headers: {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*'
   },
   withCredentials:true
 });
