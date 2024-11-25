@@ -98,3 +98,27 @@ export async function getAllTransactionsExit() {
       throw error;
     }
   }
+  export async function getPicBuyTransactions(){
+    try {
+      const token = (await cookies()).get('token');
+      console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
+    
+      if (!token) {
+        console.warn('Token introuvable dans les cookies.');
+        return null;
+      }
+    
+      const transactions = await axios.get(`${BASE_URL}/api/transactions/picsum`, {
+        headers: {
+          Authorization: `Bearer ${token?.value}`,
+        },
+      });
+    
+      const res = transactions.data;
+      console.log("Somme vente par date:", res);
+      return res;
+    } catch (error) {
+      console.error('Erreur lors de la récupération des transactions somme sortie:', error);
+      throw error;
+    }
+  }

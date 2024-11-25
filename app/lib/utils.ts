@@ -23,15 +23,32 @@ export const formatDateToLocal = (
   return formatter.format(date);
 };
 
-export const generateYAxis = (revenue: Revenue[]) => {
-  // Calculate what labels we need to display on the y-axis
-  // based on highest record and in 1000s
-  const yAxisLabels = [];
-  const highestRecord = Math.max(...revenue.map((month) => month.revenue));
-  const topLabel = Math.ceil(highestRecord / 1000) * 1000;
+const formatNumber = (value: number): string => {
+  if (value >= 1000) {
+    return `${value / 1000}k`; // Convertir en milliers
+  }
+  return `${value}`; // Sinon, renvoyer directement
+};
 
-  for (let i = topLabel; i >= 0; i -= 1000) {
-    yAxisLabels.push(`$${i / 1000}K`);
+// Mettre à jour generateYAxis
+export const generateYAxis = (revenue:any) => {
+  if (!revenue || revenue.length === 0) {
+    return { yAxisLabels: [], topLabel: 0 };
+  }
+
+  // Trouver la valeur maximale de la somme
+  const maxSum = revenue.reduce((acc:any, month:any) => Math.max(acc, month.sum), 0);
+
+  // Définir un intervalle basé sur vos besoins (ici ~28k par intervalle)
+  const interval = 28000;
+
+  // Calculer le label supérieur en arrondissant à l'intervalle supérieur
+  const topLabel = Math.ceil(maxSum / interval) * interval;
+
+  // Générer les étiquettes de l'axe Y
+  const yAxisLabels = [];
+  for (let i = 0; i <= topLabel; i += interval) {
+    yAxisLabels.unshift(`Ar${Math.round(i / 1000)}k`);
   }
 
   return { yAxisLabels, topLabel };
