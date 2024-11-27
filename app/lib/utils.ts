@@ -31,16 +31,25 @@ const formatNumber = (value: number): string => {
 };
 
 // Mettre à jour generateYAxis
-export const generateYAxis = (revenue:any) => {
+export const generateYAxis = (revenue: any) => {
   if (!revenue || revenue.length === 0) {
     return { yAxisLabels: [], topLabel: 0 };
   }
 
   // Trouver la valeur maximale de la somme
-  const maxSum = revenue.reduce((acc:any, month:any) => Math.max(acc, month.sum), 0);
+  const maxSum = revenue.reduce((acc: any, month: any) => Math.max(acc, month.sum), 0);
 
-  // Définir un intervalle basé sur vos besoins (ici ~28k par intervalle)
-  const interval = 28000;
+  // Calculer un intervalle dynamique en fonction de la valeur maximale
+  let interval;
+  if (maxSum > 1000000) {
+    interval = 100000; // Intervalles de 100k pour des valeurs très élevées
+  } else if (maxSum > 500000) {
+    interval = 50000; // Intervalles de 50k pour des valeurs moyennes
+  } else if (maxSum > 100000) {
+    interval = 20000; // Intervalles de 20k pour des valeurs plus petites
+  } else {
+    interval = 10000; // Intervalles de 10k pour des valeurs très petites
+  }
 
   // Calculer le label supérieur en arrondissant à l'intervalle supérieur
   const topLabel = Math.ceil(maxSum / interval) * interval;
@@ -48,11 +57,13 @@ export const generateYAxis = (revenue:any) => {
   // Générer les étiquettes de l'axe Y
   const yAxisLabels = [];
   for (let i = 0; i <= topLabel; i += interval) {
-    yAxisLabels.unshift(`Ar${Math.round(i / 1000)}k`);
+    // Ajouter des unités simplifiées (k pour mille)
+    yAxisLabels.unshift(`Ar${(i / 1000).toFixed(0)}k`);
   }
 
   return { yAxisLabels, topLabel };
 };
+
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
