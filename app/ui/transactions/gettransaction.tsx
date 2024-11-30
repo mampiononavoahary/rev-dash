@@ -1,4 +1,4 @@
-"use server";
+"use server"
 import axios from 'axios';
 import { BASE_URL } from '../../lib/db';
 import { cookies } from 'next/headers';
@@ -18,7 +18,7 @@ export async function getAllTransactions() {
 
     const response = await axios.get(`${BASE_URL}/api/transactions`, {
       headers: {
-        Authorization: `Bearer ${token.value}`,
+        Authorization: `Bearer ${token?.value}`,
       },
     });
 
@@ -70,7 +70,7 @@ export async function postDetailTransaction(formData: FormData) {
 
     const response = await axios.post(`${BASE_URL}/api/detailtransaction/post`, requestData, {
       headers: {
-        Authorization: `Bearer ${token.value}`,
+        Authorization: `Bearer ${token?.value}`,
         'Content-Type': 'application/json',
       },
     });
@@ -160,7 +160,7 @@ export async function postDetailTransaction2(formData: FormData) {
 
     const response = await axios.post(`${BASE_URL}/api/transactions/create`, requestData, {
       headers: {
-        Authorization: `Bearer ${token.value}`,
+        Authorization: `Bearer ${token?.value}`,
         'Content-Type': 'application/json',
       },
     });
