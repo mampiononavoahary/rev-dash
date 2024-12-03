@@ -3,9 +3,10 @@ import { DeleteTransaction, UpdateTransaction } from './buttons';
 import TransactionStatus from './status';
 import { Transaction } from '@/app/lib/definitions';
 
-export default async function Transactions() {
+export default async function Transactions({query,currentPage}:{query:string,currentPage:number}) {
+
   try {
-    const transactions = await getAllTransactions();
+    const transactions = await getAllTransactions(query,currentPage);
 
 
     return (
@@ -14,9 +15,9 @@ export default async function Transactions() {
           <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
             {/* Affichage pour petits écrans (moins de 1341px de largeur OU 760px de hauteur) */}
             <div className="custom-lg:block custom-sm:block xl:hidden space-y-4">
-              {transactions?.map((transaction: Transaction) => (
+              {transactions?.map((transaction: Transaction, index: number) => (
                 <div
-                  key={transaction.id_transaction}
+                  key={transaction.id_transaction || index}
                   className="flex flex-col space-y-2 rounded-md bg-white p-4 shadow-md"
                 >
                   <div className="flex items-center justify-between border-b pb-3">
@@ -63,9 +64,9 @@ export default async function Transactions() {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                {transactions?.map((transaction: Transaction) => (
+                {transactions?.map((transaction: Transaction, index: number) => (
                   <tr
-                    key={transaction.id_transaction}
+                    key={transaction.id_transaction || index}
                     className="w-full border-b py-3 text-sm last-of-type:border-none"
                   >
                     <td className="whitespace-nowrap px-3 py-3">{transaction.nom_client}</td>

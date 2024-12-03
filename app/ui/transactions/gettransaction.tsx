@@ -6,7 +6,10 @@ import { z, ZodError } from 'zod';
 import { redirect } from 'next/navigation';
 
 
-export async function getAllTransactions() {
+export async function getAllTransactions(
+   query:string,
+   currentPage:number
+) {
   try {
     const token = (await cookies()).get('token');
     console.log('Token récupéré :', token?.value);
@@ -20,6 +23,10 @@ export async function getAllTransactions() {
       headers: {
         Authorization: `Bearer ${token?.value}`,
       },
+      params:{
+        query,
+        currentPage
+      }
     });
 
     return response.data;
@@ -28,6 +35,40 @@ export async function getAllTransactions() {
     return []; // Retourne une liste vide pour éviter de casser la page
   }
 }
+export async function getCountTransactions(query: string): Promise<number> {
+  try {
+    const token = (await cookies()).get('token');
+
+    if (!token || !token.value) {
+      console.warn('Token introuvable ou invalide.');
+      return 0;
+    }
+
+    const total = await axios.get(`${BASE_URL}/api/transactions/count`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+      params: {
+        query,
+      },
+    });
+    console.log(total.data);
+    
+    const countValue = Number(total.data);
+    if (isNaN(countValue)) {
+      console.error('Valeur de "total" invalide:', total.data);
+      return 0; // Valeur par défaut
+    }
+
+    const totalPages = Math.ceil(countValue / 6);
+    console.log('Total des pages calculé:', totalPages);
+    return totalPages;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des totals des transactions :', error);
+    return 0; // Valeur par défaut en cas d'erreur
+  }
+}
+
 
 const formChema = z.object({
   type_de_transaction: z.string(),
@@ -166,14 +207,14 @@ export async function postDetailTransaction2(formData: FormData) {
     });
 
     if (response.status === 201 || response.status === 200) {
-      return { success: true, data: response.data };
+      redirect('/transactions')
     } else {
       alert('Détail ransaction non créer')
     }
   } catch (error: any) {
     if (error instanceof ZodError) {
       console.error('Validation échouée :', error.errors);
-      redirect('/transactions/create');
+      redirect('/dashboard/transactions/create');
     }
 
     // Gère les autres erreurs
