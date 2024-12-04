@@ -140,7 +140,8 @@ export async function getLatestTransactions(){
       },
     });
   
-   return transaction.data;
+   const res = transaction.data;
+   return res;
   } catch (error) {
     console.error('Erreur lors de la récupération des 6 dernier transactions:', error);
     throw error;

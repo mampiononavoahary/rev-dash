@@ -13,7 +13,7 @@ export default async function LatestTransaction() {
         {/* NOTE: Uncomment this code in Chapter 7 */}
 
          <div className="bg-white px-6">
-          {latesttransactions.map((transaction:any, i:any) => {
+          {latesttransactions?.map((transaction:any, i:any) => {
             return (
               <div
                 key={transaction.id_transaction}
