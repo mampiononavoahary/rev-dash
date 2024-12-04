@@ -1,24 +1,22 @@
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
-import { LatestInvoice } from '@/app/lib/definitions';
-import { fetchLatestInvoices } from '@/app/lib/data';
-export default async function LatestInvoices() {
-  const latestInvoices = await fetchLatestInvoices();
+import { getLatestTransactions } from './getAllGeneralPage';
+export default async function LatestTransaction() {
+  const latesttransactions = await getLatestTransactions();
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Latest Invoices
+        Les trois dernier transactions
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
         {/* NOTE: Uncomment this code in Chapter 7 */}
 
          <div className="bg-white px-6">
-          {latestInvoices.map((invoice, i) => {
+          {latesttransactions.map((transaction:any, i:any) => {
             return (
               <div
-                key={invoice.id}
+                key={transaction.id_transaction}
                 className={clsx(
                   'flex flex-row items-center justify-between py-4',
                   {
@@ -27,27 +25,24 @@ export default async function LatestInvoices() {
                 )}
               >
                 <div className="flex items-center">
-                  <Image
-                    src={invoice.image_url}
-                    alt={`${invoice.name}'s profile picture`}
-                    className="mr-4 rounded-full"
-                    width={32}
-                    height={32}
-                  />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold md:text-base">
-                      {invoice.name}
+                      {transaction.nom}
                     </p>
                     <p className="hidden text-sm text-gray-500 sm:block">
-                      {invoice.email}
+                      {transaction.date_de_transaction}
+                    </p>
+                    <p className="truncate text-sm font-semibold md:text-base">
+                      {transaction.nom_detail}
+                    </p>
+                    <p className="hidden text-sm text-gray-500 sm:block">
+                      {transaction.quantite}
+                    </p>
+                    <p className="hidden text-sm text-gray-500 sm:block">
+                      {transaction.unite}
                     </p>
                   </div>
                 </div>
-                <p
-                  className={`${lusitana.className} truncate text-sm font-medium md:text-base`}
-                >
-                  {invoice.amount}
-                </p>
               </div>
             );
           })}

@@ -1,3 +1,4 @@
+'use server'
 import axios from 'axios';
 import { BASE_URL } from '../../lib/db';
 import { cookies } from 'next/headers';

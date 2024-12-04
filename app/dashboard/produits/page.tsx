@@ -4,8 +4,6 @@ import React from 'react';
 import Search from '@/app/ui/search';
 import { CreateDetailProuit } from '@/app/ui/produits/buttons';
 import { lusitana } from '@/app/ui/fonts';
-import { Suspense } from 'react';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,9 +18,7 @@ const Page = () => {
         <Search placeholder="Rechercher un produit..." />
         <CreateDetailProuit />
       </div>
-      <Suspense fallback={<InvoicesTableSkeleton/>}>
         <Produits />
-      </Suspense>
     </div>
   );
 };

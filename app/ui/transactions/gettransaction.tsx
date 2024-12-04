@@ -123,7 +123,7 @@ export async function postDetailTransaction(formData: FormData) {
     }
   } catch (error: any) {
     if (error instanceof ZodError) {
-      redirect("/transactions/create/error")
+      throw new Error('Error lors de la creation,', error)
     }
 
     // Gère les autres erreurs

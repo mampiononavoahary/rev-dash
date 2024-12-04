@@ -1,12 +1,35 @@
-import React from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
 import { getAllClients } from '../customers/getClients';
 import {getIdAndName } from '../produits/getproduits';
 import { postDetailTransaction,postDetailTransaction2 } from './gettransaction';
+import { SubmitButton } from './submit_button';
 
-export default async function CreateTransaction (){
-  const clients = await getAllClients();
-  const produits = await getIdAndName();
+export default function CreateTransaction (){
+  const [clients, setClients] = useState<any[]>([]);
+  const [produits, setProduits] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedClients = await getAllClients();
+        const fetchedProduits = await getIdAndName();
+        setClients(fetchedClients);
+        setProduits(fetchedProduits);
+      } catch (error) {
+        console.error("Erreur lors du chargement des données :", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <p>Chargement des données...</p>;
+  }
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-10">
       <h2 className="text-2xl font-bold mb-6 text-center">
@@ -82,12 +105,12 @@ export default async function CreateTransaction (){
           </select>
         </div>
             <div className="flex justify-center">
-          <button
+          <SubmitButton
             type="submit"
             className="mt-6 w-200 p-3 bg-yellow-500 text-gray-500 rounded-md hover:bg-yellow-400 "
           >
             Créer Détail Transaction
-          </button>
+          </SubmitButton>
         </div>
       </form>
       <form action={postDetailTransaction2}>
@@ -99,6 +122,9 @@ export default async function CreateTransaction (){
             name="id_produit_avec_detail"
             defaultValue=""
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+               <option value="" disabled>
+                Produits
+              </option>
               {produits?.map((produit: any) => {
                 return (
                   <option
@@ -120,6 +146,9 @@ export default async function CreateTransaction (){
              id="unite"
               name="unite"
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="" disabled>
+                Unité
+              </option>
               <option value="KG">KG</option>
               <option value="T">T</option>
               <option value="AR">AR</option>
@@ -128,92 +157,17 @@ export default async function CreateTransaction (){
              id="status"
               name="status"
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="PAYE">PAYE</option>
-              <option value="EN_ATTENTE">EN ATTENTE</option>
-            </select>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <select 
-            id="id_produit_avec_detail"
-            name="id_produit_avec_detail"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              {produits?.map((produit: any) => {
-                return (
-                  <option
-                    key={produit.id_produit_avec_detail}
-                    value={produit.id_produit_avec_detail}
-                  >
-                    {produit.nom_detail}
-                  </option>
-                );
-              })}
-            </select>
-            <input
-              type="number"
-               id="quantite"
-               name="quantite"
-              placeholder="Quantité"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <select 
-             id="unite"
-              name="unite"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="KG">KG</option>
-              <option value="T">T</option>
-              <option value="AR">AR</option>
-            </select>
-            <select 
-             id="status"
-              name="status"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="PAYE">PAYE</option>
-              <option value="EN_ATTENTE">EN ATTENTE</option>
-            </select>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <select 
-            id="id_produit_avec_detail"
-            name="id_produit_avec_detail"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              {produits?.map((produit: any) => {
-                return (
-                  <option
-                    key={produit.id_produit_avec_detail}
-                    value={produit.id_produit_avec_detail}
-                  >
-                    {produit.nom_detail}
-                  </option>
-                );
-              })}
-            </select>
-            <input
-              type="number"
-               id="quantite"
-               name="quantite"
-              placeholder="Quantité"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <select 
-             id="unite"
-              name="unite"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="KG">KG</option>
-              <option value="T">T</option>
-              <option value="AR">AR</option>
-            </select>
-            <select 
-             id="status"
-              name="status"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="" disabled>
+                Statut
+              </option>
               <option value="PAYE">PAYE</option>
               <option value="EN_ATTENTE">EN ATTENTE</option>
             </select>
           </div>
         </div>
-        <button className="mt-6 w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600" type="submit">
+        <SubmitButton className="mt-6 w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600" type="submit">
           Créer Transaction
-        </button>
+        </SubmitButton>
       </form>
     </div>
   );

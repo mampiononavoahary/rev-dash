@@ -1,9 +1,22 @@
+'use client'
 import { getAllProduitsWithDetail } from '@/app/ui/produits/getproduits';
 import { DeleteProduct, UpdateProduct } from './buttons';
+import { useEffect, useState } from 'react';
 
-export default async function Produits() {
+export default function Produits() {
+  const [produits, setProduits] = useState<any[]>([]);
+  useEffect(()=>{
+    const fetchData = async()=>{
+      try {
+        const allProdutis = await getAllProduitsWithDetail();
+        setProduits(allProdutis);
+      } catch (error) {
+        console.error('Erreur lors de la récupération de produits,', error)
+      }
+    };
+    fetchData()
+  },[]);
   try {
-    const produits = await getAllProduitsWithDetail();
     return (
       <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">

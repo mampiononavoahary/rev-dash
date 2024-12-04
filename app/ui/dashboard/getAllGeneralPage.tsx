@@ -122,3 +122,26 @@ export async function getAllTransactionsExit() {
       throw error;
     }
   }
+
+export async function getLatestTransactions(){
+  try {
+    const token = (await cookies()).get('token');
+    console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
+  
+    if (!token) {
+      console.warn('Token introuvable dans les cookies.');
+      return null;
+    }
+  
+    const produits = await axios.get(`${BASE_URL}/api/transactions/latest`, {
+      headers: {
+        Authorization: `Bearer ${token?.value}`,
+      },
+    });
+  
+   return produits.data;
+  } catch (error) {
+    console.error('Erreur lors de la récupération des 6 dernier transactions:', error);
+    throw error;
+  }
+}
