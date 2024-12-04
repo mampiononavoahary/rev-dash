@@ -1,3 +1,4 @@
+'use server'
 import axios from 'axios';
 import { BASE_URL } from '../../lib/db';
 import { cookies } from 'next/headers';
@@ -133,13 +134,13 @@ export async function getLatestTransactions(){
       return null;
     }
   
-    const produits = await axios.get(`${BASE_URL}/api/transactions/latest`, {
+    const transaction = await axios.get(`${BASE_URL}/api/transactions/latest`, {
       headers: {
         Authorization: `Bearer ${token?.value}`,
       },
     });
   
-   return produits.data;
+   return transaction.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des 6 dernier transactions:', error);
     throw error;
