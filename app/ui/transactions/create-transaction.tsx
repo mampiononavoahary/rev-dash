@@ -4,6 +4,8 @@ import { getAllClients } from '../customers/getClients';
 import {getIdAndName } from '../produits/getproduits';
 import { postDetailTransaction,postDetailTransaction2 } from './gettransaction';
 import { SubmitButton } from './submit_button';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function CreateTransaction (){
   const [clients, setClients] = useState<any[]>([]);
@@ -35,7 +37,7 @@ export default function CreateTransaction (){
       <h2 className="text-2xl font-bold mb-6 text-center">
         Créer une Transaction
       </h2>
-      <form className="space-y-4"  action={postDetailTransaction}>
+      <form className="space-y-4" action={postDetailTransaction}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block font-medium mb-1 text-center p-2 bg-green-200 rounded-full">
@@ -104,7 +106,7 @@ export default function CreateTransaction (){
             })}
           </select>
         </div>
-            <div className="flex justify-center">
+        <div className="flex justify-center">
           <SubmitButton
             type="submit"
             className="mt-6 w-200 p-3 bg-yellow-500 text-gray-500 rounded-md hover:bg-yellow-400 "
@@ -115,14 +117,15 @@ export default function CreateTransaction (){
       </form>
       <form action={postDetailTransaction2}>
         <div className="grid gap-4 grid-cols-2gap-x-6">
-          <h4 className="text-lg font-semibold mb-4">Ajouter des Produits</h4>
+          <h4 className="text-lg font-semibold mb-4 text-center mt-2">Ajouter des Produits</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <select 
-            id="id_produit_avec_detail"
-            name="id_produit_avec_detail"
-            defaultValue=""
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-               <option value="" disabled>
+            <select
+              id="id_produit_avec_detail"
+              name="id_produit_avec_detail"
+              defaultValue=""
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" disabled>
                 Produits
               </option>
               {produits?.map((produit: any) => {
@@ -137,15 +140,16 @@ export default function CreateTransaction (){
               })}
             </select>
             <input
-               id="quantite"
-               name="quantite"
+              id="quantite"
+              name="quantite"
               placeholder="Quantité"
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <select 
-             id="unite"
+            <select
+              id="unite"
               name="unite"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
               <option value="" disabled>
                 Unité
               </option>
@@ -153,10 +157,11 @@ export default function CreateTransaction (){
               <option value="T">T</option>
               <option value="AR">AR</option>
             </select>
-            <select 
-             id="status"
+            <select
+              id="status"
               name="status"
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
               <option value="" disabled>
                 Statut
               </option>
@@ -165,9 +170,17 @@ export default function CreateTransaction (){
             </select>
           </div>
         </div>
-        <SubmitButton className="mt-6 w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600" type="submit">
-          Créer Transaction
-        </SubmitButton>
+        <div className="flex flex-row justify-center gap-6 md-flex-col">
+          <SubmitButton
+            className="mt-6 p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            type="submit"
+          >
+            Créer Transaction
+          </SubmitButton>
+          <Link href="/dashboard/transactions">
+              <Button className="mt-6">Cancel</Button>
+          </Link>
+        </div>
       </form>
     </div>
   );
