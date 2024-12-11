@@ -31,36 +31,35 @@ const formatNumber = (value: number): string => {
 };
 
 // Mettre à jour generateYAxis
+
 export const generateYAxis = (revenue: any) => {
   if (!revenue || revenue.length === 0) {
     return { yAxisLabels: [], topLabel: 0 };
   }
 
   // Trouver la valeur maximale de la somme
-  const maxSum = revenue.reduce((acc: any, month: any) => Math.max(acc, month.sum), 0);
+  const maxSum = revenue.reduce((acc: number, month: any) => {
+    const sum = month.sum ?? 0; // Utiliser 0 si `sum` est indéfini
+    return Math.max(acc, sum);
+  }, 0);
 
-  // Définir un intervalle dynamique en fonction de la valeur maximale
-  let interval;
-  if (maxSum > 1000000) {
-    interval = 200000; // Intervalles de 200k pour des valeurs très élevées
-  } else if (maxSum > 500000) {
-    interval = 100000; // Intervalles de 100k pour des valeurs moyennes
-  } else if (maxSum > 200000) {
-    interval = 50000; // Intervalles de 50k pour des valeurs plus petites
-  } else {
-    interval = 20000; // Intervalles de 20k pour des valeurs très petites
-  }
+  // Limiter la valeur maximale pour l'axe Y
+  const maxTopLabel = 10000000; // Limite supérieure pour l'axe Y
+  const topLabel = Math.min(Math.ceil(maxSum / 1000) * 1000, maxTopLabel);
 
-  // Calculer le label supérieur en arrondissant au multiple supérieur de l'intervalle
-  const topLabel = Math.ceil(maxSum / interval) * interval;
+  // Définir dynamiquement le nombre de divisions (5 à 10 divisions maximum)
+  const maxDivisions = 10;
+  const interval = Math.ceil(topLabel / maxDivisions / 1000) * 1000;
 
   // Générer les étiquettes de l'axe Y
   const yAxisLabels = [];
   for (let i = 0; i <= topLabel; i += interval) {
     if (i >= 1000000) {
       yAxisLabels.unshift(`Ar${(i / 1000000).toFixed(1)}M`); // Format en millions (1.0M)
-    } else {
+    } else if (i >= 1000) {
       yAxisLabels.unshift(`Ar${(i / 1000).toFixed(0)}k`); // Format en milliers (200k)
+    } else {
+      yAxisLabels.unshift(`Ar${i}`); // Pour valeurs très petites (< 1000)
     }
   }
 
