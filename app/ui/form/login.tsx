@@ -17,16 +17,15 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(''); // Réinitialiser l'erreur
-    setIsLoading(true); // Activer le chargement
+    setError(''); 
+    setIsLoading(true); 
     try {
       await login(username, password);
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.message); // Capturer l'erreur
-      setIsLoading(false); // Désactiver le chargement immédiatement en cas d'erreur
+      setError(err.message);
+      setIsLoading(false);
     } finally {
-      // Si tout est bien passé, désactiver le chargement ici
       setIsLoading(false);
     }
   };
