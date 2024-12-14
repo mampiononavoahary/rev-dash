@@ -4,11 +4,12 @@ import { BASE_URL } from '../../lib/db';
 import { cookies } from 'next/headers';
 import { z, ZodError } from 'zod';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 
 export async function getAllTransactions(
-   query:string,
-   currentPage:number
+  query: string,
+  currentPage: number
 ) {
   try {
     const token = (await cookies()).get('token');
@@ -23,7 +24,7 @@ export async function getAllTransactions(
       headers: {
         Authorization: `Bearer ${token?.value}`,
       },
-      params:{
+      params: {
         query,
         currentPage
       }
@@ -53,7 +54,7 @@ export async function getCountTransactions(query: string): Promise<number> {
       },
     });
     console.log(total.data);
-    
+
     const countValue = Number(total.data);
     if (isNaN(countValue)) {
       console.error('Valeur de "total" invalide:', total.data);
@@ -135,23 +136,23 @@ export async function postDetailTransaction(formData: FormData) {
   }
 }
 
-export async function getLastDetailTransaction(){
+export async function getLastDetailTransaction() {
   try {
     const token = (await cookies()).get('token');
     console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
-  
+
     if (!token) {
       console.warn('Token introuvable dans les cookies.');
       return null;
     }
-  
+
     const produits = await axios.get(`${BASE_URL}/api/detailtransaction/lastdetail`, {
       headers: {
         Authorization: `Bearer ${token?.value}`,
       },
     });
-  
-   return produits.data;
+
+    return produits.data;
   } catch (error) {
     console.error('Erreur lors de la récupération des transactions:', error);
     throw error;
@@ -169,11 +170,11 @@ const formChema2 = z.object({
 
 export async function postDetailTransaction2(formData: FormData) {
   try {
-    const { id_produit_avec_detail,quantite,unite,status} = formChema2.parse({
+    const { id_produit_avec_detail, quantite, unite, status } = formChema2.parse({
       id_produit_avec_detail: formData.get('id_produit_avec_detail'),
       quantite: formData.get('quantite'),
       unite: formData.get('unite'),
-      status:formData.get('status'),
+      status: formData.get('status'),
     });
 
     const lastDetailTransaction = await getLastDetailTransaction();
@@ -181,7 +182,7 @@ export async function postDetailTransaction2(formData: FormData) {
       console.error('id_detail_transaction est introuvable ou incorrect.');
       throw new Error('Impossible de récupérer un id_detail_transaction valide.');
     }
-    
+
 
 
     const token = (await cookies()).get('token');
@@ -192,7 +193,7 @@ export async function postDetailTransaction2(formData: FormData) {
 
     const requestData = [{
       id_produit_avec_detail,
-      id_detail_transaction:lastDetailTransaction.id_detail_transaction,
+      id_detail_transaction: lastDetailTransaction.id_detail_transaction,
       quantite,
       unite,
       status
@@ -223,5 +224,27 @@ export async function postDetailTransaction2(formData: FormData) {
       success: false,
       error: error.response?.data?.message || error.message,
     };
+  }
+}
+export async function deleteTransaction(id_transaction: string){
+  try {
+    const token = (await cookies()).get('token');
+    if(!token){
+      console.warn('token introuvable dans les cookies ');
+      return null;
+    }
+    const doDelete = await axios.delete(`${BASE_URL}/api/transactions/delete/${id_transaction}`,{
+      headers:{
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    if(!doDelete){
+      console.warn('transactions not found');
+    }
+    revalidatePath('/dashboard/transactions');
+    console.log(doDelete.data);
+    return doDelete;
+  } catch (error) {
+    throw new Error("Internal server error"); 
   }
 }

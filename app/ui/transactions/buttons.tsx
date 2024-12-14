@@ -1,5 +1,6 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { deleteTransaction } from './gettransaction';
 
 export function CreateTransaction() {
   return (
@@ -12,8 +13,28 @@ export function CreateTransaction() {
     </Link>
   );
 }
+export function GoToVente(){
+  return(
+       <Link
+      href="/dashboard/transactions/ventes"
+      className="flex h-10 items-center rounded-lg bg-cyan-950 px-4 text-sm font-medium text-white transition-colors hover:bg-cyan-600"
+    >
+      <span>Ventes</span>{' '}
+    </Link>
+  );
+}
+export function GoToAchat(){
+  return(
+       <Link
+      href="/dashboard/transactions/achats"
+      className="flex h-10 items-center rounded-lg bg-lime-600 px-4 text-sm font-medium text-white transition-colors hover:bg-lime-400"
+    >
+      <span>Achats</span>{' '}
+    </Link>
+  );
+}
 
-export function UpdateTransaction({ id_transaction }: { id_transaction: number }) {
+export function UpdateTransaction({ id_transaction }: { id_transaction: string }) {
   return (
     <Link
       href="/dashboard/transactions"
@@ -24,13 +45,14 @@ export function UpdateTransaction({ id_transaction }: { id_transaction: number }
   );
 }
 
-export function DeleteTransaction({ id_transaction }: { id_transaction: number }) {
+export function DeleteTransaction({ id_transaction }: { id_transaction: string }) {
+  const deletetransaction = deleteTransaction.bind(null,id_transaction) 
   return (
-    <>
+    <form action={deletetransaction}>
       <button className="rounded-md border p-2 hover:bg-red-300">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
-    </>
+    </form>
   );
 }

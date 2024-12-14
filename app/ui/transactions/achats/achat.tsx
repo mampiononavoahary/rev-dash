@@ -1,12 +1,12 @@
-import { getAllTransactions } from '@/app/ui/transactions/gettransaction';
-import { DeleteTransaction, UpdateTransaction } from './buttons';
-import TransactionStatus from './status';
-import { Transaction } from '@/app/lib/definitions';
+import { Achat } from '@/app/lib/definitions';
+import { DeleteTransaction, UpdateTransaction } from '../buttons';
+import TransactionStatus from '../status';
+import { getAllAchats } from './getAllAchats';
 
-export default async function Transactions({query,currentPage}:{query:string,currentPage:number}) {
+export default async function Achats({query,currentPage}:{query:string,currentPage:number}) {
 
   try {
-    const transactions = await getAllTransactions(query,currentPage);
+    const achats = await getAllAchats(query,currentPage);
 
 
     return (
@@ -15,33 +15,33 @@ export default async function Transactions({query,currentPage}:{query:string,cur
           <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
             {/* Affichage pour petits écrans (moins de 1341px de largeur OU 760px de hauteur) */}
             <div className="custom-lg:block custom-sm:block xl:hidden space-y-4">
-              {transactions?.map((transaction: Transaction, index: string) => (
+              {achats?.map((achat: Achat, index: string) => (
                 <div
-                  key={transaction.id_transaction || index}
+                  key={achat.id_transaction || index}
                   className="flex flex-col space-y-2 rounded-md bg-white p-4 shadow-md"
                 >
                   <div className="flex items-center justify-between border-b pb-3">
                     <p className="text-sm font-semibold text-gray-600">
-                      {transaction.nom_client}
+                      {achat.nom_client}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {transaction.date_transaction}
+                      {achat.date_transaction}
                     </p>
                   </div>
                   <div className="text-sm">
                     <p>
-                      <span className="font-medium">Produit :</span> {transaction.nom_produit}
+                      <span className="font-medium">Produit :</span> {achat.nom_produit}
                     </p>
                     <p>
-                      <span className="font-medium">Quantité :</span> {transaction.quantite} {transaction.unite}
+                      <span className="font-medium">Quantité :</span> {achat.quantite} {achat.unite}
                     </p>
                     <p>
-                      <span className="font-medium">Statut :</span> {transaction.status}
+                      <span className="font-medium">Statut :</span> {achat.status}
                     </p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateTransaction id_transaction={transaction.id_transaction} />
-                    <DeleteTransaction id_transaction={transaction.id_transaction} />
+                    <UpdateTransaction id_transaction={achat.id_transaction} />
+                    <DeleteTransaction id_transaction={achat.id_transaction} />
                   </div>
                 </div>
               ))}
@@ -53,8 +53,8 @@ export default async function Transactions({query,currentPage}:{query:string,cur
                 <tr>
                   <th scope="col" className="px-4 py-5 sm:pl-6">Nom Client</th>
                   <th scope="col" className="px-3 py-5">Nom produit</th>
-                  <th scope="col" className="px-3 py-5">Date transaction</th>
-                  <th scope="col" className="px-3 py-5">Lieu transaction</th>
+                  <th scope="col" className="px-3 py-5">Date achat</th>
+                  <th scope="col" className="px-3 py-5">Lieu achat</th>
                   <th scope="col" className="px-3 py-5">Quantité</th>
                   <th scope="col" className="px-3 py-5">Unité</th>
                   <th scope="col" className="px-3 py-5">Statut</th>
@@ -64,24 +64,24 @@ export default async function Transactions({query,currentPage}:{query:string,cur
                 </tr>
               </thead>
               <tbody className="bg-white">
-                {transactions?.map((transaction: Transaction, index: string) => (
+                {achats?.map((achat: Achat, index: string) => (
                   <tr
-                    key={transaction.id_transaction || index}
+                    key={achat.id_transaction || index}
                     className="w-full border-b py-3 text-sm last-of-type:border-none"
                   >
-                    <td className="whitespace-nowrap px-3 py-3">{transaction.nom_client}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{transaction.nom_produit}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{transaction.date_transaction}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{transaction.lieu_transaction}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{transaction.quantite}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{transaction.unite}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{achat.nom_client}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{achat.nom_produit}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{achat.date_transaction}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{achat.lieu_transaction}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{achat.quantite}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{achat.unite}</td>
                     <td className="whitespace-nowrap px-3 py-3">
-                      <TransactionStatus status={transaction.status} />
+                      <TransactionStatus status={achat.status} />
                     </td>
                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                       <div className="flex justify-end gap-3">
-                        <UpdateTransaction id_transaction={transaction.id_transaction} />
-                        <DeleteTransaction id_transaction={transaction.id_transaction} />
+                        <UpdateTransaction id_transaction={achat.id_transaction} />
+                        <DeleteTransaction id_transaction={achat.id_transaction} />
                       </div>
                     </td>
                   </tr>

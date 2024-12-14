@@ -1,15 +1,13 @@
 import InitializeToken from "@/app/lib/initializer";
 import { lusitana } from "@/app/ui/fonts";
 import Pagination from "@/app/ui/invoices/pagination";
-import Search from "@/app/ui/search";
-import { CreateTransaction } from "@/app/ui/transactions/buttons";
-import { GoToVente } from "@/app/ui/transactions/buttons";
-import { GoToAchat } from "@/app/ui/transactions/buttons";
 import { getCountTransactions } from "@/app/ui/transactions/gettransaction";
-import Transactions from "@/app/ui/transactions/transaction";
 import React from "react";
 import { Suspense } from "react";
 import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
+import Ventes from "@/app/ui/transactions/ventes/vente";
+import Search from "@/app/ui/search";
+import { CreateTransaction } from "@/app/ui/transactions/buttons";
 
 export const dynamic = "force-dynamic";
 
@@ -28,21 +26,16 @@ export default async function page(props: {
     <div>
       <InitializeToken />
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Transactions</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Ventes des produits</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Rechercher un produit..." />
-        <CreateTransaction />
       </div>
-      <Suspense fallback={<InvoicesTableSkeleton/>}>
-        <Transactions query={query} currentPage={currentPage} />
+      <Suspense fallback={<InvoicesTableSkeleton />}>
+        <Ventes query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
-      </div>
-      <div className="mt-6 flex justify-center gap-4">
-        <GoToVente/>
-        <GoToAchat/>
       </div>
     </div>
   );

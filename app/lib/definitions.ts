@@ -48,7 +48,28 @@ export type transactionTotal = {
 }
 
 export interface Transaction {
-  id_transaction: number;
+  id_transaction: string;
+  nom_client: string;
+  nom_produit: string;
+  date_transaction: string;
+  lieu_transaction?: string; // Optional field
+  quantite: number;
+  unite: string;
+  status: string;
+}
+
+export interface Vente {
+  id_transaction: string;
+  nom_client: string;
+  nom_produit: string;
+  date_transaction: string;
+  lieu_transaction?: string; // Optional field
+  quantite: number;
+  unite: string;
+  status: string;
+}
+export interface Achat {
+  id_transaction: string;
   nom_client: string;
   nom_produit: string;
   date_transaction: string;
