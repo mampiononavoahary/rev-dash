@@ -57,7 +57,14 @@ export interface Transaction {
   unite: string;
   status: string;
 }
-
+export interface Clients {
+  id_client: string;
+  nom: string;
+  prenom:string;
+  total_transaction:number;
+  total_paye:number;
+  total_en_attente:number;
+ }
 export interface Vente {
   id_transaction: string;
   nom_client: string;

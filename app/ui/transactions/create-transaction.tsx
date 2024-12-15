@@ -6,6 +6,7 @@ import { postDetailTransaction,postDetailTransaction2 } from './gettransaction';
 import { SubmitButton } from './submit_button';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 export default function CreateTransaction (){
   const [clients, setClients] = useState<any[]>([]);
@@ -37,7 +38,14 @@ export default function CreateTransaction (){
       <h2 className="text-2xl font-bold mb-6 text-center">
         Créer une Transaction
       </h2>
-      <form className="space-y-4" action={postDetailTransaction}>
+      <form className="space-y-4" action={async (formData) => {
+        const result = await postDetailTransaction(formData);
+        if (result?.success) {
+          toast.success('Détail transactions creer avec succes');
+        }else{
+          toast.error('Erreur lors de la creation de détail transaction');
+        }
+      }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block font-medium mb-1 text-center p-2 bg-green-200 rounded-full">
@@ -115,7 +123,14 @@ export default function CreateTransaction (){
           </SubmitButton>
         </div>
       </form>
-      <form action={postDetailTransaction2}>
+      <form action={async (formData) =>{
+        const result = await postDetailTransaction2(formData);
+        if (result?.success) {
+          toast.success('Transaction creer avec success');
+        }else{
+          toast.error('Erreur lors de la creation de transaction');
+        }
+      }}>
         <div className="grid gap-4 grid-cols-2gap-x-6">
           <h4 className="text-lg font-semibold mb-4 text-center mt-2">Ajouter des Produits</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

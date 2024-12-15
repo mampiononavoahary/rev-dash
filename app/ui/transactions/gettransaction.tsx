@@ -120,15 +120,20 @@ export async function postDetailTransaction(formData: FormData) {
     if (response.status === 201 || response.status === 200) {
       return { success: true, data: response.data };
     } else {
-      alert('Détail ransaction non créer')
+      console.error('Erreur inattendue lors de la création du detailtransaction:', response);
+      return { success: false, error: 'Client non créé.' };
     }
-  } catch (error: any) {
+  }catch (error: any) {
     if (error instanceof ZodError) {
-      throw new Error('Error lors de la creation,', error)
+      console.error('Erreur de validation:', error.errors);
+      return {
+        success: false,
+        error: 'Données invalides. Veuillez vérifier les champs du formulaire.',
+      };
     }
 
     // Gère les autres erreurs
-    console.error('Erreur lors de la création de la transaction :', error);
+    console.error('Erreur lors de la création du deltail transaction:', error.response?.data || error.message);
     return {
       success: false,
       error: error.response?.data?.message || error.message,
@@ -208,18 +213,25 @@ export async function postDetailTransaction2(formData: FormData) {
     });
 
     if (response.status === 201 || response.status === 200) {
-      redirect('/transactions')
+      redirect('/dashboard/transactions')
     } else {
-      alert('Détail ransaction non créer')
+      console.error('Erreur inattendue lors de la creattion de transaction:', response);
+      return{
+        success:false,
+        error:'transaction non creer',
+    };
     }
   } catch (error: any) {
     if (error instanceof ZodError) {
       console.error('Validation échouée :', error.errors);
-      redirect('/dashboard/transactions/create');
+      return{
+        success: false,
+        error: 'formulaire invalides, Veuillez Vérifiez la formulaire'
+      };
     }
 
     // Gère les autres erreurs
-    console.error('Erreur lors de la création de la transaction :', error);
+    console.error('Erreur lors de la création de la transaction :', error.response?.data || error.message);
     return {
       success: false,
       error: error.response?.data?.message || error.message,
