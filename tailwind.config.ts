@@ -12,6 +12,9 @@ const config: Config = {
   		gridTemplateColumns: {
   			'13': 'repeat(13, minmax(0, 1fr))'
   		},
+      animation:{
+        spin:'spin 1s linear infinite'
+      },
 		screens:{
 			'custom-lg': { 'raw': '(max-width: 1341px)' },
         	'custom-sm': { 'raw': '(max-height: 760px)' },

@@ -1,6 +1,5 @@
-import '@/app/ui/global.css'
+import '@/app/ui/global.css';
 import { jetBrainsMono, lusitana } from './ui/fonts';
-import Provider from './Provider';
 import { AuthProvider } from './lib/userContext';
 
 export default function RootLayout({
@@ -11,6 +10,10 @@ export default function RootLayout({
   return (
     <AuthProvider>
       <html lang="en">
+        <head>
+          {/* Utilisation de la favicon en format PNG */}
+          <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png" />
+        </head>
         <body className={`${jetBrainsMono.className} antialiased`}>
           {children}
         </body>
@@ -18,3 +21,4 @@ export default function RootLayout({
     </AuthProvider>
   );
 }
+

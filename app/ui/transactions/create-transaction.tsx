@@ -1,19 +1,49 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import { getAllClients } from '../customers/getClients';
-import {getIdAndName } from '../produits/getproduits';
-import { postDetailTransaction,postDetailTransaction2 } from './gettransaction';
+import { getIdAndName } from '../produits/getproduits';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import { SubmitButton } from './submit_button';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
+import { postDetailTransaction, postDetailTransaction2 } from './gettransaction';
 
-export default function CreateTransaction (){
+// Composant CircularProgressWithLabel
+const CircularProgressWithLabel = ({ value }: { value: number }) => (
+  <Box position="relative" display="inline-flex">
+    <CircularProgress variant="determinate" value={value} />
+    <Box
+      top={0}
+      left={0}
+      bottom={0}
+      right={0}
+      position="absolute"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Typography variant="caption" component="div" color="text.secondary">
+        {`${Math.round(value)}%`}
+      </Typography>
+    </Box>
+  </Box>
+);
+
+export default function CreateTransaction() {
   const [clients, setClients] = useState<any[]>([]);
   const [produits, setProduits] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Simule la progression pendant le chargement
+    const interval = setInterval(() => {
+      setProgress((prev) => (prev >= 100 ? 0 : prev + 10));
+    }, 800);
+
     const fetchData = async () => {
       try {
         const fetchedClients = await getAllClients();
@@ -21,18 +51,27 @@ export default function CreateTransaction (){
         setClients(fetchedClients);
         setProduits(fetchedProduits);
       } catch (error) {
-        console.error("Erreur lors du chargement des données :", error);
+        console.error('Erreur lors du chargement des données :', error);
+        toast.error('Erreur lors du chargement des données.');
       } finally {
         setLoading(false);
+        clearInterval(interval); // Arrête la progression une fois les données chargées
       }
     };
 
     fetchData();
+
+    return () => clearInterval(interval); // Nettoie l'intervalle si le composant est démonté
   }, []);
 
   if (loading) {
-    return <p>Chargement des données...</p>;
+    return (
+      <div className="mx-auto">
+        <CircularProgressWithLabel value={progress} />
+      </div>
+    );
   }
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-10">
       <h2 className="text-2xl font-bold mb-6 text-center">
@@ -42,7 +81,7 @@ export default function CreateTransaction (){
         const result = await postDetailTransaction(formData);
         if (result?.success) {
           toast.success('Détail transactions creer avec succes');
-        }else{
+        } else {
           toast.error('Erreur lors de la creation de détail transaction');
         }
       }}>
@@ -123,11 +162,11 @@ export default function CreateTransaction (){
           </SubmitButton>
         </div>
       </form>
-      <form action={async (formData) =>{
+      <form action={async (formData) => {
         const result = await postDetailTransaction2(formData);
         if (result?.success) {
           toast.success('Transaction creer avec success');
-        }else{
+        } else {
           toast.error('Erreur lors de la creation de transaction');
         }
       }}>
@@ -193,7 +232,7 @@ export default function CreateTransaction (){
             Créer Transaction
           </SubmitButton>
           <Link href="/dashboard/transactions">
-              <Button className="mt-6">Cancel</Button>
+            <Button className="mt-6">Cancel</Button>
           </Link>
         </div>
       </form>

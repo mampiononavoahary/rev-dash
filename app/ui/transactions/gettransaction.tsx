@@ -213,7 +213,7 @@ export async function postDetailTransaction2(formData: FormData) {
     });
 
     if (response.status === 201 || response.status === 200) {
-      redirect('/dashboard/transactions')
+      return { success: true, data: response.data };
     } else {
       console.error('Erreur inattendue lors de la creattion de transaction:', response);
       return{
