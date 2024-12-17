@@ -95,7 +95,9 @@ export async function postDetailTransaction(formData: FormData) {
       id_client: formData.get('id_client'),
     });
 
-    const date = new Date().toISOString().split('T')[0];
+    const date = new Date();
+    date.setHours(date.getHours()+3);
+    const isoDate = date.toISOString();
 
     const token = (await cookies()).get('token');
 
@@ -105,7 +107,7 @@ export async function postDetailTransaction(formData: FormData) {
 
     const requestData = {
       type_de_transaction,
-      date_de_transaction: date,
+      date_de_transaction: isoDate,
       lieu_de_transaction,
       id_client,
     };

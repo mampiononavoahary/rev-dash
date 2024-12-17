@@ -56,14 +56,14 @@ export default function CreateClients() {
       <div className="flex flex-wrap -mx-3 mb-6">
         <div className="w-full px-3">
           <label
-            htmlFor="adress"
+            htmlFor="adresse"
             className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
           >
             Adresse
           </label>
           <input
-            name="adress"
-            id="adress"
+            name="adresse"
+            id="adresse"
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             type="text"
             placeholder="Adresse du client..."

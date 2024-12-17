@@ -60,16 +60,16 @@ export async function getClientsExtracts(
 const formChema = z.object({
   nom: z.string().nonempty('Nom ne peut pas être vide'),
   prenom: z.string().optional(),
-  adress: z.string().nonempty('Adress requise.'),
+  adresse: z.string().nonempty('Adress requise.'),
   telephone: z.string().nonempty('Téléphone requise.'),
 });
 
 export async function CreateClient(formData: FormData) {
   try {
-    const { nom, prenom, adress, telephone } = formChema.parse({
+    const { nom, prenom, adresse, telephone } = formChema.parse({
       nom: formData.get('nom'),
       prenom: formData.get('prenom'),
-      adress: formData.get('adress'),
+      adresse: formData.get('adresse'),
       telephone: formData.get('telephone'),
     });
     const token = (await cookies()).get('token');
@@ -80,7 +80,7 @@ export async function CreateClient(formData: FormData) {
     const requestData = {
       nom,
       prenom,
-      adress,
+      adresse,
       telephone,
     }
 
