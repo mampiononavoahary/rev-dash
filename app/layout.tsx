@@ -12,7 +12,7 @@ export default function RootLayout({
       <html lang="en">
         <head>
           {/* Utilisation de la favicon en format PNG */}
-          <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png" />
+          <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png"/>
         </head>
         <body className={`${jetBrainsMono.className} antialiased`}>
           {children}

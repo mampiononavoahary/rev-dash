@@ -33,20 +33,22 @@ const Login = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid w-full max-w-sm items-center gap-4"
+      className="grid w-full max-w-sm items-center gap-4 bg-emerald-100 px-2 py-4 rounded-lg mb-4"
     >
-      <Label htmlFor="username">Nom d'utilisateur</Label>
+      <Label htmlFor="username" className="text-gray-900">Nom d'utilisateur</Label>
       <Input
         type="username"
         id="username"
+        className="text-gray-900 border-yellow-600"
         placeholder="Nom d'utilisateur"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
       />
-      <Label htmlFor="password">Mot de passe</Label>
+      <Label htmlFor="password" className="text-gray-900">Mot de passe</Label>
       <Input
         type="password"
+        className="text-gray-900 border-yellow-600"
         id="password"
         placeholder="Mot de passe"
         value={password}
@@ -54,7 +56,7 @@ const Login = () => {
         required
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
-      <Button type="submit" disabled={isLoading}>
+      <Button type="submit" disabled={isLoading} className="bg-blue-400 hover:bg-blue-500">
         {isLoading ? (
           <>
             <svg

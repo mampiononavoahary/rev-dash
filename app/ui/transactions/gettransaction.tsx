@@ -96,7 +96,7 @@ export async function postDetailTransaction(formData: FormData) {
     });
 
     const date = new Date();
-    date.setHours(date.getHours()+3);
+    date.setHours(date.getHours() + 3);
     const isoDate = date.toISOString();
 
     const token = (await cookies()).get('token');
@@ -125,7 +125,7 @@ export async function postDetailTransaction(formData: FormData) {
       console.error('Erreur inattendue lors de la création du detailtransaction:', response);
       return { success: false, error: 'Client non créé.' };
     }
-  }catch (error: any) {
+  } catch (error: any) {
     if (error instanceof ZodError) {
       console.error('Erreur de validation:', error.errors);
       return {
@@ -159,7 +159,9 @@ export async function getLastDetailTransaction() {
       },
     });
 
-    return produits.data;
+    const res = produits.data;
+    console.log(res);
+    return res;
   } catch (error) {
     console.error('Erreur lors de la récupération des transactions:', error);
     throw error;
@@ -168,28 +170,24 @@ export async function getLastDetailTransaction() {
 
 const formChema2 = z.object({
   id_produit_avec_detail: z.string().nonempty('Produit requis.'),
-  id_detail_transaction: z.string().optional(),
+  id_detail_transaction: z.string().nonempty('id_detail_transaction requis'),
   quantite: z.string().nonempty('Quantité requise.'),
   unite: z.string().nonempty('Unité requise.'),
   status: z.string().nonempty('Status requis.'),
+  lieu_stock: z.string().nonempty('lieu_stock requis'),
 });
 
 
 export async function postDetailTransaction2(formData: FormData) {
   try {
-    const { id_produit_avec_detail, quantite, unite, status } = formChema2.parse({
+    const { id_produit_avec_detail, id_detail_transaction, quantite, unite, status, lieu_stock } = formChema2.parse({
       id_produit_avec_detail: formData.get('id_produit_avec_detail'),
+      id_detail_transaction: formData.get('id_detail_transaction'),
       quantite: formData.get('quantite'),
       unite: formData.get('unite'),
       status: formData.get('status'),
+      lieu_stock: formData.get('lieu_stock'),
     });
-
-    const lastDetailTransaction = await getLastDetailTransaction();
-    if (!lastDetailTransaction || typeof lastDetailTransaction.id_detail_transaction !== 'number') {
-      console.error('id_detail_transaction est introuvable ou incorrect.');
-      throw new Error('Impossible de récupérer un id_detail_transaction valide.');
-    }
-
 
 
     const token = (await cookies()).get('token');
@@ -200,10 +198,11 @@ export async function postDetailTransaction2(formData: FormData) {
 
     const requestData = [{
       id_produit_avec_detail,
-      id_detail_transaction: lastDetailTransaction.id_detail_transaction,
+      id_detail_transaction,
       quantite,
       unite,
-      status
+      status,
+      lieu_stock
     },];
     console.log('Données de la requête:', requestData);
 
@@ -218,15 +217,15 @@ export async function postDetailTransaction2(formData: FormData) {
       return { success: true, data: response.data };
     } else {
       console.error('Erreur inattendue lors de la creattion de transaction:', response);
-      return{
-        success:false,
-        error:'transaction non creer',
-    };
+      return {
+        success: false,
+        error: 'transaction non creer',
+      };
     }
   } catch (error: any) {
     if (error instanceof ZodError) {
       console.error('Validation échouée :', error.errors);
-      return{
+      return {
         success: false,
         error: 'formulaire invalides, Veuillez Vérifiez la formulaire'
       };
@@ -240,25 +239,25 @@ export async function postDetailTransaction2(formData: FormData) {
     };
   }
 }
-export async function deleteTransaction(id_transaction: string){
-  try {
-    const token = (await cookies()).get('token');
-    if(!token){
+// Supposons que deleteTransaction est une fonction qui supprime une transaction via un appel API
+export async function deleteTransaction(id_transaction: string) {
+  // Exemple d'appel réseau
+ const token = (await cookies()).get('token');
+    if (!token) {
       console.warn('token introuvable dans les cookies ');
       return null;
     }
-    const doDelete = await axios.delete(`${BASE_URL}/api/transactions/delete/${id_transaction}`,{
-      headers:{
+  const response = await fetch(`${BASE_URL}/api/transactions/delete/${id_transaction}`, {
+    method: "DELETE",
+    headers:{
         Authorization: `Bearer ${token.value}`,
-      },
-    });
-    if(!doDelete){
-      console.warn('transactions not found');
-    }
-    revalidatePath('/dashboard/transactions');
-    console.log(doDelete.data);
-    return doDelete;
-  } catch (error) {
-    throw new Error("Internal server error"); 
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Erreur lors de la suppression de la transaction");
   }
+
+  return null;
 }
+

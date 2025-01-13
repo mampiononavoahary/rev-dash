@@ -57,6 +57,29 @@ export interface Transaction {
   unite: string;
   status: string;
 }
+export interface stock{
+  id_stock:number;
+  lieu_stock:string;
+  quantite_stock:number;
+  unite:string;
+  nom_detail:string;
+  symbole:string;
+  image_url:string;
+}
+export interface stockDetail{
+  id_stock:number;
+  lieu_stock:string;
+  quantite_stock:number;
+  uite_stock:string;
+  nom_detail:string;
+  quantite:number;
+  unite:string;
+  status:string;
+  typeDeTransaction:string;
+  lieuDeTransaction:string;
+  date_transaction:string;
+  nom_client:string;
+}
 export interface Clients {
   id_client: string;
   nom: string;

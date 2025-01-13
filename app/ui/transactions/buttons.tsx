@@ -1,6 +1,21 @@
+'use client'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { BASE_URL } from '@/app/lib/db';
 import { deleteTransaction } from './gettransaction';
+import { useState } from 'react';
+import { toast } from "react-toastify";
 
 export function CreateTransaction() {
   return (
@@ -46,13 +61,50 @@ export function UpdateTransaction({ id_transaction }: { id_transaction: string }
 }
 
 export function DeleteTransaction({ id_transaction }: { id_transaction: string }) {
-  const deletetransaction = deleteTransaction.bind(null,id_transaction) 
-  return (
-    <form action={deletetransaction}>
-      <button className="rounded-md border p-2 hover:bg-red-300">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
-    </form>
+ const [open, setOpen] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      await deleteTransaction(id_transaction);
+      toast.success("Transaction supprimée avec succès.",{
+        position:"top-center"
+      }); // Remplacez par un autre composant d'alerte si besoin
+      setTimeout(()=>{
+        window.location.reload();
+      },2000)
+      setOpen(false);
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la transaction :", error);
+      toast.error("Une erreur est survenue. Veuillez réessayer.",{
+        position:"top-center"
+      });
+    }
+  };  return (
+    <>
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogTrigger asChild>
+          <button
+            type="button"
+            className="rounded-md border p-2 hover:bg-red-300"
+          >
+            <span className="sr-only">Supprimer</span>
+            <TrashIcon className="w-5" />
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action est irréversible. La transaction sera définitivement supprimée.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-red-400 hover:bg-red-600">Supprimer</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
+

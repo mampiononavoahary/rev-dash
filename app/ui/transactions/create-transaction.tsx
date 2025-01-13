@@ -9,7 +9,8 @@ import { SubmitButton } from './submit_button';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
-import { postDetailTransaction, postDetailTransaction2 } from './gettransaction';
+import { getLastDetailTransaction, postDetailTransaction, postDetailTransaction2 } from './gettransaction';
+import { Import } from 'lucide-react';
 
 // Composant CircularProgressWithLabel
 const CircularProgressWithLabel = ({ value }: { value: number }) => (
@@ -35,6 +36,7 @@ const CircularProgressWithLabel = ({ value }: { value: number }) => (
 export default function CreateTransaction() {
   const [clients, setClients] = useState<any[]>([]);
   const [produits, setProduits] = useState<any[]>([]);
+  const [detailTransaction, setDetailTransaction] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
 
@@ -48,8 +50,10 @@ export default function CreateTransaction() {
       try {
         const fetchedClients = await getAllClients();
         const fetchedProduits = await getIdAndName();
+        const fetchDetailTransaction = await getLastDetailTransaction();
         setClients(fetchedClients);
         setProduits(fetchedProduits);
+        setDetailTransaction(fetchDetailTransaction);
       } catch (error) {
         console.error('Erreur lors du chargement des données :', error);
         toast.error('Erreur lors du chargement des données.');
@@ -71,7 +75,6 @@ export default function CreateTransaction() {
       </div>
     );
   }
-
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-10">
       <h2 className="text-2xl font-bold mb-6 text-center">
@@ -81,13 +84,17 @@ export default function CreateTransaction() {
         const result = await postDetailTransaction(formData);
         if (result?.success) {
           toast.success('Détail transactions creer avec succes');
+          setTimeout(() => {
+            window.location.reload(); // Redirection vers la page de connexion
+          }, 2000);
+
         } else {
           toast.error('Erreur lors de la creation de détail transaction');
         }
       }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block font-medium mb-1 text-center p-2 bg-green-200 rounded-full">
+            <label className="block font-medium mb-1 text-center p-2 bg-emerald-200 rounded-full">
               Type de transactions:
             </label>
             <select
@@ -104,7 +111,7 @@ export default function CreateTransaction() {
             </select>
           </div>
           <div>
-            <label className="block font-medium mb-1 text-center p-2 bg-green-200 rounded-full">
+            <label className="block font-medium mb-1 text-center p-2 bg-emerald-200 rounded-full">
               Lieu de Transaction:
             </label>
             <select
@@ -118,7 +125,9 @@ export default function CreateTransaction() {
               </option>
               <option value="ITAOSY">ITAOSY</option>
               <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
+              <option value="AMPASIKA">AMPASIKA</option>
               <option value="AMBATONDRAZAKA">AMBATONDRAZAKA</option>
+              <option value="ANOSIZATO">ANOSIZATO</option>
             </select>
           </div>
           {/*<div>
@@ -132,7 +141,7 @@ export default function CreateTransaction() {
           </div>*/}
         </div>
         <div>
-          <label className="block font-medium mb-1 text-center p-2 rounded-full bg-green-200">
+          <label className="block font-medium mb-1 text-center p-2 rounded-full bg-emerald-200">
             Nom Clients:
           </label>
           <select
@@ -147,7 +156,7 @@ export default function CreateTransaction() {
             {clients?.map((client: any) => {
               return (
                 <option key={client.id_clients} value={client.id_clients}>
-                  {client.nom}
+                  {client.nom} {client.prenom}
                 </option>
               );
             })}
@@ -165,14 +174,40 @@ export default function CreateTransaction() {
       <form action={async (formData) => {
         const result = await postDetailTransaction2(formData);
         if (result?.success) {
-          toast.success('Transaction creer avec success');
+          toast.success('Transaction créée avec succès');
         } else {
-          toast.error('Erreur lors de la creation de transaction');
+          if (result?.error === 'Quantité insuffisante en stock.') {
+            toast.error('La quantité demandée dépasse le stock disponible.');
+          } else if (result?.error === 'Le lieu de stock spécifié est introuvable.') {
+            toast.error('Le lieu de stock n\'existe pas.');
+          } else {
+            toast.error(result?.error || 'Erreur lors de la création de la transaction');
+          }
         }
       }}>
         <div className="grid gap-4 grid-cols-2gap-x-6">
           <h4 className="text-lg font-semibold mb-4 text-center mt-2">Ajouter des Produits</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <select
+              id="id_detail_transaction"
+              name="id_detail_transaction"
+              defaultValue=""
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" disabled>
+                Clients
+              </option>
+              {detailTransaction?.map((detail: any) => {
+                return (
+                  <option
+                    key={detail.id_detail_transaction}
+                    value={detail.id_detail_transaction}
+                  >
+                    {detail.nom} {detail.prenom}
+                  </option>
+                );
+              })}
+            </select>
             <select
               id="id_produit_avec_detail"
               name="id_produit_avec_detail"
@@ -202,6 +237,7 @@ export default function CreateTransaction() {
             <select
               id="unite"
               name="unite"
+              defaultValue=""
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="" disabled>
@@ -209,19 +245,36 @@ export default function CreateTransaction() {
               </option>
               <option value="KG">KG</option>
               <option value="T">T</option>
-              <option value="AR">AR</option>
             </select>
             <select
               id="status"
               name="status"
+              defaultValue=""
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="" disabled>
-                Statut
+                Status
               </option>
               <option value="PAYE">PAYE</option>
               <option value="EN_ATTENTE">EN ATTENTE</option>
             </select>
+            <select
+              id="lieu_stock"
+              name="lieu_stock"
+              defaultValue=""
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" disabled>
+                Lieu de stock
+              </option>
+              <option value="ITAOSY">ITAOSY</option>
+              <option value="ANOSIZATO">ANOSIZATO</option>
+              <option value="AMPASIKA">AMPASIKA</option>
+              <option value="AMPANDRANA">AMPANDRANA</option>
+              <option value="AMBATONDRAZAKA">AMBATONDRAZAKA</option>
+              <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
+            </select>
+
           </div>
         </div>
         <div className="flex flex-row justify-center gap-6 md-flex-col">

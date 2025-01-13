@@ -19,7 +19,7 @@ export default async function RevenueChart() {
         Recent Revenue
       </h2>
 
-      <div className="rounded-xl bg-gray-50 p-4">
+      <div className="rounded-xl bg-teal-100 p-4">
         <div className="sm:grid-cols-13 mt-0 grid grid-cols-12 items-end gap-2 rounded-md bg-white p-4 md:gap-4">
           <div
             className="mb-6 hidden flex-col justify-between text-sm text-gray-400 sm:flex"
@@ -33,7 +33,7 @@ export default async function RevenueChart() {
           {revenue.map((data: any) => (
             <div key={data.month} className="flex flex-col items-center gap-2">
               <div
-                className="w-full rounded-md bg-purple-300"
+                className="w-full rounded-md bg-blue-200"
                 style={{
                   height: `${(chartHeight / topLabel) * data.sum}px`, // Calcul dynamique de la hauteur
                 }}

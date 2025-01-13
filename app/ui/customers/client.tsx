@@ -12,7 +12,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
     return (
       <div className="mt-6 flow-root">
         <div className="inline-block w-full align-middle">
-          <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="rounded-lg bg-teal-100 p-2 md:pt-0">
             {/* Affichage pour petits écrans (moins de 1341px de largeur OU 760px de hauteur) */}
             <div className="custom-lg:block custom-sm:block xl:hidden space-y-4">
               {clients?.map((client: Clients, index: string) => (
@@ -32,7 +32,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
                       Total transaction:
                       <span className={clsx(
                         "whitespace-nowrap px-3 py-3",
-                        client.total_transaction > 20 ? "text-green-500" : client.total_transaction >= 10 ? "text-yellow-200" : "text-red-500"
+                        client.total_transaction > 20 ? "text-green-500" : client.total_transaction >= 10 ? "text-blue-500" : "text-red-500"
                       )}>{client.total_transaction}</span>
                     </p>
                     <p className="font-medium">
@@ -82,7 +82,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
                     <td className="whitespace-nowrap px-3 py-3">{client.prenom}</td>
                     <td className={clsx(
                       "whitespace-nowrap px-3 py-3",
-                      client.total_transaction > 20 ? "text-green-500" : client.total_transaction >= 10 ? "text-yellow-200" : "text-red-500"
+                      client.total_transaction > 20 ? "text-green-500" : client.total_transaction >= 10 ? "text-blue-500" : "text-red-500"
                     )}>{client.total_transaction}</td>
                     <td className={clsx(
                       "whitespace-nowrap px-3 py-3",
