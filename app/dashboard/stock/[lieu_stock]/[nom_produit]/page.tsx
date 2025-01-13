@@ -1,5 +1,7 @@
 import { stockDetail } from "@/app/lib/definitions";
+import InitializeToken from "@/app/lib/initializer";
 import { getStockByLieuAndProduit, getStockByLieuAndProduit2 } from "@/app/ui/stock/get-stock";
+export const dynamic = "force-dynamic";
 
 type tParams = Promise<{ lieu_stock: string; nom_produit: string }>;
 
@@ -12,6 +14,7 @@ export default async function Page({ params }: { params: tParams }) {
   if (!stocks || stocks.length === 0) {
     return (
       <div className="p-4">
+      <InitializeToken />
         <h1 className="text-2xl font-bold mb-4">Détails du stock</h1>
         <div className="flex justify-center mb-4">
           <span className="bg-green-100 text-green-800 text-md font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Lieu: {stocksNoTransaction.lieu_stock}</span>
