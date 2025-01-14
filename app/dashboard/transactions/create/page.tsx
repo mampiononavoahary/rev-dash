@@ -4,7 +4,7 @@ import InitializeToken from '@/app/lib/initializer';
 
 export const dynamic = 'force-dynamic';
 
-const page = () => {
+export default async function page(){
   return (
     <div className='flex mt-6'>
       <InitializeToken/>
@@ -13,4 +13,3 @@ const page = () => {
   )
 }
 
-export default page
