@@ -51,9 +51,9 @@ export default function CreateTransaction() {
         const fetchedClients = await getAllClients();
         const fetchedProduits = await getIdAndName();
         const fetchDetailTransaction = await getLastDetailTransaction();
-        setClients(fetchedClients || []);
-        setProduits(fetchedProduits || []);
-        setDetailTransaction(fetchDetailTransaction || []);
+        setClients(Array.isArray(fetchedClients) ? fetchedClients : []);
+        setProduits(Array.isArray(fetchedProduits) ? fetchedProduits : []);
+        setDetailTransaction(Array.isArray(fetchDetailTransaction) ? fetchDetailTransaction : []);
         console.log({ fetchedClients, fetchedProduits, fetchDetailTransaction });
       } catch (error) {
         console.error('Erreur lors du chargement des données :', error);
@@ -155,8 +155,8 @@ export default function CreateTransaction() {
               Selectionneeer un client
             </option>
             {clients.length > 0 ? (
-              clients.map((client) => (
-                <option key={client.id_clients} value={client.id_clients}>
+              clients.map((client:any, index:number) => (
+                <option key={client.id_clients || index} value={client.id_clients}>
                   {client.nom} {client.prenom}
                 </option>
               ))
@@ -201,8 +201,8 @@ export default function CreateTransaction() {
                 Clients
               </option>
 
-              {detailTransaction?.map((detail: any) => (
-                <option key={detail.id_detail_transaction} value={detail.id_detail_transaction}>
+              {detailTransaction?.map((detail: any, index:number) => (
+                <option key={detail.id_detail_transaction || index} value={detail.id_detail_transaction}>
                   {detail.nom} {detail.prenom}
                 </option>
               )) || <option disabled>No transaction details available</option>}
@@ -218,8 +218,8 @@ export default function CreateTransaction() {
                 Produits
               </option>
 
-              {produits?.map((produit: any) => (
-                <option key={produit.id_produit_avec_detail} value={produit.id_produit_avec_detail}>
+              {produits?.map((produit: any, index:number) => (
+                <option key={produit.id_produit_avec_detail || index} value={produit.id_produit_avec_detail}>
                   {produit.nom_detail}
                 </option>
               )) || <option disabled>No products available</option>}
