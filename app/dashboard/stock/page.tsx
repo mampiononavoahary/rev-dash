@@ -3,6 +3,7 @@ import Stocks from '@/app/ui/stock/stock';
 import InitializeToken from '@/app/lib/initializer';
 import { Suspense } from 'react';
 import { CardsSkeleton } from '@/app/ui/skeletons';
+
 export const dynamic = "force-dynamic";
 
 export default async function page(){

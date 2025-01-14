@@ -1,4 +1,4 @@
-'use server';
+'use server'
 
 import { BASE_URL } from "@/app/lib/db";
 import axios from "axios";
@@ -8,8 +8,9 @@ export async function getAllStock(){
   try {
     const token = (await cookies()).get('token');
 
-    if (!token) {
+    if (!token || !token.value) {
       console.warn('Token not found');
+      return [];
     }
     const stocks = await axios.get(`${BASE_URL}/api/extract/stock`,{
       headers:{
@@ -21,7 +22,7 @@ export async function getAllStock(){
     return data;
   } catch (error) {
     console.error('Erreur lors de la récupération des stocks :', error);
-    throw error;
+    return [];
   }
 }
 
