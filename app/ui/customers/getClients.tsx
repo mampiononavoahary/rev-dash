@@ -22,7 +22,7 @@ export async function getAllClients() {
     });
 
     console.log('Données des Clients récupérées :', response.data);
-    return response.data;
+    return response.data || [];
   } catch (error) {
     console.error('Erreur lors de la récupération des clients :', error);
     return []; // Retourne une liste vide pour éviter de casser la page
@@ -51,7 +51,7 @@ export async function getClientsExtracts(
     });
 
     console.log('Données des Clients récupérées :', response.data);
-    return response.data;
+    return response.data || [];
   } catch (error) {
     console.error('Erreur lors de la récupération des clients :', error);
     return []; // Retourne une liste vide pour éviter de casser la page

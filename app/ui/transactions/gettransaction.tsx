@@ -30,7 +30,7 @@ export async function getAllTransactions(
       }
     });
 
-    return response.data;
+    return response.data || [];
   } catch (error) {
     console.error('Erreur lors de la récupération des transactions :', error);
     return []; // Retourne une liste vide pour éviter de casser la page
@@ -161,7 +161,7 @@ export async function getLastDetailTransaction() {
 
     const res = produits.data;
     console.log(res);
-    return res;
+    return res || [];
   } catch (error) {
     console.error('Erreur lors de la récupération des transactions:', error);
     throw error;
