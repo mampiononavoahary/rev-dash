@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { getLastDetailTransaction, postDetailTransaction, postDetailTransaction2 } from './gettransaction';
 import { Import } from 'lucide-react';
+import { CheckboxWithText } from './buttons';
 
 // Composant CircularProgressWithLabel
 const CircularProgressWithLabel = ({ value }: { value: number }) => (
@@ -152,10 +153,10 @@ export default function CreateTransaction() {
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="" disabled>
-              Selectionneeer un client
+              Selectionner un client
             </option>
             {clients.length > 0 ? (
-              clients.map((client:any, index:number) => (
+              clients.map((client: any, index: number) => (
                 <option key={client.id_clients || index} value={client.id_clients}>
                   {client.nom} {client.prenom}
                 </option>
@@ -201,7 +202,7 @@ export default function CreateTransaction() {
                 Clients
               </option>
 
-              {detailTransaction?.map((detail: any, index:number) => (
+              {detailTransaction?.map((detail: any, index: number) => (
                 <option key={detail.id_detail_transaction || index} value={detail.id_detail_transaction}>
                   {detail.nom} {detail.prenom}
                 </option>
@@ -218,7 +219,7 @@ export default function CreateTransaction() {
                 Produits
               </option>
 
-              {produits?.map((produit: any, index:number) => (
+              {produits?.map((produit: any, index: number) => (
                 <option key={produit.id_produit_avec_detail || index} value={produit.id_produit_avec_detail}>
                   {produit.nom_detail}
                 </option>
@@ -243,6 +244,13 @@ export default function CreateTransaction() {
               <option value="KG">KG</option>
               <option value="T">T</option>
             </select>
+            <input
+              id="prix_unitaire"
+              name="prix_unitaire"
+              placeholder="Prix"
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
             <select
               id="status"
               name="status"
@@ -271,7 +279,7 @@ export default function CreateTransaction() {
               <option value="AMBATONDRAZAKA">AMBATONDRAZAKA</option>
               <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
             </select>
-
+            <CheckboxWithText />
           </div>
         </div>
         <div className="flex flex-row justify-center gap-6 md-flex-col">

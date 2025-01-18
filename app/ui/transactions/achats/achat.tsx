@@ -12,7 +12,7 @@ export default async function Achats({query,currentPage}:{query:string,currentPa
     return (
       <div className="mt-6 flow-root">
         <div className="inline-block w-full align-middle">
-          <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+          <div className="rounded-lg bg-teal-100 p-2 md:pt-0">
             {/* Affichage pour petits écrans (moins de 1341px de largeur OU 760px de hauteur) */}
             <div className="custom-lg:block custom-sm:block xl:hidden space-y-4">
               {achats?.map((achat: Achat, index: string) => (

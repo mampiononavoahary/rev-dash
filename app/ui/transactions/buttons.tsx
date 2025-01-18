@@ -16,6 +16,7 @@ import { BASE_URL } from '@/app/lib/db';
 import { deleteTransaction } from './gettransaction';
 import { useState } from 'react';
 import { toast } from "react-toastify";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function CreateTransaction() {
   return (
@@ -27,6 +28,24 @@ export function CreateTransaction() {
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
+}
+export function CheckboxWithText() {
+  return (
+    <div className="items-top flex space-x-2">
+      <Checkbox id="terms1" />
+      <div className="grid gap-1.5 leading-none">
+        <label
+          htmlFor="terms1"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Transformation de produit validé
+        </label>
+        <p className="text-sm text-muted-foreground">
+        Unitil de coché si vous faites de vente
+        </p>
+      </div>
+    </div>
+  )
 }
 export function GoToVente(){
   return(

@@ -173,6 +173,7 @@ const formChema2 = z.object({
   id_detail_transaction: z.string().nonempty('id_detail_transaction requis'),
   quantite: z.string().nonempty('Quantité requise.'),
   unite: z.string().nonempty('Unité requise.'),
+  prix_unitaire: z.number(),
   status: z.string().nonempty('Status requis.'),
   lieu_stock: z.string().nonempty('lieu_stock requis'),
 });
@@ -180,11 +181,12 @@ const formChema2 = z.object({
 
 export async function postDetailTransaction2(formData: FormData) {
   try {
-    const { id_produit_avec_detail, id_detail_transaction, quantite, unite, status, lieu_stock } = formChema2.parse({
+    const { id_produit_avec_detail, id_detail_transaction, quantite, unite, prix_unitaire, status, lieu_stock } = formChema2.parse({
       id_produit_avec_detail: formData.get('id_produit_avec_detail'),
       id_detail_transaction: formData.get('id_detail_transaction'),
       quantite: formData.get('quantite'),
       unite: formData.get('unite'),
+      prix_unitaire: Number(formData.get('prix_unitaire')),
       status: formData.get('status'),
       lieu_stock: formData.get('lieu_stock'),
     });
@@ -201,6 +203,7 @@ export async function postDetailTransaction2(formData: FormData) {
       id_detail_transaction,
       quantite,
       unite,
+      prix_unitaire,
       status,
       lieu_stock
     },];
@@ -242,15 +245,15 @@ export async function postDetailTransaction2(formData: FormData) {
 // Supposons que deleteTransaction est une fonction qui supprime une transaction via un appel API
 export async function deleteTransaction(id_transaction: string) {
   // Exemple d'appel réseau
- const token = (await cookies()).get('token');
-    if (!token) {
-      console.warn('token introuvable dans les cookies ');
-      return null;
-    }
+  const token = (await cookies()).get('token');
+  if (!token) {
+    console.warn('token introuvable dans les cookies ');
+    return null;
+  }
   const response = await fetch(`${BASE_URL}/api/transactions/delete/${id_transaction}`, {
     method: "DELETE",
-    headers:{
-        Authorization: `Bearer ${token.value}`,
+    headers: {
+      Authorization: `Bearer ${token.value}`,
     },
   });
 

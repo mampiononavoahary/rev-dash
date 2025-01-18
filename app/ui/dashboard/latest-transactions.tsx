@@ -6,7 +6,7 @@ export default async function LatestTransaction() {
   const latesttransactions = await getLatestTransactions();
   return (
     <div className="flex w-full flex-col md:col-span-4">
-      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
+      <h2 className={`${lusitana.className} mb-2 text-xl md:text-2xl`}>
         Les trois dernier transactions
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-teal-100 p-4">

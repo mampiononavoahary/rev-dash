@@ -13,11 +13,11 @@ const iconMap = {
   sumAchat: BanknotesIcon,
   sumVente:BanknotesIcon
 };
-export default async function CardWrapper() {
-  const enter = await getAllTransactionsEnter();
-  const exit = await getAllTransactionsExit();
-  const sumEnter = await getSumTransactionsEnter();
-  const sumExit = await getSumTransactionsExit();
+export default async function CardWrapper({lieu,date}:{lieu:string,date:string}) {
+  const enter = await getAllTransactionsEnter(lieu,date);
+  const exit = await getAllTransactionsExit(lieu,date);
+  const sumEnter = await getSumTransactionsEnter(lieu,date);
+  const sumExit = await getSumTransactionsExit(lieu,date);
   const enterWithCurency = formatCurrency(sumEnter?? '0');
   const exitWithCurrency = formatCurrency(sumExit?? '0');
   return (

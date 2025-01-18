@@ -13,15 +13,20 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [succes, setSucces] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(''); 
-    setIsLoading(true); 
+    setError('');
+    setSucces('');
+    setIsLoading(true);
     try {
       await login(username, password);
-      router.push('/dashboard');
+      setSucces('Authentifié');
+      setTimeout(() => {
+        router.push('/dashboard');
+      },2000)
     } catch (err: any) {
       setError(err.message);
       setIsLoading(false);
@@ -55,7 +60,8 @@ const Login = () => {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-500 text-sm mx-auto">{error}</p>}
+      {succes && <p className="text-green-800 text-sm mx-auto">{succes}</p>}
       <Button type="submit" disabled={isLoading} className="bg-blue-400 hover:bg-blue-500">
         {isLoading ? (
           <>
