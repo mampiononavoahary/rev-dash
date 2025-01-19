@@ -46,28 +46,40 @@ export default function RevenueChart() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const data = await getPicBuyTransactions()
+        const data = await getPicBuyTransactions();
+
+        console.log("Données brutes:", JSON.stringify(data, null, 2));
+
         // Transformation des données pour correspondre au format attendu
         const formattedData = data.map((item: any) => ({
           month: item.month.trim(), // Retirer les espaces superflus
           sum: item.sum,
           monthNumber: monthToNumber(item.month),
         }))
+
+        console.log("Données formattedData:", JSON.stringify(formattedData, null, 2));
+
         // Trier les données par numéro de mois
         const sortedData = formattedData.sort((a: any, b: any) => a.monthNumber - b.monthNumber)
+
+        console.log("Données sorter:", JSON.stringify(sortedData, null, 2));
 
         // Mettre à jour l'état avec les données triées
         setChartData(sortedData)        // Calculer la tendance et le pourcentage de variation
         if (formattedData.length > 1) {
           const lastMonthData = formattedData[formattedData.length - 2]
+          console.log("Données du mois précédent :", JSON.stringify(lastMonthData, null, 2));
           const currentMonthData = formattedData[formattedData.length - 1]
+          console.log("Données du mois actuel :", JSON.stringify(currentMonthData, null, 2));
 
           const previousMonthSum = lastMonthData.sum
+          console.log(previousMonthSum)
           const currentMonthSum = currentMonthData.sum
-
+          console.log(currentMonthSum)
           if (currentMonthSum > previousMonthSum) {
             setTrend("up")
             const changePercentage = ((currentMonthSum - previousMonthSum) / previousMonthSum) * 100
+            console.log(changePercentage);
             setPercentage(changePercentage)
           } else {
             setTrend("down")
@@ -93,7 +105,7 @@ export default function RevenueChart() {
           <CardTitle>Area Chart - Stacked</CardTitle>
           <CardDescription>
             Affichage du somme total du vente par mois
-           </CardDescription>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer className="w-full h-[300px]" config={chartConfig}>
