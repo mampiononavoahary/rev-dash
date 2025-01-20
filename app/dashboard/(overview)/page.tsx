@@ -33,9 +33,7 @@ export default async function Page(props: {
       <Filter datePlaceholder="Filtrer par date" locationPlaceholder="Filtrer par lieu de stock"/>
       {/* Section des cartes */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<CardsSkeleton />}>
           <CardWrapper lieu={lieu} date={date}/>
-        </Suspense>
       </div>
 
       {/* Section des graphiques et dernières transactions */}

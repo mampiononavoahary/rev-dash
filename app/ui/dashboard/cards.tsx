@@ -48,13 +48,13 @@ export default function CardWrapper({ lieu, date }: { lieu: string, date: string
     return <div>Loading...</div>;
   }
 
-  const enterWithCurrency = formatCurrency(sumEnter ?? '0');
-  const exitWithCurrency = formatCurrency(sumExit ?? '0');
+  const enterWithCurrency = formatCurrency(sumEnter ?? 0);
+  const exitWithCurrency = formatCurrency(sumExit ?? 0);
 
   return (
     <>
-      <Card title="Nombre total de vente" value={enter} type="vente" />
-      <Card title="Nombre total d'achat" value={exit} type="achat" />
+      <Card title="Nombre total de vente" value={enter ?? 0} type="vente" />
+      <Card title="Nombre total d'achat" value={exit ?? 0} type="achat" />
       <Card title="Somme des ventes" value={enterWithCurrency} type="sumVente" />
       <Card title="Somme d'achat" value={exitWithCurrency} type="sumAchat" />
     </>
@@ -67,7 +67,7 @@ export function Card({
   type,
 }: {
   title: string;
-  value: BigInteger | string;
+  value: BigInteger | string | number;
   type: 'vente' | 'achat' | 'sumAchat' | 'sumVente';
 }) {
   const Icon = iconMap[type];
