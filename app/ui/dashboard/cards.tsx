@@ -1,3 +1,5 @@
+'use client'
+import { useState, useEffect } from "react";
 import {
   GlobeAltIcon,
   BanknotesIcon,
@@ -5,28 +7,55 @@ import {
 import { lusitana } from '@/app/ui/fonts';
 import { getAllTransactionsEnter, getAllTransactionsExit, getSumTransactionsEnter, getSumTransactionsExit } from './getAllGeneralPage';
 import { formatCurrency } from '@/app/lib/utils';
-import { string } from 'zod';
 
 const iconMap = {
   vente: GlobeAltIcon,
   achat: GlobeAltIcon,
   sumAchat: BanknotesIcon,
-  sumVente:BanknotesIcon
+  sumVente: BanknotesIcon
 };
-export default async function CardWrapper({lieu,date}:{lieu:string,date:string}) {
-  const enter = await getAllTransactionsEnter(lieu,date);
-  const exit = await getAllTransactionsExit(lieu,date);
-  const sumEnter = await getSumTransactionsEnter(lieu,date);
-  const sumExit = await getSumTransactionsExit(lieu,date);
-  const enterWithCurency = formatCurrency(sumEnter?? '0');
-  const exitWithCurrency = formatCurrency(sumExit?? '0');
+
+export default function CardWrapper({ lieu, date }: { lieu: string, date: string }) {
+  const [enter, setEnter] = useState(null);
+  const [exit, setExit] = useState(null);
+  const [sumEnter, setSumEnter] = useState(null);
+  const [sumExit, setSumExit] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const enterData = await getAllTransactionsEnter(lieu, date);
+        const exitData = await getAllTransactionsExit(lieu, date);
+        const sumEnterData = await getSumTransactionsEnter(lieu, date);
+        const sumExitData = await getSumTransactionsExit(lieu, date);
+
+        setEnter(enterData);
+        setExit(exitData);
+        setSumEnter(sumEnterData);
+        setSumExit(sumExitData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erreur lors du chargement des données :", error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [lieu, date]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const enterWithCurrency = formatCurrency(sumEnter ?? '0');
+  const exitWithCurrency = formatCurrency(sumExit ?? '0');
+
   return (
     <>
-      {/* NOTE: Uncomment this code in Chapter 9 */}
-
-       <Card title="Nombre total de vente" value={enter} type="vente" />
+      <Card title="Nombre total de vente" value={enter} type="vente" />
       <Card title="Nombre total d'achat" value={exit} type="achat" />
-      <Card title="Somme des ventes" value={enterWithCurency} type="sumVente" />
+      <Card title="Somme des ventes" value={enterWithCurrency} type="sumVente" />
       <Card title="Somme d'achat" value={exitWithCurrency} type="sumAchat" />
     </>
   );
@@ -58,3 +87,4 @@ export function Card({
     </div>
   );
 }
+

@@ -19,7 +19,7 @@ export default function Filter({ datePlaceholder, locationPlaceholder }: { dateP
       params.delete(key);
     }
     replace(`${pathname}?${params.toString()}`);
-  }, 100);
+  }, 500);
 
   return (
     <div className="flex gap-2 mb-2">
