@@ -6,7 +6,7 @@ import { strict } from 'assert';
 
 
 
-export async function getAllTransactionsEnter(location: string, date: string) {
+export async function getAllTransactionsEnterAndExit(lieu: string, date: string) {
   try {
     const token = (await cookies()).get('token');
     if (!token) {
@@ -14,12 +14,12 @@ export async function getAllTransactionsEnter(location: string, date: string) {
       return null;
     }
 
-    const transactions = await axios.get(`${BASE_URL}/api/transactions/total/enter`, {
+    const transactions = await axios.get(`${BASE_URL}/api/transactions/sum/enterandexit`, {
       headers: {
         Authorization: `Bearer ${token?.value}`,
       },
       params: {
-        location,
+        lieu,
         date,
       },
     });
@@ -33,102 +33,6 @@ export async function getAllTransactionsEnter(location: string, date: string) {
   }
 }
 
-
-
-export async function getAllTransactionsExit(
-  location: string,
-  date: string
-) {
-  try {
-    const token = (await cookies()).get('token');
-    console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
-
-    if (!token) {
-      console.warn('Token introuvable dans les cookies.');
-      return null;
-    }
-
-
-    const transactions = await axios.get(`${BASE_URL}/api/transactions/total/exit`, {
-      headers: {
-        Authorization: `Bearer ${token?.value}`,
-      },
-      params: {
-        location,
-        date
-      },
-    });
-
-    const res = transactions.data;
-    console.log("Données des transactions total sortie:", res);
-    return res;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des transactions total sortie:', error);
-    throw error;
-  }
-}
-export async function getSumTransactionsEnter(
-  lieu:string,
-  date:string
-) {
-  try {
-    const token = (await cookies()).get('token');
-    console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
-
-    if (!token) {
-      console.warn('Token introuvable dans les cookies.');
-      return null;
-    }
-
-    const transactions = await axios.get(`${BASE_URL}/api/transactions/sum/enter`, {
-      headers: {
-        Authorization: `Bearer ${token?.value}`,
-      },
-      params:{
-        lieu,
-        date
-      }
-    });
-
-    const res = transactions.data;
-    console.log("Données des transactions sum enter:", res);
-    return res;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des transactions sum enter:', error);
-    throw error;
-  }
-}
-export async function getSumTransactionsExit(
-  lieu:string,
-  date:string
-) {
-  try {
-    const token = (await cookies()).get('token');
-    console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
-
-    if (!token) {
-      console.warn('Token introuvable dans les cookies.');
-      return null;
-    }
-
-    const transactions = await axios.get(`${BASE_URL}/api/transactions/sum/exit`, {
-      headers: {
-        Authorization: `Bearer ${token?.value}`,
-      },
-      params:{
-        lieu,
-        date
-      }
-    });
-
-    const res = transactions.data;
-    console.log("Données des transactions somme sortie:", res);
-    return res;
-  } catch (error) {
-    console.error('Erreur lors de la récupération des transactions somme sortie:', error);
-    throw error;
-  }
-}
 export async function getPicBuyTransactions() {
   try {
     const token = (await cookies()).get('token');
