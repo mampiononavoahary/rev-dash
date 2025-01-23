@@ -24,9 +24,7 @@ const Login = () => {
     try {
       await login(username, password);
       setSucces('Authentifié');
-      setTimeout(() => {
-        router.push('/dashboard');
-      },2000)
+      router.push('/dashboard');
     } catch (err: any) {
       setError(err.message);
       setIsLoading(false);

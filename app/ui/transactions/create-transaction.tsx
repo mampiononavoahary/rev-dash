@@ -279,7 +279,6 @@ export default function CreateTransaction() {
               <option value="AMBATONDRAZAKA">AMBATONDRAZAKA</option>
               <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
             </select>
-            <CheckboxWithText />
           </div>
         </div>
         <div className="flex flex-row justify-center gap-6 md-flex-col">
