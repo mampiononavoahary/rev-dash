@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://gestionofstock.onrender.com', // Remplace par l'URL de ton backend
+  baseURL: 'https://gestionofstock.onrender.com', // Remplace par l'URL de ton backend
   headers: {
     'Content-Type': 'application/json',
   },
