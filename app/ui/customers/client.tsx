@@ -39,15 +39,15 @@ export default async function Client({ query, currentPage }: { query: string, cu
                       Total paye
                       <span className={clsx(
                         "whitespace-nowrap px-3 py-3",
-                        client.total_paye > 200 ? "text-green-500" : client.total_paye >= 100 ? "text-blue-500" : "text-red-500"
-                      )}>{client.total_paye}</span>
+                        client.total_vente_paye > 200 ? "text-green-500" : client.total_vente_paye >= 100 ? "text-blue-500" : "text-red-500"
+                      )}>{client.total_vente_paye}</span>
                     </p>
                     <p className="font-medium">
                       Total en attente
                       <span className={clsx(
                         "whitespace-nowrap px-3 py-3",
-                        client.total_paye < client.total_en_attente ? "text-red-500" : client.total_paye > 200 ? "text-green-500" : client.total_paye >= 100 ? "text-blue-500" : "text-red-500"
-                      )}>{client.total_en_attente}</span>
+                        client.total_vente_paye < client.total_vente_en_attente ? "text-red-500" : client.total_vente_paye > 200 ? "text-green-500" : client.total_vente_paye >= 100 ? "text-blue-500" : "text-red-500"
+                      )}>{client.total_vente_en_attente}</span>
                     </p>
                   </div>
                   <div className="flex justify-end gap-2">
@@ -65,11 +65,12 @@ export default async function Client({ query, currentPage }: { query: string, cu
                   <th scope="col" className="px-4 py-5">Nom Client</th>
                   <th scope="col" className="px-3 py-5">Prenom Client</th>
                   <th scope="col" className="px-3 py-5">Total transaction</th>
-                  <th scope="col" className="px-3 py-5">Quantité paye</th>
-                  <th scope="col" className="px-3 py-5">Quantite en attente</th>
-                  <th scope="col" className="relative py-3 pl-6 pr-3">
-                    <span className="sr-only">Modifier</span>
-                  </th>
+                  <th scope="col" className="px-3 py-5">Total de vente</th>
+                  <th scope="col" className="px-3 py-5">Q/té vente payé en KG</th>
+                  <th scope="col" className="px-3 py-5">Q/té vente en attente en KG</th>
+                  <th scope="col" className="px-3 py-5">Total d'achat</th>
+                  <th scope="col" className="px-3 py-5">Q/té achat payé en KG</th>
+                  <th scope="col" className="px-3 py-5">Q/té achat en attente en KG</th>
                 </tr>
               </thead>
               <tbody className="bg-white">
@@ -86,18 +87,31 @@ export default async function Client({ query, currentPage }: { query: string, cu
                     )}>{client.total_transaction}</td>
                     <td className={clsx(
                       "whitespace-nowrap px-3 py-3",
-                      client.total_paye < client.total_en_attente ? "text-red-500" : client.total_paye > 200 ? "text-green-500" : client.total_paye >= 100 ? "text-blue-500" : "text-red-500"
-                    )}>{client.total_paye}</td>
+                      client.total_vente > 20 ? "text-green-500" : client.total_vente >= 10 ? "text-blue-500" : "text-red-500"
+                    )}>{client.total_vente}</td>
+
                     <td className={clsx(
                       "whitespace-nowrap px-3 py-3",
-                      client.total_en_attente > 200 ? "text-red-500" : client.total_en_attente >= 100 ? "text-blue-500" : "text-green-500"
-                    )}>{client.total_en_attente}</td>
-                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                      <div className="flex justify-end gap-3">
-                        <UpdateClients id_clients={client.id_client} />
-                        <DeleteClients id_clients={client.id_client} />
-                      </div>
-                    </td>
+                      client.total_vente_paye < client.total_vente_en_attente ? "text-red-500" : client.total_vente_paye > 200 ? "text-green-500" : client.total_vente_paye >= 100 ? "text-blue-500" : "text-red-500"
+                    )}>{client.total_vente_paye}</td>
+                    <td className={clsx(
+                      "whitespace-nowrap px-3 py-3",
+                      client.total_vente_en_attente > 200 ? "text-red-500" : client.total_vente_en_attente >= 100 ? "text-blue-500" : "text-green-500"
+                    )}>{client.total_vente_en_attente}</td>
+                    <td className={clsx(
+                      "whitespace-nowrap px-3 py-3",
+                      client.total_achat > 20 ? "text-green-500" : client.total_achat >= 10 ? "text-blue-500" : "text-red-500"
+                    )}>{client.total_achat}</td>
+
+                    <td className={clsx(
+                      "whitespace-nowrap px-3 py-3",
+                      client.total_achat_paye < client.total_achat_en_attente ? "text-red-500" : client.total_achat_paye > 200 ? "text-green-500" : client.total_achat_paye >= 100 ? "text-blue-500" : "text-red-500"
+                    )}>{client.total_achat_paye}</td>
+                    <td className={clsx(
+                      "whitespace-nowrap px-3 py-3",
+                      client.total_achat_en_attente > 200 ? "text-red-500" : client.total_achat_en_attente >= 100 ? "text-blue-500" : "text-green-500"
+                    )}>{client.total_achat_en_attente}</td>
+
                   </tr>
                 ))}
               </tbody>

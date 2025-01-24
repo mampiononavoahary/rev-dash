@@ -85,8 +85,12 @@ export interface Clients {
   nom: string;
   prenom:string;
   total_transaction:number;
-  total_paye:number;
-  total_en_attente:number;
+  total_vente:number;
+  total_vente_paye:number;
+  total_vente_en_attente:number;
+  total_achat:number;
+  total_achat_paye:number;
+  total_achat_en_attente:number;
  }
 export interface Vente {
   id_transaction: string;

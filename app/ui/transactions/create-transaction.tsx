@@ -289,7 +289,7 @@ export default function CreateTransaction() {
             Créer Transaction
           </SubmitButton>
           <Link href="/dashboard/transactions">
-            <Button className="mt-6">Cancel</Button>
+            <Button className="mt-6">Annuler</Button>
           </Link>
         </div>
       </form>

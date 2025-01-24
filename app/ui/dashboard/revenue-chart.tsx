@@ -102,7 +102,7 @@ export default function RevenueChart() {
       </h2>
       <Card className="rounded-xl w-full mt-4">
         <CardHeader>
-          <CardTitle>Area Chart - Stacked</CardTitle>
+          <CardTitle>Vente  - Diagramme</CardTitle>
           <CardDescription>
             Affichage du somme total du vente par mois
           </CardDescription>
@@ -158,7 +158,7 @@ export default function RevenueChart() {
                 )}
               </div>
               <div className="flex items-center gap-2 leading-none text-muted-foreground">
-                January - June 2024
+                Janvier - Decembre
               </div>
             </div>
           </div>
