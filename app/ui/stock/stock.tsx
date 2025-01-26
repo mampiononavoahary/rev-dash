@@ -1,6 +1,6 @@
 import { stock } from "@/app/lib/definitions";
 import { getAllStock } from "./get-stock";
-import { StockDetail } from "./buttons";
+import { StockDetail, StockEdit } from "./buttons";
 export default async function Stocks() {
   const stocks = await getAllStock();
   if (!stocks) {
@@ -24,8 +24,12 @@ export default async function Stocks() {
                 <div className="flex items-center justify-between">
                   <span className="text-2xl font-bold text-gray-900 dark:text-white">{stock.quantite_stock}  {stock.unite}</span>
                 </div>
-                <StockDetail lieu_stock={stock.lieu_stock} nom_produit={stock.nom_detail}/>
               </div>
+              <div className="flex justify-between px-2 py-2">
+                <StockDetail lieu_stock={stock.lieu_stock} nom_produit={stock.nom_detail} />
+                <StockEdit lieu_stock={stock.lieu_stock} nom_produit={stock.nom_detail} />
+              </div>
+
             </div>
           ))
         }
