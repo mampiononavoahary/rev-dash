@@ -7,12 +7,12 @@ import { getLatestTransactions } from './getAllGeneralPage';
 export default async function LatestTransaction() {
   const latesttransactions = await getLatestTransactions();
   return (
-    <div className="flex w-full flex-col md:col-span-4">
+    <div className="flex flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-2 text-xl md:text-2xl`}>
         Les trois dernières transactions
       </h2>
-      <div className="flex grow flex-col justify-between rounded-xl bg-teal-100 p-4 w-full">
-        <div className="bg-white px-6">
+      <div className="flex grow flex-col justify-between rounded-xl bg-teal-100 p-2 w-full">
+        <div className="bg-white px-2 py-6">
           {latesttransactions?.map((transaction: any, i: any) => {
             return (
               <div

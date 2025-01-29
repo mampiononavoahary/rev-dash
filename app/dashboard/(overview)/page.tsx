@@ -25,7 +25,7 @@ export default async function Page(props: {
   const date = searchParams?.date || "";
 
   return (
-    <main className="p-4">
+    <main>
       <InitializeToken />
       <h1 className={`${lusitana.className} mb-2 mt-0 text-xl md:text-2xl`}>
         Tableau de bord
