@@ -10,11 +10,11 @@ const iconMap = {
   sumVente: BanknotesIcon,
 };
 
-export default async function CardWrapper({ lieu, date }: { lieu: string, date: string }) {
-  const enter = await getAllTransactionsEnterAndExit(lieu,date);
+export default async function CardWrapper({ lieu, date, dateDebut, dateFin}: { lieu: string, date: string,dateDebut:string,dateFin:string }) {
+  const enter = await getAllTransactionsEnterAndExit(lieu,date,dateDebut,dateFin);
     const enterWithCurrency = formatCurrency(enter?.sum_sortie ?? 0);  // Utilisation de l'opérateur de chaîne sécurisée
   const exitWithCurrency = formatCurrency(enter?.sum_entre ?? 0);
-
+  console.log("Données des transactions dans CardWrapper: ", enter)
   return (
     <>
       <Card title="Nombre total de vente" value={enter?.total_sortie ?? 0} type="vente" />

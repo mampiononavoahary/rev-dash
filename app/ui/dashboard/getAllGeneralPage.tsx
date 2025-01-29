@@ -6,7 +6,7 @@ import { strict, throws } from 'assert';
 
 
 
-export async function getAllTransactionsEnterAndExit(lieu: string, date: string) {
+export async function getAllTransactionsEnterAndExit(lieu: string, date: string,dateDebut:string,dateFin:string) {
   try {
     const token = (await cookies()).get('token');
     if (!token) {
@@ -21,6 +21,8 @@ export async function getAllTransactionsEnterAndExit(lieu: string, date: string)
       params: {
         lieu,
         date,
+        dateDebut,
+        dateFin
       },
     });
 

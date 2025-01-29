@@ -18,12 +18,16 @@ export default async function Page(props: {
   searchParams?: Promise<{
     location?: string;
     date?: string;
+    dateDebut?: string;
+    dateFin?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
   const lieu = searchParams?.location || "";
   const date = searchParams?.date || "";
-
+  const dateDebut = searchParams?.dateDebut || "";
+  const dateFin = searchParams?.dateFin || "";
+  
   return (
     <main>
       <InitializeToken />
@@ -31,10 +35,10 @@ export default async function Page(props: {
         Tableau de bord
       </h1>
 
-      <Filter datePlaceholder="Filtrer par date" locationPlaceholder="Filtrer par lieu de stock" />
+      <Filter datePlaceholder="Filtrer par date" locationPlaceholder="Filtrer par point de vente ou point d'achat" dateDebutPlaceholder="Date début" dateFinPlaceholder="Date fin"/>
       {/* Section des cartes */}
       <div className="grid gap-6 sm-conf:grid-cols-1 lg-conf:grid-cols-2 lg:grid-cols-4 ">
-        <CardWrapper lieu={lieu} date={date} />
+        <CardWrapper lieu={lieu} date={date} dateDebut={dateDebut} dateFin={dateFin}/>
       </div>
 
       {/* Section des graphiques et dernières transactions */}
@@ -52,7 +56,7 @@ export default async function Page(props: {
         </div>
       </div>
       <div className="w-full mt-4">
-        <StockRestantChart/>
+        <StockRestantChart />
       </div>
 
     </main>
