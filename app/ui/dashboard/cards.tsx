@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from 'react';
 import { GlobeAltIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import { getAllTransactionsEnterAndExit } from './getAllGeneralPage';
@@ -10,15 +12,40 @@ const iconMap = {
   sumVente: BanknotesIcon,
 };
 
-export default async function CardWrapper({ lieu, date, dateDebut, dateFin}: { lieu: string, date: string,dateDebut:string,dateFin:string }) {
-  const enter = await getAllTransactionsEnterAndExit(lieu,date,dateDebut,dateFin);
-    const enterWithCurrency = formatCurrency(enter?.sum_sortie ?? 0);  // Utilisation de l'opérateur de chaîne sécurisée
-  const exitWithCurrency = formatCurrency(enter?.sum_entre ?? 0);
-  console.log("Données des transactions dans CardWrapper: ", enter)
+export default function CardWrapper({ lieu, date, dateDebut, dateFin }: { lieu: string, date: string, dateDebut: string, dateFin: string }) {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const enter = await getAllTransactionsEnterAndExit(lieu, date, dateDebut, dateFin);
+        setData(enter);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, [lieu, date, dateDebut, dateFin]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center">
+        <p>Chargement...</p>
+      </div>
+    );
+  }
+
+  const enterWithCurrency = formatCurrency(data?.sum_sortie ?? 0);
+  const exitWithCurrency = formatCurrency(data?.sum_entre ?? 0);
+
   return (
     <>
-      <Card title="Nombre total de vente" value={enter?.total_sortie ?? 0} type="vente" />
-      <Card title="Nombre total d'achat" value={enter?.total_entre ?? 0} type="achat" />
+      <Card title="Nombre total de vente" value={data?.total_sortie ?? 0} type="vente" />
+      <Card title="Nombre total d'achat" value={data?.total_entre ?? 0} type="achat" />
       <Card title="Somme des ventes" value={enterWithCurrency} type="sumVente" />
       <Card title="Somme d'achat" value={exitWithCurrency} type="sumAchat" />
     </>

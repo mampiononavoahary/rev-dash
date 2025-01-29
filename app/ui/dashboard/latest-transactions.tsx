@@ -1,11 +1,42 @@
-
+"use client";
+import { useEffect, useState } from 'react';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { lusitana } from '@/app/ui/fonts';
 import { getLatestTransactions } from './getAllGeneralPage';
 
-export default async function LatestTransaction() {
-  const latesttransactions = await getLatestTransactions();
+export default function LatestTransaction() {
+  const [latestTransactions, setLatestTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchLatestTransactions = async () => {
+      try {
+        const transactions = await getLatestTransactions();
+        setLatestTransactions(transactions);
+      } catch (error) {
+        console.error('Error fetching latest transactions:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLatestTransactions();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col md:col-span-4">
+        <h2 className={`${lusitana.className} mb-2 text-xl md:text-2xl`}>
+          Les trois dernières transactions
+        </h2>
+        <div className="flex grow flex-col justify-between rounded-xl bg-teal-100 p-2 w-full">
+          <div className="bg-white px-2 py-6">Chargement...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-2 text-xl md:text-2xl`}>
@@ -13,7 +44,7 @@ export default async function LatestTransaction() {
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-teal-100 p-2 w-full">
         <div className="bg-white px-2 py-6">
-          {latesttransactions?.map((transaction: any, i: any) => {
+          {latestTransactions?.map((transaction: any, i: any) => {
             return (
               <div
                 key={transaction.id_transaction}
