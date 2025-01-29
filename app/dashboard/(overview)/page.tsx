@@ -1,4 +1,5 @@
 import RevenueChart from "@/app/ui/dashboard/revenue-chart"
+import { StockRestantChart } from "@/app/ui/dashboard/stock-restant-chart"
 import { lusitana } from "@/app/ui/fonts"
 import CardWrapper from "@/app/ui/dashboard/cards"
 import { Suspense } from "react"
@@ -22,22 +23,22 @@ export default async function Page(props: {
   const searchParams = await props.searchParams;
   const lieu = searchParams?.location || "";
   const date = searchParams?.date || "";
- 
+
   return (
-    <main className="p-6">
+    <main className="p-4">
       <InitializeToken />
-      <h1 className={`${lusitana.className} mb-2 text-xl md:text-2xl`}>
+      <h1 className={`${lusitana.className} mb-2 mt-0 text-xl md:text-2xl`}>
         Tableau de bord
       </h1>
 
-      <Filter datePlaceholder="Filtrer par date" locationPlaceholder="Filtrer par lieu de stock"/>
+      <Filter datePlaceholder="Filtrer par date" locationPlaceholder="Filtrer par lieu de stock" />
       {/* Section des cartes */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <CardWrapper lieu={lieu} date={date}/>
+      <div className="grid gap-6 sm-conf:grid-cols-1 lg-conf:grid-cols-2 lg:grid-cols-4 ">
+        <CardWrapper lieu={lieu} date={date} />
       </div>
 
       {/* Section des graphiques et dernières transactions */}
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
+      <div className="mt-6 grid grid-cols-1 lg-conf:grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <div className="col-span-1 md:col-span-4 lg:col-span-6">
           <Suspense fallback={<RevenueChartSkeleton />}>
             <RevenueChart />
@@ -50,6 +51,10 @@ export default async function Page(props: {
           </Suspense>
         </div>
       </div>
+      <div className="w-full mt-4">
+        <StockRestantChart/>
+      </div>
+
     </main>
   )
 }

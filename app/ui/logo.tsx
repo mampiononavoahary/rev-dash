@@ -1,3 +1,4 @@
+
 "use client";
 
 import { motion } from "framer-motion";
@@ -29,16 +30,16 @@ const Logo: React.FC = () => {
           position: "relative",
           width: "15vw",
           height: "15vw",
-          maxWidth: "200px",
-          maxHeight: "200px",
+          maxWidth: "120px",
+          maxHeight: "120px",
         }}
       >
         {/** Cercle SVG */}
         <motion.svg
           style={{
             position: "absolute",
-            top: "0",
-            left: "0",
+            top: 0,
+            left: 0,
             width: "100%",
             height: "100%",
           }}
@@ -55,15 +56,6 @@ const Logo: React.FC = () => {
             strokeLinecap="round"
             strokeLinejoin="round"
             initial={{ strokeDasharray: "24 10 0 0" }}
-            animate={{
-              strokeDasharray: ["15 120 25 25", "16 25 92 72", "4 250 22 22"],
-              rotate: [120, 360],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
           />
         </motion.svg>
 
@@ -76,8 +68,8 @@ const Logo: React.FC = () => {
               delay: 2.4,
               duration: 0.4,
               ease: "easeInOut",
-            }}
-          }
+            },
+          }}
           style={{
             position: "absolute",
             top: "50%",
@@ -92,11 +84,11 @@ const Logo: React.FC = () => {
           <Image
             src="/micollecte.png"
             priority
+            width={150}
+            height={150}
             quality={100}
-            layout="fill"
-            objectFit="cover"
+            style={{ objectFit: "cover" }}
             alt="Photo"
-            
           />
         </motion.div>
       </motion.div>
@@ -105,3 +97,4 @@ const Logo: React.FC = () => {
 };
 
 export default Logo;
+

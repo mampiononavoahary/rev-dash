@@ -39,11 +39,7 @@ export default async function Transactions({query,currentPage}:{query:string,cur
                       <span className="font-medium">Statut :</span> {transaction.status}
                     </p>
                   </div>
-                  <div className="flex justify-end gap-2">
-                    <UpdateTransaction id_transaction={transaction.id_transaction} />
-                    <DeleteTransaction id_transaction={transaction.id_transaction} />
-                  </div>
-                </div>
+               </div>
               ))}
             </div>
 
@@ -58,10 +54,7 @@ export default async function Transactions({query,currentPage}:{query:string,cur
                   <th scope="col" className="px-3 py-5">Quantité</th>
                   <th scope="col" className="px-3 py-5">Unité</th>
                   <th scope="col" className="px-3 py-5">Statut</th>
-                  <th scope="col" className="relative py-3 pl-6 pr-3">
-                    <span className="sr-only">Modifier</span>
-                  </th>
-                </tr>
+               </tr>
               </thead>
               <tbody className="bg-white">
                 {transactions?.map((transaction: Transaction, index: string) => (
@@ -78,13 +71,7 @@ export default async function Transactions({query,currentPage}:{query:string,cur
                     <td className="whitespace-nowrap px-3 py-3">
                       <TransactionStatus status={transaction.status} />
                     </td>
-                    <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                      <div className="flex justify-end gap-3">
-                        <UpdateTransaction id_transaction={transaction.id_transaction} />
-                        <DeleteTransaction id_transaction={transaction.id_transaction} />
-                      </div>
-                    </td>
-                  </tr>
+                 </tr>
                 ))}
               </tbody>
             </table>

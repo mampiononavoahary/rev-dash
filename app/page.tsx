@@ -3,8 +3,8 @@ import Login from './ui/form/login';
 
 export default function Page() {
   return (
-    <main className="flex min-h-screen flex-col p-6">
-      <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
+    <main className="flex min-h-screen flex-col p-4">
+      <div className="flex grow flex-col gap-4 md:flex-row">
         <div className="flex flex-col justify-center gap-2 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20 bg-custom-bg bg-cover bg-center">
           <h1 className='flex justify-center text-3xl font-semibold text-center'>Bienvenue chez Mi-Kôlecta</h1>
             <Photo/>

@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { BASE_URL } from '../../lib/db';
 import { cookies } from 'next/headers';
-import { strict } from 'assert';
+import { strict, throws } from 'assert';
 
 
 
@@ -78,6 +78,27 @@ export async function getLatestTransactions() {
     return res;
   } catch (error) {
     console.error('Erreur lors de la récupération des 6 dernier transactions:', error);
+    throw error;
+  }
+}
+export async function getStockRemaining(){
+  try {
+    const token = (await cookies()).get('token');
+    
+    if(!token){
+      console.warn('Token introuvable dans les cookies. ');
+      return null;
+    }
+    const stockRemaining = await axios.get(`${BASE_URL}/api/stock/remaining`,{
+      headers:{
+        Authorization: `Bearer ${token?.value}`,
+      },
+    });
+    const res = stockRemaining.data;
+    console.log(res);
+    return res;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des stock restants.", error);
     throw error;
   }
 }

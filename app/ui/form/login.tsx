@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useAuth } from "@/app/lib/userContext";
@@ -27,8 +28,6 @@ const Login = () => {
       router.push('/dashboard');
     } catch (err: any) {
       setError(err.message);
-      setIsLoading(false);
-    } finally {
       setIsLoading(false);
     }
   };

@@ -53,7 +53,7 @@ export default function RevenueChart() {
         // Transformation des données pour correspondre au format attendu
         const formattedData = data.map((item: any) => ({
           month: item.month.trim(), // Retirer les espaces superflus
-          sum: item.sum,
+          somme: item.sum,
           monthNumber: monthToNumber(item.month),
         }))
 
@@ -72,9 +72,9 @@ export default function RevenueChart() {
           const currentMonthData = formattedData[formattedData.length - 1]
           console.log("Données du mois actuel :", JSON.stringify(currentMonthData, null, 2));
 
-          const previousMonthSum = lastMonthData.sum
+          const previousMonthSum = lastMonthData.somme
           console.log(previousMonthSum)
-          const currentMonthSum = currentMonthData.sum
+          const currentMonthSum = currentMonthData.somme
           console.log(currentMonthSum)
           if (currentMonthSum > previousMonthSum) {
             setTrend("up")
@@ -102,7 +102,7 @@ export default function RevenueChart() {
       </h2>
       <Card className="rounded-xl w-full mt-4">
         <CardHeader>
-          <CardTitle>Vente  - Diagramme</CardTitle>
+          <CardTitle>Vente  - Graphique</CardTitle>
           <CardDescription>
             Affichage du somme total du vente par mois
           </CardDescription>
@@ -131,7 +131,7 @@ export default function RevenueChart() {
                 content={<ChartTooltipContent indicator="dot" />}
               />
               <Area
-                dataKey="sum"
+                dataKey="somme"
                 type="natural"
                 fill="var(--color-mobile)"
                 fillOpacity={0.4}

@@ -22,6 +22,8 @@ const config: Config = {
       screens: {
         'custom-lg': { 'raw': '(max-width: 1341px)' },
         'custom-sm': { 'raw': '(max-height: 760px)' },
+        'lg-conf':{'raw': '(max-width:1110px)'},
+        'sm-conf':{'raw': '(max-width:433px)'},
       },
       colors: {
         blue: {
