@@ -1,33 +1,130 @@
 'use client'
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { jwtDecode } from 'jwt-decode';
 import { CreateUser } from './user-api';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+
+interface DecodedToken {
+  role: string;
+}
+
+interface UserFormData {
+  nom: string;
+  prenom: string;
+  contact: string;
+  address: string;
+  image: string;
+  role: string;
+  username: string;
+  password: string;
+}
 
 export default function CreateUsers() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [formData, setFormData] = useState<UserFormData>({
+    nom: '',
+    prenom: '',
+    contact: '',
+    address: '',
+    image: '',
+    role: 'USER',
+    username: '',
+    password: '',
+  });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [repeatPassword, setRepeatPassword] = useState('');
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded: DecodedToken = jwtDecode(token);
+        setUserRole(decoded.role);
+
+        if (decoded.role !== 'ADMIN') {
+          toast.error("Accès refusé : vous n'êtes pas administrateur");
+          router.push('/dashboard');
+        }
+      } catch (error) {
+        console.error("Erreur de décodage du token :", error);
+        router.push('/dashboard');
+      }
+    } else {
+      router.push('/dashboard');
+    }
+  }, [router]);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleRepeatPasswordVisibility = () => setShowRepeatPassword(!showRepeatPassword);
 
-  return (
-    <form className="max-w-md mx-auto mt-6" action={async (formData) => {
-      const result = await CreateUser(formData);
-      if (result.success) {
-        toast.success('utilisateur creer avec succes');
-      } else {
-        toast.error('Erreur lors de la creation d\'\'un');
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    if (formData.password !== repeatPassword) {
+      toast.error('Les mots de passe ne correspondent pas');
+      return;
+    }
+
+    if (!imageFile) {
+      toast.error('Veuillez sélectionner une image');
+      return;
+    }
+
+    // Créer un objet FormData et y ajouter toutes les données
+    const formDataToSend = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== 'image') { // Ne pas ajouter l'image ici
+        formDataToSend.append(key, value);
       }
-    }}
-    >
+    });
+    // Ajouter le fichier image séparément
+    formDataToSend.append('image', imageFile);
+
+    try {
+      const result = await CreateUser(formDataToSend);
+      if (result.success) {
+        toast.success('Utilisateur créé avec succès');
+        router.push('/dashboard/users');
+      } else {
+        toast.error("Erreur lors de la création de l'utilisateur");
+      }
+    } catch (error) {
+      toast.error("Une erreur est survenue");
+      console.error(error);
+    }
+  };
+
+  return userRole === 'ADMIN' ? (
+    <form className="max-w-md mx-auto mt-6" onSubmit={handleSubmit}>
       <div className="grid md:grid-cols-2 md:gap-6">
         <div className="relative z-0 w-full mb-5 group">
           <input
             type="text"
             name="nom"
             id="nom"
+            value={formData.nom}
+            onChange={handleInputChange}
             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
             required
@@ -44,6 +141,8 @@ export default function CreateUsers() {
             type="text"
             name="prenom"
             id="prenom"
+            value={formData.prenom}
+            onChange={handleInputChange}
             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
             required
@@ -63,6 +162,8 @@ export default function CreateUsers() {
             type="text"
             name="contact"
             id="contact"
+            value={formData.contact}
+            onChange={handleInputChange}
             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
             required
@@ -79,6 +180,8 @@ export default function CreateUsers() {
             type="text"
             name="address"
             id="address"
+            value={formData.address}
+            onChange={handleInputChange}
             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
             required
@@ -97,9 +200,11 @@ export default function CreateUsers() {
           type="file"
           name="image"
           id="image"
+          onChange={handleImageChange}
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           placeholder=" "
           required
+          accept="image/*"
         />
         <label
           htmlFor="image"
@@ -109,12 +214,13 @@ export default function CreateUsers() {
         </label>
       </div>
 
-
       <div className="relative z-0 w-full mb-5 group">
         <input
           type="text"
           name="username"
           id="username"
+          value={formData.username}
+          onChange={handleInputChange}
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           placeholder=" "
           required
@@ -126,11 +232,14 @@ export default function CreateUsers() {
           Nom d'utilisateur
         </label>
       </div>
+
       <div className="relative z-0 w-full mb-5 group">
         <input
           type={showPassword ? 'text' : 'password'}
           name="password"
           id="password"
+          value={formData.password}
+          onChange={handleInputChange}
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           placeholder=" "
           required
@@ -155,6 +264,8 @@ export default function CreateUsers() {
           type={showRepeatPassword ? 'text' : 'password'}
           name="repeat_password"
           id="floating_repeat_password"
+          value={repeatPassword}
+          onChange={(e) => setRepeatPassword(e.target.value)}
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
           placeholder=" "
           required
@@ -175,20 +286,21 @@ export default function CreateUsers() {
       </div>
 
       <div className="relative z-0 w-full mb-5 group">
-        <label className="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400 mt-4">Rôle d'utilisateur</label>
+        <label className="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400 mt-4">
+          Rôle d'utilisateur
+        </label>
         <select
           id="role"
           name="role"
-          defaultValue=""
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg"
+          value={formData.role}
+          onChange={handleInputChange}
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         >
-          <option value="" disabled>
-            Rôle
-          </option>
           <option value="USER">USER</option>
           <option value="ADMIN">ADMIN</option>
         </select>
       </div>
+
       <div className="flex gap-4 justify-center">
         <button
           type="submit"
@@ -198,6 +310,7 @@ export default function CreateUsers() {
         </button>
         <Link href="/dashboard/users">
           <button
+            type="button"
             className="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
           >
             Annuler
@@ -205,6 +318,5 @@ export default function CreateUsers() {
         </Link>
       </div>
     </form>
-  );
-};
-
+  ) : null;
+}

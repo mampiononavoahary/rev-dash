@@ -1,10 +1,9 @@
 "use client";
-
 import SideNav from "@/app/ui/dashboard/sidenav";
 import { useAuth } from "@/app/lib/userContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const experimental_ppr = true;
@@ -19,15 +18,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const token = verify();
 
     if (!token) {
-      toast.error(
-        "Votre session a expiré. Vous allez être redirigé vers la page de connexion."
-      );
-
       setIsRedirecting(true);
 
-      setTimeout(() => {
         router.push("/"); // Redirection vers la page de connexion
-      }, 2000);
     }
   }, [router, verify]);
 

@@ -23,27 +23,76 @@ export default function Invoice() {
     fetchData();
   }, []);
 
+
   const handlePrint = (id: string) => {
-    const invoiceElement = document.getElementById(id);
-    console.log(id);
-    if (!invoiceElement) {
-      console.error(`L'élément avec l'ID '${id}' est introuvable.`);
-      toast.error("Impossible de trouver l'élément de la facture à imprimer.");
-      return;
-    }
+  const invoice = facture.find((inv) => `invoice-${facture.indexOf(inv)}` === id);
+  if (!invoice || !invoice.lignes_facture) {
+    toast.error("Données de facture incomplètes.");
+    return;
+  }
 
-    const originalContents = document.body.innerHTML;
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    toast.error("Impossible d'ouvrir la fenêtre d'impression.");
+    return;
+  }
 
-    // Masquer tout le contenu sauf la facture
-    document.body.innerHTML = invoiceElement.outerHTML;
+  const printableHTML = `
+    <html>
+      <head>
+        <title>Facture #${invoice.id_facture}</title>
+        <style>
+          /* Styles ici */
+        </style>
+      </head>
+      <body>
+        <div class="invoice-container">
+          <h2>Facture #${invoice.id_facture}</h2>
+          <p>Date: ${invoice.date_de_transaction}</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Unité</th>
+                <th>Prix</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${invoice.lignes_facture
+                ?.map(
+                  (ligne: any) => `
+                    <tr>
+                      <td>${ligne.produit}</td>
+                      <td>${ligne.quantite}</td>
+                      <td>${ligne.unite}</td>
+                      <td>${ligne.prix}</td>
+                      <td>${ligne.total}</td>
+                    </tr>
+                  `
+                )
+                .join('')}
+            </tbody>
+          </table>
+          <p>Total: ${invoice.lignes_facture?.reduce(
+            (acc: number, ligne: any) => acc + ligne.total,
+            0
+          ) ?? 0} Ariary</p>
+        </div>
+      </body>
+    </html>
+  `;
 
-    window.print();
+  printWindow.document.open();
+  printWindow.document.write(printableHTML);
+  printWindow.document.close();
 
-    // Restaurer le contenu original de la page après l'impression
-    document.body.innerHTML = originalContents;
-    window.location.reload(); // Recharge la page pour réappliquer les styles et scripts
+  printWindow.onload = () => {
+    printWindow.print();
+    printWindow.close();
   };
-
+};
   const handleDownload = async (id: string) => {
     const invoiceElement = document.getElementById(id);
     if (!invoiceElement) {

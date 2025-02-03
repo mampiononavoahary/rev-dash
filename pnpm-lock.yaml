@@ -75,6 +75,9 @@ importers:
       html2canvas:
         specifier: ^1.4.1
         version: 1.4.1
+      js-cookie:
+        specifier: ^3.0.5
+        version: 3.0.5
       jspdf:
         specifier: ^2.5.2
         version: 2.5.2
@@ -1429,8 +1432,8 @@ packages:
   electron-to-chromium@1.4.789:
     resolution: {integrity: sha512-0VbyiaXoT++Fi2vHGo2ThOeS6X3vgRCWrjPeO2FeIAWL6ItiSJ9BqlH8LfCXe3X1IdcG+S0iLoNaxQWhfZoGzQ==}
 
-  emitter@http://github.com/component/emitter/archive/1.0.1.tar.gz:
-    resolution: {tarball: http://github.com/component/emitter/archive/1.0.1.tar.gz}
+  emitter@https://codeload.github.com/sindresorhus/component-emitter/tar.gz/refs/tags/1.0.1:
+    resolution: {tarball: https://codeload.github.com/sindresorhus/component-emitter/tar.gz/refs/tags/1.0.1}
     version: 1.0.1
 
   emoji-regex@8.0.0:
@@ -1613,8 +1616,8 @@ packages:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
     deprecated: Glob versions prior to v9 are no longer supported
 
-  global@https://github.com/component/global/archive/v2.0.1.tar.gz:
-    resolution: {tarball: https://github.com/component/global/archive/v2.0.1.tar.gz}
+  global@https://codeload.github.com/component/global/tar.gz/refs/tags/v2.0.1:
+    resolution: {tarball: https://codeload.github.com/component/global/tar.gz/refs/tags/v2.0.1}
     version: 2.0.1
 
   globals@11.12.0:
@@ -1737,6 +1740,10 @@ packages:
 
   jose@5.4.1:
     resolution: {integrity: sha512-U6QajmpV/nhL9SyfAewo000fkiRQ+Yd2H0lBxJJ9apjpOgkOcBQJWOrMo917lxLptdS/n/o/xPzMkXhF46K8hQ==}
+
+  js-cookie@3.0.5:
+    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
+    engines: {node: '>=14'}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -2747,8 +2754,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  xmlhttprequest@https://github.com/LearnBoost/node-XMLHttpRequest/archive/0f36d0b5ebc03d85f860d42a64ae9791e1daa433.tar.gz:
-    resolution: {tarball: https://github.com/LearnBoost/node-XMLHttpRequest/archive/0f36d0b5ebc03d85f860d42a64ae9791e1daa433.tar.gz}
+  xmlhttprequest@https://codeload.github.com/LearnBoost/node-XMLHttpRequest/tar.gz/0f36d0b5ebc03d85f860d42a64ae9791e1daa433:
+    resolution: {tarball: https://codeload.github.com/LearnBoost/node-XMLHttpRequest/tar.gz/0f36d0b5ebc03d85f860d42a64ae9791e1daa433}
     version: 1.5.0
     engines: {node: '>=0.4.0'}
 
@@ -3951,7 +3958,7 @@ snapshots:
 
   electron-to-chromium@1.4.789: {}
 
-  emitter@http://github.com/component/emitter/archive/1.0.1.tar.gz:
+  emitter@https://codeload.github.com/sindresorhus/component-emitter/tar.gz/refs/tags/1.0.1:
     dependencies:
       indexof: 0.0.1
 
@@ -3971,7 +3978,7 @@ snapshots:
       parseqs: 0.0.2
       parseuri: 0.0.2
       ws: 0.4.31(bufferutil@4.0.8)(utf-8-validate@6.0.3)
-      xmlhttprequest: https://github.com/LearnBoost/node-XMLHttpRequest/archive/0f36d0b5ebc03d85f860d42a64ae9791e1daa433.tar.gz
+      xmlhttprequest: https://codeload.github.com/LearnBoost/node-XMLHttpRequest/tar.gz/0f36d0b5ebc03d85f860d42a64ae9791e1daa433
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -4180,7 +4187,7 @@ snapshots:
       once: 1.4.0
       path-is-absolute: 1.0.1
 
-  global@https://github.com/component/global/archive/v2.0.1.tar.gz: {}
+  global@https://codeload.github.com/component/global/tar.gz/refs/tags/v2.0.1: {}
 
   globals@11.12.0: {}
 
@@ -4192,7 +4199,7 @@ snapshots:
 
   has-cors@1.0.3:
     dependencies:
-      global: https://github.com/component/global/archive/v2.0.1.tar.gz
+      global: https://codeload.github.com/component/global/tar.gz/refs/tags/v2.0.1
 
   has-unicode@2.0.1: {}
 
@@ -4288,6 +4295,8 @@ snapshots:
   jiti@1.21.6: {}
 
   jose@5.4.1: {}
+
+  js-cookie@3.0.5: {}
 
   js-tokens@4.0.0: {}
 
@@ -4992,7 +5001,7 @@ snapshots:
   socket.io-parser@2.1.2:
     dependencies:
       debug: 0.7.4
-      emitter: http://github.com/component/emitter/archive/1.0.1.tar.gz
+      emitter: https://codeload.github.com/sindresorhus/component-emitter/tar.gz/refs/tags/1.0.1
       isarray: 0.0.1
       json3: 3.2.6
     transitivePeerDependencies:
@@ -5001,7 +5010,7 @@ snapshots:
   socket.io-parser@2.2.0:
     dependencies:
       debug: 0.7.4
-      emitter: http://github.com/component/emitter/archive/1.0.1.tar.gz
+      emitter: https://codeload.github.com/sindresorhus/component-emitter/tar.gz/refs/tags/1.0.1
       isarray: 0.0.1
       json3: 3.2.6
     transitivePeerDependencies:
@@ -5309,7 +5318,7 @@ snapshots:
       bufferutil: 4.0.8
       utf-8-validate: 6.0.3
 
-  xmlhttprequest@https://github.com/LearnBoost/node-XMLHttpRequest/archive/0f36d0b5ebc03d85f860d42a64ae9791e1daa433.tar.gz: {}
+  xmlhttprequest@https://codeload.github.com/LearnBoost/node-XMLHttpRequest/tar.gz/0f36d0b5ebc03d85f860d42a64ae9791e1daa433: {}
 
   xtend@4.0.2: {}
 

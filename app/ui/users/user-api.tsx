@@ -2,7 +2,8 @@
 import { BASE_URL } from "@/app/lib/db";
 import axios from "axios";
 import { cookies } from "next/headers";
-import { object, z, ZodError } from "zod"
+import {jwtDecode} from "jwt-decode";
+import {z, ZodError } from "zod"
 const formSchema = z.object({
   nom: z.string().nonempty('nom requis'),
   prenom: z.string().nonempty('prenom requis'),
@@ -78,6 +79,57 @@ export async function CreateUser(formdata: FormData) {
       success: false,
       error: error.response?.data?.message || error.message,
     };
+  }
+}
+
+
+
+export async function getAllUsers() {
+  try {
+    const tokenCookie = (await cookies()).get("token");
+
+    if (!tokenCookie || !tokenCookie.value) {
+      return { success: false, error: "Token introuvable ou invalide." };
+    }
+
+    const token = tokenCookie.value;
+
+    let role = null;
+    try {
+      const decodedToken: any = jwtDecode(token);
+      role = decodedToken?.role || null;
+      console.log(role)
+    } catch (err) {
+      console.error("Erreur lors du décodage du token :", err);
+      return { success: false, error: "Token invalide." };
+    }
+
+    if (role !== "ADMIN") {
+      return {
+        success: false,
+        error: "Accès refusé. Vous n'avez pas les permissions nécessaires.",
+      };
+    }
+
+    const response = await axios.get(`${BASE_URL}/api/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return { success: true, data: response.data };
+  } catch (error: any) {
+    console.error("Erreur lors de la récupération des utilisateurs :", error);
+
+    if (error.response?.status === 403) {
+      return {
+        success: false,
+        error:
+          "Vous n'avez pas les permissions nécessaires pour voir la liste des utilisateurs.",
+      };
+    }
+
+    return { success: false, error: "Erreur lors du chargement des utilisateurs." };
   }
 }
 
