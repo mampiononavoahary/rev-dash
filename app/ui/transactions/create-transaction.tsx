@@ -9,11 +9,8 @@ import { SubmitButton } from './submit_button';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
-import { getLastDetailTransaction, postDetailTransaction, postDetailTransaction2 } from './gettransaction';
-import { Import } from 'lucide-react';
-import { CheckboxWithText } from './buttons';
+import { createDetailAndTransaction } from './gettransaction';
 
-// Composant CircularProgressWithLabel
 const CircularProgressWithLabel = ({ value }: { value: number }) => (
   <Box position="relative" display="inline-flex">
     <CircularProgress variant="determinate" value={value} />
@@ -37,12 +34,17 @@ const CircularProgressWithLabel = ({ value }: { value: number }) => (
 export default function CreateTransaction() {
   const [clients, setClients] = useState<any[]>([]);
   const [produits, setProduits] = useState<any[]>([]);
-  const [detailTransaction, setDetailTransaction] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [produitsAjoutes, setProduitsAjoutes] = useState<any[]>([]);
+  const [produitId, setProduitId] = useState('');
+  const [quantite, setQuantite] = useState('');
+  const [unite, setUnite] = useState('');
+  const [lieuStock, setLieuStock] = useState('');
+  const [status, setStatus] = useState('');
+  const [prixUnitaire, setPrixUnitaire] = useState('');
 
   useEffect(() => {
-    // Simule la progression pendant le chargement
     const interval = setInterval(() => {
       setProgress((prev) => (prev >= 100 ? 0 : prev + 10));
     }, 800);
@@ -51,80 +53,106 @@ export default function CreateTransaction() {
       try {
         const fetchedClients = await getAllClients();
         const fetchedProduits = await getIdAndName();
-        const fetchDetailTransaction = await getLastDetailTransaction();
-        setClients(Array.isArray(fetchedClients) ? fetchedClients : []);
-        setProduits(Array.isArray(fetchedProduits) ? fetchedProduits : []);
-        setDetailTransaction(Array.isArray(fetchDetailTransaction) ? fetchDetailTransaction : []);
-        console.log({ fetchedClients, fetchedProduits, fetchDetailTransaction });
+        setClients(fetchedClients);
+        setProduits(fetchedProduits);
       } catch (error) {
         console.error('Erreur lors du chargement des données :', error);
         toast.error('Erreur lors du chargement des données.');
       } finally {
         setLoading(false);
-        clearInterval(interval); // Arrête la progression une fois les données chargées
+        clearInterval(interval);
       }
     };
 
     fetchData();
 
-    return () => clearInterval(interval); // Nettoie l'intervalle si le composant est démonté
+    return () => clearInterval(interval);
   }, []);
 
-  if (loading) {
+  const getNomProduit = (id: string) => {
+    const produit = produits.find((p) => p.id_produit_avec_detail === id);
+    return produit ? produit.nom_detail : 'Produit inconnu';
+  };
+
+  const handleAddProduit = () => {
+    if (!produitId || !quantite || !unite || !prixUnitaire || !lieuStock || !status) {
+      toast.error('Tous les champs doivent être remplis.');
+      return;
+    }
+
+    const newProduit = {
+      id_produit_avec_detail: produitId,
+      quantite,
+      unite,
+      status,
+      lieu_stock: lieuStock,
+      prix_unitaire: Number(prixUnitaire), // Convert to number
+    };
+
+    setProduitsAjoutes((prev) => [...prev, newProduit]);
+    setProduitId('');
+    setQuantite('');
+    setUnite('');
+    setStatus('');
+    setLieuStock('');
+    setPrixUnitaire('');
+  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Create FormData for detailData
+    const detailFormData = new FormData();
+    detailFormData.append('type_de_transaction', (e.target as HTMLFormElement).type_de_transaction.value);
+    detailFormData.append('lieu_de_transaction', (e.target as HTMLFormElement).lieu_de_transaction.value);
+    detailFormData.append('id_client', (e.target as HTMLFormElement).id_client.value);
+
+    // Create an array of transaction data
+    const transactionRequests = produitsAjoutes.map((produit) => ({
+      id_produit_avec_detail: produit.id_produit_avec_detail,
+      quantite: produit.quantite,
+      unite: produit.unite,
+      prix_unitaire: produit.prix_unitaire,
+      status: produit.status,
+      lieu_stock: produit.lieu_stock,
+    }));
+
+    try {
+      const result = await createDetailAndTransaction(detailFormData, transactionRequests);
+      if (result?.success) {
+        toast.success('Détail transaction créé avec succès');
+        setProduitsAjoutes([]); // Réinitialiser la liste des produits ajoutés
+      } else {
+        toast.error(result?.error || 'Erreur lors de la création du détail transaction');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création de la transaction', error);
+      toast.error('Erreur lors de la création de la transaction');
+    }
+  }; if (loading) {
     return (
       <div className="mx-auto">
         <CircularProgressWithLabel value={progress} />
       </div>
     );
   }
-  return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-md mt-10">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Créer une Transaction
-      </h2>
-      <form className="space-y-4" action={async (formData) => {
-        const result = await postDetailTransaction(formData);
-        if (result?.success) {
-          toast.success('Détail transactions creer avec succes');
-          setTimeout(() => {
-            window.location.reload(); // Redirection vers la page de connexion
-          }, 2000);
 
-        } else {
-          toast.error('Erreur lors de la creation de détail transaction');
-        }
-      }}>
+  return (
+    <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-md mt-10">
+      <h2 className="text-2xl font-bold mb-6 text-center">Créer une Transaction</h2>
+      <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block font-medium mb-1 text-center p-2 bg-emerald-200 rounded-full">
-              Type de transactions:
-            </label>
-            <select
-              id="type_de_transaction"
-              name="type_de_transaction"
-              defaultValue=""
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="" disabled>
-                type de transaction
-              </option>
+            <label className="block font-medium mb-1 text-center p-2 bg-emerald-200 rounded-full">Type de transaction:</label>
+            <select id="type_de_transaction" name="type_de_transaction" defaultValue="" className="w-full p-2 border border-gray-300 rounded-md">
+              <option value="" disabled>Type de transaction</option>
               <option value="SORTIE">VENTE</option>
               <option value="ENTRE">ACHAT</option>
             </select>
           </div>
           <div>
-            <label className="block font-medium mb-1 text-center p-2 bg-emerald-200 rounded-full">
-              Lieu de Transaction:
-            </label>
-            <select
-              id="lieu_de_transaction"
-              name="lieu_de_transaction"
-              defaultValue=""
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="" disabled>
-                Lieu de transaction
-              </option>
+            <label className="block font-medium mb-1 text-center p-2 bg-emerald-200 rounded-full">Lieu de Transaction:</label>
+            <select id="lieu_de_transaction" name="lieu_de_transaction" defaultValue="" className="w-full p-2 border border-gray-300 rounded-md">
+              <option value="" disabled>Lieu de transaction</option>
               <option value="ITAOSY">ITAOSY</option>
               <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
               <option value="AMPASIKA">AMPASIKA</option>
@@ -132,146 +160,85 @@ export default function CreateTransaction() {
               <option value="ANOSIZATO">ANOSIZATO</option>
             </select>
           </div>
-          {/*<div>
-            <label className="block font-medium mb-1">
-              Date de Transaction:
-            </label>
-            <input
-              type="datetime-local"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>*/}
         </div>
         <div>
-          <label className="block font-medium mb-1 text-center p-2 rounded-full bg-emerald-200">
-            Nom Clients:
-          </label>
-          <select
-            id="id_client"
-            name="id_client"
-            defaultValue=""
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" disabled>
-              Selectionner un client
-            </option>
+          <label className="block font-medium mb-1 text-center p-2 rounded-full bg-emerald-200">Nom Clients:</label>
+          <select id="id_client" name="id_client"defaultValue="" className="w-full p-2 border border-gray-300 rounded-md">
+            <option value="" disabled>Sélectionner un client</option>
             {clients.length > 0 ? (
-              clients.map((client: any, index: number) => (
-                <option key={client.id_clients || index} value={client.id_clients}>
+              clients.map((client: any) => (
+                <option key={client.id_clients} value={client.id_clients}>
                   {client.nom} {client.prenom}
                 </option>
               ))
             ) : (
-              <option disabled>Aucun clients</option>
+              <option disabled>Aucun client</option>
             )}
           </select>
         </div>
-        <div className="flex justify-center">
-          <SubmitButton
-            type="submit"
-            className="mt-6 w-200 p-3 bg-yellow-500 text-gray-500 rounded-md hover:bg-yellow-400 "
-          >
-            Créer Détail Transaction
-          </SubmitButton>
-        </div>
-      </form>
-      <form action={async (formData) => {
-        const result = await postDetailTransaction2(formData);
-        if (result?.success) {
-          toast.success('Transaction créée avec succès');
-        } else {
-          if (result?.error === 'Quantité insuffisante en stock.') {
-            toast.error('La quantité demandée dépasse le stock disponible.');
-          } else if (result?.error === 'Le lieu de stock spécifié est introuvable.') {
-            toast.error('Le lieu de stock n\'existe pas.');
-          } else {
-            toast.error(result?.error || 'Erreur lors de la création de la transaction');
-          }
-        }
-      }}>
-        <div className="grid gap-4 grid-cols-2gap-x-6">
+        <div>
           <h4 className="text-lg font-semibold mb-4 text-center mt-2">Ajouter des Produits</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <select
-              id="id_detail_transaction"
-              name="id_detail_transaction"
-              defaultValue=""
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="" disabled>
-                Clients
-              </option>
-
-              {detailTransaction?.map((detail: any, index: number) => (
-                <option key={detail.id_detail_transaction || index} value={detail.id_detail_transaction}>
-                  {detail.nom} {detail.prenom}
-                </option>
-              )) || <option disabled>No transaction details available</option>}
-
-            </select>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2">
             <select
               id="id_produit_avec_detail"
               name="id_produit_avec_detail"
-              defaultValue=""
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={produitId}
+              onChange={(e) => setProduitId(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
             >
-              <option value="" disabled>
-                Produits
-              </option>
-
-              {produits?.map((produit: any, index: number) => (
-                <option key={produit.id_produit_avec_detail || index} value={produit.id_produit_avec_detail}>
+              <option value="" disabled>Produits</option>
+              {produits?.map((produit: any) => (
+                <option key={produit.id_produit_avec_detail} value={produit.id_produit_avec_detail}>
                   {produit.nom_detail}
                 </option>
-              )) || <option disabled>No products available</option>}
-
+              ))}
             </select>
             <input
               id="quantite"
               name="quantite"
+              value={quantite}
+              onChange={(e) => setQuantite(e.target.value)}
               placeholder="Quantité"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md"
             />
             <select
               id="unite"
               name="unite"
-              defaultValue=""
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={unite}
+              onChange={(e) => setUnite(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
             >
-              <option value="" disabled>
-                Unité
-              </option>
+              <option value="" disabled>Unité</option>
               <option value="KG">KG</option>
               <option value="T">T</option>
             </select>
             <input
               id="prix_unitaire"
               name="prix_unitaire"
+              value={prixUnitaire}
+              onChange={(e) => setPrixUnitaire(e.target.value)}
               placeholder="Prix"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md"
             />
-
             <select
               id="status"
               name="status"
-              defaultValue=""
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
             >
-              <option value="" disabled>
-                Status
-              </option>
+              <option value="" disabled>Status</option>
               <option value="PAYE">PAYE</option>
               <option value="EN_ATTENTE">EN ATTENTE</option>
             </select>
             <select
               id="lieu_stock"
               name="lieu_stock"
-              defaultValue=""
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={lieuStock}
+              onChange={(e) => setLieuStock(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md"
             >
-              <option value="" disabled>
-                Lieu de stock
-              </option>
+              <option value="" disabled>Lieu de stock</option>
               <option value="ITAOSY">ITAOSY</option>
               <option value="ANOSIZATO">ANOSIZATO</option>
               <option value="AMPASIKA">AMPASIKA</option>
@@ -280,8 +247,46 @@ export default function CreateTransaction() {
               <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
             </select>
           </div>
+          <button
+            type="button"
+            onClick={handleAddProduit}
+            className="mt-4 p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Ajouter Produit
+          </button>
+          <div className="mt-4">
+            <h4 className="text-lg font-semibold text-center mb-2">Produits Ajoutés</h4>
+            {produitsAjoutes.length > 0 ? (
+              <table className="w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="p-2 border border-gray-300">Point de vente</th>
+                    <th className="p-2 border border-gray-300">Produit</th>
+                    <th className="p-2 border border-gray-300">Quantité</th>
+                    <th className="p-2 border border-gray-300">Unité</th>
+                    <th className="p-2 border border-gray-300">Prix</th>
+                    <th className="p-2 border border-gray-300">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {produitsAjoutes.map((produit, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="p-2 border border-gray-300">{produit.lieu_stock}</td>
+                      <td className="p-2 border border-gray-300">{getNomProduit(produit.id_produit_avec_detail)}</td>
+                      <td className="p-2 border border-gray-300">{produit.quantite}</td>
+                      <td className="p-2 border border-gray-300">{produit.unite}</td>
+                      <td className="p-2 border border-gray-300">{produit.prix_unitaire}</td>
+                      <td className="p-2 border border-gray-300">{produit.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-center text-gray-500">Aucun produit ajouté.</p>
+            )}
+          </div>
         </div>
-        <div className="flex flex-row justify-center gap-6 md-flex-col">
+        <div className="flex flex-row justify-center gap-6">
           <SubmitButton
             className="mt-6 p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600"
             type="submit"
@@ -295,5 +300,4 @@ export default function CreateTransaction() {
       </form>
     </div>
   );
-};
-
+}

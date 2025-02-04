@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import { z, ZodError } from 'zod';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { log } from 'console';
 
 
 export async function getAllTransactions(
@@ -71,177 +72,81 @@ export async function getCountTransactions(query: string): Promise<number> {
 }
 
 
-const formChema = z.object({
+
+// Schéma de validation pour le DetailTransaction
+const formSchemaDetail = z.object({
   type_de_transaction: z.string(),
   date_de_transaction: z.string(),
   lieu_de_transaction: z.string(),
   id_client: z.string(),
 });
 
-function formatZodErrors(error: ZodError): string[] {
-  return error.errors.map((err) => {
-    const field = err.path.join('.');
-    return `${field}: ${err.message}`;
-  });
-}
-
-const CreateTransaction = formChema.omit({ date_de_transaction: true });
-
-export async function postDetailTransaction(formData: FormData) {
-  try {
-    const { type_de_transaction, lieu_de_transaction, id_client } = CreateTransaction.parse({
-      type_de_transaction: formData.get('type_de_transaction'),
-      lieu_de_transaction: formData.get('lieu_de_transaction'),
-      id_client: formData.get('id_client'),
-    });
-
-    const date = new Date();
-    date.setHours(date.getHours() + 3);
-    const isoDate = date.toISOString();
-
-    const token = (await cookies()).get('token');
-
-    if (!token || !token.value) {
-      return { success: false, error: 'Token introuvable ou invalide.' };
-    }
-
-    const requestData = {
-      type_de_transaction,
-      date_de_transaction: isoDate,
-      lieu_de_transaction,
-      id_client,
-    };
-
-    const response = await axios.post(`${BASE_URL}/api/detailtransaction/post`, requestData, {
-      headers: {
-        Authorization: `Bearer ${token?.value}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.status === 201 || response.status === 200) {
-      return { success: true, data: response.data };
-    } else {
-      console.error('Erreur inattendue lors de la création du detailtransaction:', response);
-      return { success: false, error: 'Client non créé.' };
-    }
-  } catch (error: any) {
-    if (error instanceof ZodError) {
-      console.error('Erreur de validation:', error.errors);
-      return {
-        success: false,
-        error: 'Données invalides. Veuillez vérifier les champs du formulaire.',
-      };
-    }
-
-    // Gère les autres erreurs
-    console.error('Erreur lors de la création du deltail transaction:', error.response?.data || error.message);
-    return {
-      success: false,
-      error: error.response?.data?.message || error.message,
-    };
-  }
-}
-
-export async function getLastDetailTransaction() {
-  try {
-    const token = (await cookies()).get('token');
-    console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
-
-    if (!token) {
-      console.warn('Token introuvable dans les cookies.');
-      return null;
-    }
-
-    const produits = await axios.get(`${BASE_URL}/api/detailtransaction/lastdetail`, {
-      headers: {
-        Authorization: `Bearer ${token?.value}`,
-      },
-    });
-
-    const res = produits.data;
-    console.log(res);
-    return res || [];
-  } catch (error) {
-    console.error('Erreur lors de la récupération des transactions:', error);
-    throw error;
-  }
-}
-
-const formChema2 = z.object({
-  id_produit_avec_detail: z.string().nonempty('Produit requis.'),
-  id_detail_transaction: z.string().nonempty('id_detail_transaction requis'),
-  quantite: z.string().nonempty('Quantité requise.'),
-  unite: z.string().nonempty('Unité requise.'),
+// Schéma de validation pour la Transaction
+const formSchemaTransaction = z.object({
+  id_produit_avec_detail: z.string(),
+  quantite: z.string(),
+  unite: z.string(),
   prix_unitaire: z.number(),
-  status: z.string().nonempty('Status requis.'),
-  lieu_stock: z.string().nonempty('lieu_stock requis'),
+  status: z.string(),
+  lieu_stock: z.string(),
 });
 
-
-export async function postDetailTransaction2(formData: FormData) {
+export async function createDetailAndTransaction(detailFormData: FormData, transactionRequests: any[]) {
   try {
-    const { id_produit_avec_detail, id_detail_transaction, quantite, unite, prix_unitaire, status, lieu_stock } = formChema2.parse({
-      id_produit_avec_detail: formData.get('id_produit_avec_detail'),
-      id_detail_transaction: formData.get('id_detail_transaction'),
-      quantite: formData.get('quantite'),
-      unite: formData.get('unite'),
-      prix_unitaire: Number(formData.get('prix_unitaire')),
-      status: formData.get('status'),
-      lieu_stock: formData.get('lieu_stock'),
+    // Étape 1 : Validation des données du DetailTransaction
+    const detailData = formSchemaDetail.parse({
+      type_de_transaction: detailFormData.get('type_de_transaction'),
+      date_de_transaction: new Date().toISOString(),
+      lieu_de_transaction: detailFormData.get('lieu_de_transaction'),
+      id_client: detailFormData.get('id_client'),
     });
 
-
     const token = (await cookies()).get('token');
-
     if (!token || !token.value) {
       return { success: false, error: 'Token introuvable ou invalide.' };
     }
 
-    const requestData = [{
-      id_produit_avec_detail,
-      id_detail_transaction,
-      quantite,
-      unite,
-      prix_unitaire,
-      status,
-      lieu_stock
-    },];
-    console.log('Données de la requête:', requestData);
+    // Étape 2 : Validation des données de la Transaction
+    const validatedTransactions = transactionRequests.map((transaction) =>
+      formSchemaTransaction.parse(transaction)
+    );
 
-    const response = await axios.post(`${BASE_URL}/api/transactions/create`, requestData, {
-      headers: {
-        Authorization: `Bearer ${token?.value}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    // Étape 3 : Structurer les données pour correspondre à TransactionWrapper
+    const transactionWrapper = {
+      transactionRequests: validatedTransactions, // Liste des transactions
+      detailTransactionRequest: detailData, // Détails de la transaction
+    };
+
+    // Étape 4 : Envoyer les données au serveur
+    const response = await axios.post(
+      `${BASE_URL}/api/transactions/create`,
+      transactionWrapper, // Envoyer l'objet TransactionWrapper
+      {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    console.log(response.data);
 
     if (response.status === 201 || response.status === 200) {
       return { success: true, data: response.data };
     } else {
-      console.error('Erreur inattendue lors de la creattion de transaction:', response);
-      return {
-        success: false,
-        error: 'transaction non creer',
-      };
+      return { success: false, error: 'Erreur lors de la création de la transaction.' };
     }
   } catch (error: any) {
     if (error instanceof ZodError) {
-      console.error('Validation échouée :', error.errors);
-      return {
-        success: false,
-        error: 'formulaire invalides, Veuillez Vérifiez la formulaire'
-      };
+      return { success: false, error: 'Erreur de validation des données.' };
     }
 
-    // Gère les autres erreurs
-    console.error('Erreur lors de la création de la transaction :', error.response?.data || error.message);
     return {
       success: false,
       error: error.response?.data?.message || error.message,
     };
   }
 }
+
 // Supposons que deleteTransaction est une fonction qui supprime une transaction via un appel API
 export async function deleteTransaction(id_transaction: string) {
   // Exemple d'appel réseau

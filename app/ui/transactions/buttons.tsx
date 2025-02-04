@@ -29,27 +29,26 @@ export function CreateTransaction() {
     </Link>
   );
 }
-export function CheckboxWithText() {
+
+type AddProduitProps = {
+  ajouterProduit: (produit: any) => void;
+};
+
+export function AddProduit({ ajouterProduit }: AddProduitProps) {
   return (
-    <div className="items-top flex space-x-2">
-      <Checkbox id="terms1" />
-      <div className="grid gap-1.5 leading-none">
-        <label
-          htmlFor="terms1"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Transformation de produit validé
-        </label>
-        <p className="text-sm text-muted-foreground">
-        Unitil de coché si vous faites de vente
-        </p>
-      </div>
-    </div>
-  )
+    <button
+      type="button"
+      className="flex items-center justify-center p-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+    >
+      <PlusIcon className="h-5" />
+      <span className="ml-2">Ajouter</span>
+    </button>
+  );
 }
-export function GoToVente(){
-  return(
-       <Link
+
+export function GoToVente() {
+  return (
+    <Link
       href="/dashboard/transactions/ventes"
       className="flex h-10 items-center rounded-lg bg-cyan-950 px-4 text-sm font-medium text-white transition-colors hover:bg-cyan-600"
     >
@@ -57,9 +56,9 @@ export function GoToVente(){
     </Link>
   );
 }
-export function GoToAchat(){
-  return(
-       <Link
+export function GoToAchat() {
+  return (
+    <Link
       href="/dashboard/transactions/achats"
       className="flex h-10 items-center rounded-lg bg-lime-600 px-4 text-sm font-medium text-white transition-colors hover:bg-lime-400"
     >
@@ -80,25 +79,25 @@ export function UpdateTransaction({ id_transaction }: { id_transaction: string }
 }
 
 export function DeleteTransaction({ id_transaction }: { id_transaction: string }) {
- const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleDelete = async () => {
     try {
       await deleteTransaction(id_transaction);
-      toast.success("Transaction supprimée avec succès.",{
-        position:"top-center"
+      toast.success("Transaction supprimée avec succès.", {
+        position: "top-center"
       }); // Remplacez par un autre composant d'alerte si besoin
-      setTimeout(()=>{
+      setTimeout(() => {
         window.location.reload();
-      },2000)
+      }, 2000)
       setOpen(false);
     } catch (error) {
       console.error("Erreur lors de la suppression de la transaction :", error);
-      toast.error("Une erreur est survenue. Veuillez réessayer.",{
-        position:"top-center"
+      toast.error("Une erreur est survenue. Veuillez réessayer.", {
+        position: "top-center"
       });
     }
-  };  return (
+  }; return (
     <>
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>

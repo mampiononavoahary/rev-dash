@@ -25,74 +25,134 @@ export default function Invoice() {
 
 
   const handlePrint = (id: string) => {
-  const invoice = facture.find((inv) => `invoice-${facture.indexOf(inv)}` === id);
-  if (!invoice || !invoice.lignes_facture) {
-    toast.error("Données de facture incomplètes.");
-    return;
-  }
+    const invoice = facture.find((inv) => `invoice-${facture.indexOf(inv)}` === id);
+    if (!invoice || !invoice.lignes_facture) {
+      toast.error("Données de facture incomplètes.");
+      return;
+    }
 
-  const printWindow = window.open('', '_blank');
-  if (!printWindow) {
-    toast.error("Impossible d'ouvrir la fenêtre d'impression.");
-    return;
-  }
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast.error("Impossible d'ouvrir la fenêtre d'impression.");
+      return;
+    }
 
-  const printableHTML = `
-    <html>
-      <head>
-        <title>Facture #${invoice.id_facture}</title>
-        <style>
-          /* Styles ici */
-        </style>
-      </head>
-      <body>
-        <div class="invoice-container">
-          <h2>Facture #${invoice.id_facture}</h2>
-          <p>Date: ${invoice.date_de_transaction}</p>
-          <table>
-            <thead>
-              <tr>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Unité</th>
-                <th>Prix</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${invoice.lignes_facture
-                ?.map(
-                  (ligne: any) => `
-                    <tr>
-                      <td>${ligne.produit}</td>
-                      <td>${ligne.quantite}</td>
-                      <td>${ligne.unite}</td>
-                      <td>${ligne.prix}</td>
-                      <td>${ligne.total}</td>
-                    </tr>
-                  `
-                )
-                .join('')}
-            </tbody>
-          </table>
-          <p>Total: ${invoice.lignes_facture?.reduce(
-            (acc: number, ligne: any) => acc + ligne.total,
-            0
-          ) ?? 0} Ariary</p>
-        </div>
-      </body>
-    </html>
-  `;
+    const printableHTML = `
+<html>
+  <head>
+    <title>Facture #${invoice.id_facture}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f9f9f9;
+      }
+      .invoice-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+      }
+      p {
+        margin: 5px 0;
+        color: #555;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      table th, table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      table th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+        color: #333;
+      }
+      table tbody tr:hover {
+        background-color: #f9f9f9;
+      }
+      .total {
+        margin-top: 20px;
+        text-align: right;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+      }
+      .footer {
+        margin-top: 30px;
+        text-align: center;
+        color: #777;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-container">
+      <h2>Facture #${invoice.id_facture}</h2>
+      <p><strong>Date:</strong> ${invoice.date_de_transaction}</p>
+      <p><strong>Client:</strong> ${invoice.nom_client}</p>
+      <p><strong>Adresse:</strong> ${invoice.adresse_client}</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Unité</th>
+            <th>Prix Unitaire</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${invoice.lignes_facture
+        ?.map(
+          (ligne: any) => `
+                <tr>
+                  <td>${ligne.produit}</td>
+                  <td>${ligne.quantite}</td>
+                  <td>${ligne.unite}</td>
+                  <td>${ligne.prix} Ariary</td>
+                  <td>${ligne.total} Ariary</td>
+                </tr>
+              `
+        )
+        .join('')}
+        </tbody>
+      </table>
+      <div class="total">
+        <strong>Total:</strong> ${invoice.lignes_facture?.reduce(
+          (acc: number, ligne: any) => acc + ligne.total,
+          0
+        ) ?? 0} Ariary
+      </div>
+      <div class="footer">
+        <p>Merci pour votre confiance !</p>
+        <p>Contactez-nous en cas de questions.</p>
+      </div>
+    </div>
+  </body>
+</html>
+`; printWindow.document.open();
+    printWindow.document.write(printableHTML);
+    printWindow.document.close();
 
-  printWindow.document.open();
-  printWindow.document.write(printableHTML);
-  printWindow.document.close();
-
-  printWindow.onload = () => {
-    printWindow.print();
-    printWindow.close();
+    printWindow.onload = () => {
+      printWindow.print();
+      printWindow.close();
+    };
   };
-};
   const handleDownload = async (id: string) => {
     const invoiceElement = document.getElementById(id);
     if (!invoiceElement) {
