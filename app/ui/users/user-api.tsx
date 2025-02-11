@@ -59,6 +59,7 @@ export async function CreateUser(formdata: FormData) {
         Authorization: `Bearer ${token.value}`,
         'Content-Type': 'multipart/form-data',
       },
+      timeout:120000
     });
 
     if (response.status === 201 || response.status === 200) {
