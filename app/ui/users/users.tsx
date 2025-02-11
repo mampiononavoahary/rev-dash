@@ -2,6 +2,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { getAllUsers } from "./user-api";
+import Image from "next/image";
 import Search from "../search";
 import { CreateUser } from "./buttons";
 
@@ -77,11 +78,11 @@ export default function Users() {
           <table className="hidden min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
             <thead className="rounded-lg text-left text-sm font-medium">
               <tr>
+                <th scope="col" className="px-3 py-5">Profile</th>
                 <th scope="col" className="px-4 py-5 sm:pl-6">Nom Employé</th>
                 <th scope="col" className="px-3 py-5">Prénom Employé</th>
                 <th scope="col" className="px-3 py-5">Adresse</th>
                 <th scope="col" className="px-3 py-5">Contact</th>
-                <th scope="col" className="px-3 py-5">Profile</th>
                 <th scope="col" className="px-3 py-5">Rôle</th>
                 <th scope="col" className="px-3 py-5">Nom d'Utilisateur</th>
               </tr>
@@ -92,11 +93,23 @@ export default function Users() {
                   key={user.id_user || index}
                   className="w-full border-b py-3 text-sm last-of-type:border-none"
                 >
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {user.image ? (
+                      <Image
+                        className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500"
+                        src={user.image}
+                        alt="user-image"
+                        width={80}
+                        height={80}
+                      />
+                    ) : (
+                      <div className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500 bg-gray-200"></div>
+                    )}                  </td>
+
                   <td className="whitespace-nowrap px-3 py-3">{user.nom}</td>
                   <td className="whitespace-nowrap px-3 py-3">{user.prenom}</td>
                   <td className="whitespace-nowrap px-3 py-3">{user.address}</td>
                   <td className="whitespace-nowrap px-3 py-3">{user.contact}</td>
-                  <td className="whitespace-nowrap px-3 py-3">{user.image}</td>
                   <td className="whitespace-nowrap px-3 py-3">{user.role}</td>
                   <td className="whitespace-nowrap px-3 py-3">{user.username}</td>
                 </tr>

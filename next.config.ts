@@ -3,7 +3,12 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['example.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "file-upload-mi-collecte.s3.amazonaws.com",
+      },
+    ],
   },
   webpack(config, { isServer }) {
     if (!isServer) {

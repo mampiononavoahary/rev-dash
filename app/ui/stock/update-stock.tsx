@@ -49,7 +49,6 @@ export function CardWithForm() {
         </form>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
         <Button>Enregistrer</Button>
       </CardFooter>
     </Card>
@@ -98,7 +97,6 @@ export function TransformationProduit() {
         </form>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
         <Button>Transformer</Button>
       </CardFooter>
     </Card>

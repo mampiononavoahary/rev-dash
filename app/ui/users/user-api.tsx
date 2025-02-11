@@ -14,6 +14,7 @@ const formSchema = z.object({
   username: z.string().nonempty('username requis'),
   password: z.string().nonempty('password requis')
 });
+
 export async function CreateUser(formdata: FormData) {
   try {
     const { nom, prenom, contact, address, image, role, username, password } = formSchema.parse({
@@ -33,34 +34,40 @@ export async function CreateUser(formdata: FormData) {
       return { success: false, error: 'Token introuvable ou invalide.' };
     }
 
-
-    const requestData = {
+    // Création de l'objet JSON pour `registerRequest`
+    const registerRequest = JSON.stringify({
       nom,
       prenom,
       contact,
       address,
-      image,
       role,
       username,
       password
-    };
+    });
 
-    console.log('Données de la requête:', requestData);
+    // Création du `FormData`
+    const formDataToSend = new FormData();
+    formDataToSend.append("registerRequest", registerRequest);
+    if (image) {
+      formDataToSend.append("file", image); // Ajoute l'image si elle existe
+    }
 
-    const response = await axios.post(`${BASE_URL}/api/auth/register`, requestData, {
+    console.log('Données de la requête:', { registerRequest, image });
+
+    const response = await axios.post(`${BASE_URL}/api/auth/register`, formDataToSend, {
       headers: {
         Authorization: `Bearer ${token.value}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
     });
 
     if (response.status === 201 || response.status === 200) {
       return { success: true, data: response.data };
     } else {
-      console.error('Erreur inattendue lors de la creation:', response);
+      console.error('Erreur inattendue lors de la création:', response);
       return {
         success: false,
-        error: 'utilisateur non creer',
+        error: 'Utilisateur non créé',
       };
     }
 
@@ -69,18 +76,18 @@ export async function CreateUser(formdata: FormData) {
       console.error('Validation échouée :', error.errors);
       return {
         success: false,
-        error: 'formulaire invalides, Veuillez Vérifiez la formulaire'
+        error: 'Formulaire invalide, veuillez vérifier le formulaire'
       };
     }
 
-    // Gère les autres erreurs
-    console.error('Erreur lors de la création de la transaction :', error.response?.data || error.message);
+    console.error('Erreur lors de la création de l\'utilisateur :', error.response?.data || error.message);
     return {
       success: false,
       error: error.response?.data?.message || error.message,
     };
   }
 }
+
 
 
 

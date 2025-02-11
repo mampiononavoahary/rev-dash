@@ -1,14 +1,23 @@
 
+
 import React, { useState } from "react";
 
-const FileInputWithPreview: React.FC = () => {
+interface FileInputWithPreviewProps {
+  onChange: (url: string) => void;  // Déclarez la prop onChange
+}
+
+const FileInputWithPreview: React.FC<FileInputWithPreviewProps> = ({ onChange }) => {
   const [preview, setPreview] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => setPreview(reader.result as string);
+      reader.onload = () => {
+        const url = reader.result as string;
+        setPreview(url);
+        onChange(url);  // Appeler onChange avec l'URL de l'image
+      };
       reader.readAsDataURL(file);
     } else {
       setPreview(null);
