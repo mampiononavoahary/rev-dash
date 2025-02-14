@@ -169,3 +169,22 @@ export async function deleteTransaction(id_transaction: string) {
   return null;
 }
 
+export const updateTransactionStatus = async (id: string, status: string) => {
+  try {
+    const token = (await cookies()).get('token');
+    if (!token) {
+      console.warn('token introuvable dans les cookies ');
+      return null;
+    }
+    const response = await axios.put(`${BASE_URL}/api/transactions/update/${id}`, {status}, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        'Content-Type': 'application/json'
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du statut:', error);
+    throw error;
+  }
+};

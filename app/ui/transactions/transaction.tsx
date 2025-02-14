@@ -69,7 +69,7 @@ export default async function Transactions({query,currentPage}:{query:string,cur
                     <td className="whitespace-nowrap px-3 py-3">{transaction.quantite}</td>
                     <td className="whitespace-nowrap px-3 py-3">{transaction.unite}</td>
                     <td className="whitespace-nowrap px-3 py-3">
-                      <TransactionStatus status={transaction.status} />
+                      <TransactionStatus id={transaction.id_transaction} status={transaction.status} />
                     </td>
                  </tr>
                 ))}

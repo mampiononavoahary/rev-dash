@@ -76,7 +76,7 @@ export default async function Achats({query,currentPage}:{query:string,currentPa
                     <td className="whitespace-nowrap px-3 py-3">{achat.quantite}</td>
                     <td className="whitespace-nowrap px-3 py-3">{achat.unite}</td>
                     <td className="whitespace-nowrap px-3 py-3">
-                      <TransactionStatus status={achat.status} />
+                      <TransactionStatus id={achat.id_transaction} status={achat.status} />
                     </td>
                     <td className="whitespace-nowrap py-3 pl-6 pr-3">
                       <div className="flex justify-end gap-3">
