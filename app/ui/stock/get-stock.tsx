@@ -70,3 +70,28 @@ export async function getStockByLieuAndProduit2(lieu_stock: string, nom_produit:
     throw error;
   }
 }
+
+
+export async function updateQuantiteStock(id_stock: string, quantite: number) {
+  try {
+    const token = (await cookies()).get('token');
+
+    if (!token) {
+      console.warn('Token not found');
+      return;
+    }
+
+    const response = await axios.put(`${BASE_URL}/api/stock/put/quantite/${id_stock}`, quantite, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la quantité du stock :", error);
+    throw error;
+  }
+}
+
