@@ -176,15 +176,49 @@ export const updateTransactionStatus = async (id: string, status: string) => {
       console.warn('token introuvable dans les cookies ');
       return null;
     }
-    const response = await axios.put(`${BASE_URL}/api/transactions/update/${id}`, {status}, {
+    const response = await axios.put(`${BASE_URL}/api/transactions/update/${id}`, { status }, {
       headers: {
         Authorization: `Bearer ${token.value}`,
         'Content-Type': 'application/json'
       },
     });
-    return response.data;
-  } catch (error) {
-    console.error('Erreur lors de la mise à jour du statut:', error);
-    throw error;
+    if (response.status === 201 || response.status === 200) {
+      return { success: true, data: response.data };
+    } else {
+      return { success: false, error: 'Erreur lors de la mise à jour de transaction' };
+    }
+  } catch (error: any) {
+    if (error instanceof ZodError) {
+      return { success: false, error: 'Erreur de validation des données.' };
+    }
+
+    return {
+      success: false,
+      error: error.response?.data?.message || error.message,
+    };
   }
 };
+
+export async function fetchTransactionById(id: string) {
+  try {
+    const token = (await cookies()).get('token');
+    if (!token) {
+      console.warn('Token introuvable dans les cookies');
+      return [];
+    }
+    const transaction = await axios.get(`/api/transactions/find/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token?.value}`
+      }
+    })
+    if (!transaction) {
+      console.log(`transaction with id ${id} not found`);
+    }
+    return transaction.data;
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.response?.data?.message || error.message,
+    };
+  }
+}

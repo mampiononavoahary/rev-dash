@@ -11,6 +11,26 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { createDetailAndTransaction } from './gettransaction';
 
+const CircularProgressWithLabel = ({ value }: { value: number }) => (
+  <Box position="relative" display="inline-flex">
+    <CircularProgress variant="determinate" value={value} />
+    <Box
+      top={0}
+      left={0}
+      bottom={0}
+      right={0}
+      position="absolute"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Typography variant="caption" component="div" color="text.secondary">
+        {`${Math.round(value)}%`}
+      </Typography>
+    </Box>
+  </Box>
+);
+
 export default function CreateTransaction() {
   const [clients, setClients] = useState<any[]>([]);
   const [produits, setProduits] = useState<any[]>([]);
@@ -25,7 +45,11 @@ export default function CreateTransaction() {
   const [prixUnitaire, setPrixUnitaire] = useState('');
 
   useEffect(() => {
-       const fetchData = async () => {
+    const interval = setInterval(() => {
+      setProgress((prev) => (prev >= 100 ? 0 : prev + 10));
+    }, 800);
+
+    const fetchData = async () => {
       try {
         const fetchedClients = await getAllClients();
         const fetchedProduits = await getIdAndName();
@@ -36,10 +60,13 @@ export default function CreateTransaction() {
         toast.error('Erreur lors du chargement des données.');
       } finally {
         setLoading(false);
+        clearInterval(interval);
       }
     };
 
     fetchData();
+
+    return () => clearInterval(interval);
   }, []);
 
   const getNomProduit = (id: string) => {
