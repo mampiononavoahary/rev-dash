@@ -9,7 +9,7 @@ const page = () => {
   return (
     <div>
       <InitializeToken />
-      All Users
+      Listes des utilisateurs
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Rechercher un utilisateur..." />
         <CreateUser />

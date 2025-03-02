@@ -4,8 +4,10 @@ import { SubmitButton } from "../transactions/submit_button";
 import { CreateClient } from "./getClients";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function CreateClients() {
+  const router = useRouter();
   return (
     <form
       className="w-full max-w-lg mx-auto mt-6 shadow-md rounded-md"
@@ -13,6 +15,9 @@ export default function CreateClients() {
         const result = await CreateClient(formData);
         if (result.success) {
           toast.success('Client creer avec succes');
+          setTimeout(()=>{
+            router.push('/dashboard/clients')
+          },2000)
         } else {
           toast.error('Erreur lors de la creation du client');
         }
@@ -35,6 +40,7 @@ export default function CreateClients() {
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             type="text"
             placeholder="Nom du client..."
+            required
           />
         </div>
         <div className="w-full md:w-1/2 px-3">

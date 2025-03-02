@@ -15,7 +15,6 @@ export default function CreateTransaction() {
   const [clients, setClients] = useState<any[]>([]);
   const [produits, setProduits] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [produitsAjoutes, setProduitsAjoutes] = useState<any[]>([]);
   const [produitId, setProduitId] = useState('');
   const [quantite, setQuantite] = useState('');
@@ -92,10 +91,10 @@ export default function CreateTransaction() {
     try {
       const result = await createDetailAndTransaction(detailFormData, transactionRequests);
       if (result?.success) {
-        toast.success('Détail transaction créé avec succès');
+        toast.success('Transaction créé avec succès');
         setProduitsAjoutes([]); // Réinitialiser la liste des produits ajoutés
       } else {
-        toast.error(result?.error || 'Erreur lors de la création du détail transaction');
+        toast.error('Erreur lors de la création de transaction');
       }
     } catch (error) {
       console.error('Erreur lors de la création de la transaction', error);

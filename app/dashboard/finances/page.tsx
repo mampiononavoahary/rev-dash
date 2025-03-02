@@ -6,9 +6,9 @@ const page = () => {
   return (
     <div>
       <InitializeToken />
-      <h1 className='font-medium mb-6'>Dernier facture</h1>
+      <h1 className='font-medium mb-6 flex justify-center'>Listes des factures</h1>
       <Invoice />
-      <h1 className='font-medium mt-6'>Toutes les factures</h1>
+      <h1 className='font-medium mt-6 flex justify-center'>Listes des prêts bancaires</h1>
     </div>
   )
 }

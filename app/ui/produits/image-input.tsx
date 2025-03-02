@@ -8,28 +8,20 @@ interface FileInputWithPreviewProps {
 
 const FileInputWithPreview: React.FC<FileInputWithPreviewProps> = ({ onChange }) => {
   const [preview, setPreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const url = reader.result as string;
-        setPreview(url);
-        onChange(url);  // Appeler onChange avec l'URL de l'image
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setPreview(null);
+      setImageFile(file);
     }
   };
-
   return (
     <div className="flex items-center space-x-4">
       <input
         type="file"
         accept="image/*"
-        onChange={handleFileChange}
+        onChange={handleImageChange}
         className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
       {preview && (
