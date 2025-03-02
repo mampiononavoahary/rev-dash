@@ -28,11 +28,6 @@ export async function CreateUser(formdata: FormData) {
       password: formdata.get('password'),
     });
 
-    const token = (await cookies()).get('token');
-
-    if (!token || !token.value) {
-      return { success: false, error: 'Token introuvable ou invalide.' };
-    }
 
     // Création de l'objet JSON pour `registerRequest`
     const registerRequest = JSON.stringify({
@@ -56,7 +51,6 @@ export async function CreateUser(formdata: FormData) {
 
     const response = await axios.post(`${BASE_URL}/api/auth/register`, formDataToSend, {
       headers: {
-        Authorization: `Bearer ${token.value}`,
         'Content-Type': 'multipart/form-data',
       },
       timeout:120000
