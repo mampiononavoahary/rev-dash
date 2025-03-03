@@ -52,7 +52,8 @@ export function AddType({ produits, setProduits }: { produits: any[]; setProduit
     e.preventDefault();
     setLoading(true);
     if (!nomTypeProduit.trim()) {
-      console.error("Le nom du type de produit ne peut pas être vide");
+      toast.error("Le nom du type de produit ne peut pas être vide");
+      setLoading(false);
       return;
     }
 
