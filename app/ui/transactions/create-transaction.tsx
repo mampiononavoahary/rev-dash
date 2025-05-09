@@ -2,9 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAllClients } from '../customers/getClients';
 import { getIdAndName } from '../produits/getproduits';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { SubmitButton } from './submit_button';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -14,6 +11,8 @@ import { createDetailAndTransaction } from './gettransaction';
 export default function CreateTransaction() {
   const [clients, setClients] = useState<any[]>([]);
   const [produits, setProduits] = useState<any[]>([]);
+  const [produitsFilter, setProduitsFilter] = useState<any[]>([]);
+  const [typeTransaction, setTypeTransaction] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [produitsAjoutes, setProduitsAjoutes] = useState<any[]>([]);
   const [produitId, setProduitId] = useState('');
@@ -24,7 +23,7 @@ export default function CreateTransaction() {
   const [prixUnitaire, setPrixUnitaire] = useState('');
 
   useEffect(() => {
-       const fetchData = async () => {
+    const fetchData = async () => {
       try {
         const fetchedClients = await getAllClients();
         const fetchedProduits = await getIdAndName();
@@ -40,6 +39,19 @@ export default function CreateTransaction() {
 
     fetchData();
   }, []);
+
+
+  useEffect(() => {
+    if (typeTransaction === "ENTRE") {
+      setProduitsFilter(produits.filter((e) => e.categorie === "PRODUIT_PREMIER"));
+      console.log(produitsFilter);
+    } else if (typeTransaction === "SORTIE") {
+      setProduitsFilter(produits.filter((e) => e.categorie === "PRODUIT_FINI"));
+      console.log(produitsFilter);
+    } else {
+      setProduitsFilter(produits);
+    }
+  }, [typeTransaction, produits]);
 
   const getNomProduit = (id: string) => {
     const produit = produits.find((p) => p.id_produit_avec_detail === id);
@@ -121,7 +133,12 @@ export default function CreateTransaction() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block font-medium mb-1 text-center p-2 bg-emerald-200 rounded-full">Type de transaction:</label>
-            <select id="type_de_transaction" name="type_de_transaction" defaultValue="" className="w-full p-2 border border-gray-300 rounded-md">
+            <select
+              id="type_de_transaction"
+              name="type_de_transaction"
+              value={typeTransaction}
+              onChange={(e) => setTypeTransaction(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md">
               <option value="" disabled>Type de transaction</option>
               <option value="SORTIE">VENTE</option>
               <option value="ENTRE">ACHAT</option>
@@ -165,7 +182,7 @@ export default function CreateTransaction() {
               className="w-full p-2 border border-gray-300 rounded-md"
             >
               <option value="" disabled>Produits</option>
-              {produits?.map((produit: any) => (
+              {produitsFilter?.map((produit: any) => (
                 <option key={produit.id_produit_avec_detail} value={produit.id_produit_avec_detail}>
                   {produit.nom_detail}
                 </option>

@@ -80,6 +80,7 @@ export async function getIdAndName() {
 }
 const formSchema = z.object({
   produit: z.number().min(1, "Produit requis"),
+  type_produit: z.number().nullable(),
   nom_detail: z.string().min(1, "Nom requis"),
   symbole: z.string().min(1, "Symbole requis"),
   categorie_produit: z.string().min(1, "Catégorie requise"),
@@ -92,14 +93,15 @@ const formSchema = z.object({
 
 export async function createProduit(formdata: FormData) {
   try {
-    // Convertir les champs numériques en nombres
     const produit = Number(formdata.get("produit"));
+    const type_produit = formdata.get("type_produit") === "" ? null : Number(formdata.get("type_produit"));
     const prix_d_achat = Number(formdata.get("prix_d_achat"));
     const prix_de_vente = Number(formdata.get("prix_de_vente"));
 
     // Valider les données avec Zod
     const validatedData = formSchema.parse({
       produit,
+      type_produit,
       nom_detail: formdata.get("nom_detail"),
       symbole: formdata.get("symbole"),
       categorie_produit: formdata.get("categorie_produit"),
@@ -119,6 +121,7 @@ export async function createProduit(formdata: FormData) {
     // Structurer les données selon le format attendu par l'API
     const requestData = {
       produit: validatedData.produit,
+      type_produit: validatedData.type_produit,
       detailProduitRequest: {
         nom_detail: validatedData.nom_detail,
         symbole: validatedData.symbole,
@@ -173,8 +176,8 @@ export async function createProduit(formdata: FormData) {
       error: error.response?.data?.message || error.message,
     };
   }
-}  
-export async function addTypeProduit(nomTypeProduit: string) {
+}
+export async function addProduit(nomTypeProduit: string) {
   const token = (await cookies()).get("token")?.value;
 
   if (!token) {
@@ -200,6 +203,84 @@ export async function addTypeProduit(nomTypeProduit: string) {
     return res;
   } catch (error) {
     console.error("Erreur lors de l'ajout du type de produit :", error);
+    throw error;
+  }
+}
+export async function addTypeProduit(nomTypeProduit: string, symbole: string) {
+  const token = (await cookies()).get("token")?.value;
+
+  if (!token) {
+    throw new Error("Token non trouvé");
+  }
+
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/api/produit/type/post`,
+      {
+        nom_type_produit: nomTypeProduit,
+        symbole: symbole
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const res = response.data;
+    console.log(res);
+    return res;
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du type de produit :", error);
+    throw error;
+  }
+}
+export async function getTypeProduit() {
+  try {
+    const token = (await cookies()).get('token');
+    console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
+
+    if (!token) {
+      console.warn('Token introuvable dans les cookies.');
+      return null;
+    }
+
+    const produits = await axios.get(`${BASE_URL}/api/produit/type`, {
+      headers: {
+        Authorization: `Bearer ${token?.value}`,
+      },
+    });
+
+    const res = produits.data;
+    console.log("Données des transactions :", res);
+    return res || [];
+  } catch (error) {
+    console.error('Erreur lors de la récupération des transactions:', error);
+    throw error;
+  }
+}
+export async function getNameProduit() {
+  try {
+    const token = (await cookies()).get('token');
+    console.log('Token récupéré :', token?.value); // Vérifiez le token récupéré
+
+    if (!token) {
+      console.warn('Token introuvable dans les cookies.');
+      return null;
+    }
+
+    const produits = await axios.get(`${BASE_URL}/api/produits`, {
+      headers: {
+        Authorization: `Bearer ${token?.value}`,
+      },
+    });
+
+    const res = produits.data;
+    console.log("Données des transactions :", res);
+    return res || [];
+  } catch (error) {
+    console.error('Erreur lors de la récupération des transactions:', error);
     throw error;
   }
 }

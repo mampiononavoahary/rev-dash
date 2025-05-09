@@ -4,7 +4,7 @@ import { BASE_URL } from "@/app/lib/db";
 import axios from "axios";
 import { cookies } from "next/headers";
 
-export async function getAllStock(){
+export async function getAllStock() {
   try {
     const token = (await cookies()).get('token');
 
@@ -12,8 +12,8 @@ export async function getAllStock(){
       console.warn('Token not found');
       return [];
     }
-    const stocks = await axios.get(`${BASE_URL}/api/extract/stock`,{
-      headers:{
+    const stocks = await axios.get(`${BASE_URL}/api/extract/stock`, {
+      headers: {
         Authorization: `Bearer ${token?.value}`,
       },
     });
@@ -94,4 +94,31 @@ export async function updateQuantiteStock(id_stock: string, quantite: number) {
     throw error;
   }
 }
+export async function transformProduit(lieu_stock: string, id_premier: number, id_finie: number, quantite: number) {
+  try {
 
+    const token = (await cookies()).get('token');
+
+    if (!token) {
+      console.warn('Token not found');
+      return;
+    }
+    const response = await axios.post(`${BASE_URL}/api/stock/transform`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        "Content-Type": "application/json",
+      },
+      params: {
+        lieu_stock: lieu_stock,
+        id_premier: id_premier,
+        id_finie: id_finie,
+        quantite: quantite
+      },
+    })
+
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la transformation de produit :", error);
+    throw error;
+  }
+}

@@ -32,6 +32,7 @@ export default function Page({ params }: { params: Promise<{ lieu_stock: string;
   const router = useRouter()
 
   const [stocks, setStocks] = useState<{ id_stock: string; quantite_stock: number; unite: string } | null>(null)
+  const [categorieProduit, setCategorieProduit] = useState<string | null>(null)
   const [produits, setProduits] = useState<{ id_produit: string; nom_detail: string }[]>([])
   const [quantiteTransform, setQuantiteTransform] = useState("")
   const [error, setError] = useState("")
@@ -44,7 +45,10 @@ export default function Page({ params }: { params: Promise<{ lieu_stock: string;
       const stockData = await getStockByLieuAndProduit2(lieu_stock, nom_produit)
       const produitsData = await getIdAndName()
       setStocks(stockData)
-      setProduits(produitsData)
+      setProduits(produitsData.filter((e: any) => e.categorie === "PRODUIT_FINI"))
+
+      setCategorieProduit(stockData.categorie)
+      console.log(categorieProduit);
     }
     fetchData()
   }, [lieu_stock, nom_produit])
@@ -180,7 +184,7 @@ export default function Page({ params }: { params: Promise<{ lieu_stock: string;
       )}
 
       {/* Formulaire de transformation */}
-      {stocks && (
+      {stocks && categorieProduit !== "PRODUIT_FINI" &&(
         <Card className="w-[350px]">
           <CardHeader>
             <CardTitle>{formattedNomProduit}</CardTitle>

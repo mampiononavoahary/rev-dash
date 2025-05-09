@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
-import { createProduit, getAllProduits } from "./getproduits";
-import { AddType } from "./buttons";
+import { createProduit, getAllProduits, getIdAndName, getTypeProduit } from "./getproduits";
+import { AddProduit, AddType } from "./buttons";
 
 interface DecodedToken {
   role: string;
@@ -15,6 +15,7 @@ interface DecodedToken {
 
 interface ProduitFormData {
   produit: number;
+  type_produit: number | null,
   nom_detail: string;
   symbole: string;
   categorie_produit: string;
@@ -29,9 +30,11 @@ export default function CreateProduct() {
   const [roleUser, setRoleUser] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [produits, setProduits] = useState<any[]>([]);
+  const [typeProduit, setTypeProduit] = useState<any[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<ProduitFormData>({
     produit: 1,
+    type_produit: null,
     nom_detail: "",
     symbole: "",
     categorie_produit: "PRODUIT_PREMIER",
@@ -69,10 +72,12 @@ export default function CreateProduct() {
     const fetchData = async () => {
       try {
         const fetchProduits = await getAllProduits();
-        if (Array.isArray(fetchProduits)) {
+        const fetchTypeProduit = await getTypeProduit();
+        if (Array.isArray(fetchProduits) && Array.isArray(fetchTypeProduit)) {
           setProduits(fetchProduits);
+          setTypeProduit(fetchTypeProduit);
         } else {
-          console.error("Les données produits ne sont pas un tableau :", fetchProduits);
+          console.error("Les données produits et type de produit ne sont pas un tableau");
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des produits :", error);
@@ -96,9 +101,10 @@ export default function CreateProduct() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: value === "" ? null : name === "type_produit" ? (value === "null" ? null : Number(value)) : value,
     }));
   };
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -109,10 +115,16 @@ export default function CreateProduct() {
 
     const formDataToSend = new FormData();
 
+    // Convertir les valeurs avant de les ajouter à FormData
+    const dataToSend = {
+      ...formData,
+      // Si type_produit est null, on ne l'ajoute pas à la requête
+      type_produit: formData.type_produit === null ? undefined : Number(formData.type_produit),
+    };
 
     // Ajouter les champs convertis à FormData
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "image_url") {
+    Object.entries(dataToSend).forEach(([key, value]) => {
+      if (key !== "image_url" && value !== null && value !== undefined) {
         formDataToSend.append(key, value.toString());
       }
     });
@@ -143,7 +155,7 @@ export default function CreateProduct() {
 
           <div>
             <label htmlFor="produit" className="block text-sm font-medium text-gray-700">
-              Type de produit:
+              Produit :
             </label>
             <div className="flex gap-2">
               <select
@@ -167,10 +179,37 @@ export default function CreateProduct() {
                   <option disabled>Aucun produit disponible</option>
                 )}
               </select>
-              <AddType produits={produits} setProduits={setProduits} />
+              <AddProduit produits={produits} setProduits={setProduits} />
             </div>
           </div>
-          {/* Nom du détail */}
+          <div>
+            <label htmlFor="type_produit" className="block text-sm font-medium text-gray-700">
+              Type de produit:
+            </label>
+            <div className="flex gap-2">
+              <select
+                id="type_produit"
+                name="type_produit"
+                value={formData.type_produit === null ? "null" : formData.type_produit}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option value="null">Null</option> {/* Option pour null */}
+                {Array.isArray(typeProduit) && typeProduit.length > 0 ? (
+                  typeProduit
+                    .filter((typeProduit) => typeProduit !== undefined && typeProduit !== null) // Filtrer les valeurs null/undefined
+                    .map((typeProduit) => (
+                      <option key={typeProduit.id_type_produit} value={typeProduit.id_type_produit}>
+                        {typeProduit.nom_type_produit}
+                      </option>
+                    ))
+                ) : (
+                  <option disabled>Aucun produit disponible</option>
+                )}
+              </select>
+              <AddType typeProduits={typeProduit} setTypeProduits={setTypeProduit} />
+            </div>
+          </div>          {/* Nom du détail */}
           <div>
             <label htmlFor="nom_detail" className="block text-sm font-medium text-gray-700">
               Nom détail
@@ -179,7 +218,7 @@ export default function CreateProduct() {
               id="nom_detail"
               name="nom_detail"
               placeholder="Nom détail"
-              value={formData.nom_detail}
+              value={formData.nom_detail || ""}
               onChange={handleInputChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             />

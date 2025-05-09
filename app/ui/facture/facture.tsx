@@ -131,25 +131,78 @@ export default function Invoice() {
     };
   };
 
-  const handleDownload = async (id: string) => {
-    const invoiceElement = document.getElementById(id);
-    if (!invoiceElement) {
-      console.error(`L'élément avec l'ID '${id}' est introuvable.`);
-      toast.error("Impossible de trouver l'élément de la facture à télécharger.");
-      return;
-    }
+  
 
-    const canvas = await html2canvas(invoiceElement);
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgWidth = 210; // Largeur A4 en mm
-    const pageHeight = 297; // Hauteur A4 en mm
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+const handleDownload = async (id_facture: string) => {
+  const invoice = facture.find(inv => inv.id_facture === id_facture);
+  if (!invoice) {
+    toast.error("Facture introuvable !");
+    return;
+  }
 
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    pdf.save(`facture_${id}.pdf`);
-  };
+  if (!Array.isArray(invoice.lignes_facture) || invoice.lignes_facture.length === 0) {
+    toast.error("Cette facture ne contient aucune ligne.");
+    return;
+  }
 
+  // Créer dynamiquement un élément HTML invisible
+  const container = document.createElement('div');
+  container.style.position = 'absolute';
+  container.style.left = '-9999px'; // Hors écran
+  container.innerHTML = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; width: 800px;">
+      <h2>Facture #${invoice.id_facture}</h2>
+      <p><strong>Date:</strong> ${invoice.date_de_transaction}</p>
+      <p><strong>Client:</strong> ${invoice.nom_client}</p>
+      <p><strong>Adresse:</strong> ${invoice.adresse_client}</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+          <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #ddd; padding: 8px;">Produit</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Quantité</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Unité</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Prix Unitaire</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${invoice.lignes_facture.map(ligne => `
+            <tr>
+              <td style="border: 1px solid #ddd; padding: 8px;">${ligne.produit}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${ligne.quantite}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${ligne.unite}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${ligne.prix ?? '-'}</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${ligne.total ?? '-'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+
+      <p style="margin-top: 20px; font-weight: bold;">
+        Total: ${invoice.lignes_facture.reduce((acc, l) => acc + (l.total ?? 0), 0)} Ariary
+      </p>
+      <p style="margin-top: 20px;display:flex;justify-content:center;">
+      Merci pour votre confiance!
+      </p>
+    </div>
+  `;
+
+  document.body.appendChild(container);
+
+  // Génération du canvas puis du PDF
+  const canvas = await html2canvas(container);
+  const imgData = canvas.toDataURL('image/png');
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const imgWidth = 210;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+  pdf.save(`facture_${id_facture}.pdf`);
+
+  // Nettoyage
+  document.body.removeChild(container);
+};
   return (
     <div className="gap-6">
       <div className='flex justify-between'>
@@ -172,7 +225,7 @@ export default function Invoice() {
           return (
             <div
               className="p-2 bg-white rounded-lg mb-6"
-              id={uniqueId}
+              id={invoice.id_facture}
               key={invoice.id_detail_transaction || index}
             >
               <div className="flex gap-6 px-2 py-2">

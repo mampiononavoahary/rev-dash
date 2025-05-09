@@ -12,9 +12,9 @@ export default async function Stocks() {
         {
           stocks?.map((stock: stock, index: string) => (
             <div className="w-full max-w-sm bg-white border border-double border-4 border-teal-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:shadow-2xl" key={stock.id_stock || index} >
-              <h4 className="text-blue-800">
+              <h3 className="text-blue-800 font-bold">
                 {stock.lieu_stock}
-              </h4>
+              </h3>
               <div className="px-5 pb-5">
                 <div className="flex items-center mt-2.5 mb-5 gap-2">
                   <img className="w-10 h-10 rounded-full" src={stock.image_url} alt="img" />
@@ -22,7 +22,7 @@ export default async function Stocks() {
                   <h5>{stock.symbole}</h5>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">{stock.quantite_stock}  {stock.unite}</span>
+                  <span className="text-2xl font-bold text-gray-900 dark:text-white">{stock.quantite_stock ? stock.quantite_stock.toFixed(2) : "0.00"}  {stock.unite}</span>
                 </div>
               </div>
               <div className="flex justify-between px-2 py-2">

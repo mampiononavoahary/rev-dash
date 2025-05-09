@@ -1,26 +1,42 @@
 'use client'
 import { PlusIcon } from 'lucide-react';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { z } from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { getNameProduit, getTypeProduit } from '../produits/getproduits';
+import { savePret } from './pret-api';
+import { loadEnvFile } from 'process';
+import { toast } from 'react-toastify';
 
 const pretSchema = z.object({
-  date_de_pret: z.string().min(1, "Date requise"),
-  quantite: z.number().positive("Doit être un nombre positif"),
-  prix_unitaire: z.number().positive("Doit être un nombre positif"),
-  taux_augmentation: z.number().min(0, "Ne peut pas être négatif"),
-  taux_mensuel: z.number().min(0, "Ne peut pas être négatif"),
-  date_de_remboursement: z.string().min(1, "Date requise"),
+  dateDePret: z.string().min(1, "Date requise"),
+  produit: z.coerce.number().positive("Doit être un nombre positif"),
+  quantite: z.coerce.number().positive("Doit être un nombre positif"),
+  unite: z.string().min(1, "Unité requise"),
+  prixUnitaire: z.coerce.number().positive("Doit être un nombre positif"),
+  tauxAugmentation: z.coerce.number().min(0, "Ne peut pas être négatif"),
+  tauxMensuel: z.coerce.number().min(0, "Ne peut pas être négatif"),
+  dateDeRemboursement: z.string().min(1, "Date requise"),
 });
 
 type PretFormValues = z.infer<typeof pretSchema>;
 
 export default function AddPret() {
   const [showForm, setShowForm] = useState(false);
+  const [typeProduit, setTypeProduit] = useState<any[]>([]);
+  const [loading,setLoading] = useState(false);
   const handleClick = () => {
     setShowForm(true);
   }
+  useEffect(() => {
+    const fetchTypeProuit = async () => {
+      const typeProduit = await getNameProduit();
+      setTypeProduit(typeProduit);
+    }
+    fetchTypeProuit();
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -29,8 +45,19 @@ export default function AddPret() {
     resolver: zodResolver(pretSchema),
   });
 
-  const onSubmit = (data: PretFormValues) => {
+
+  const onSubmit = async (data: PretFormValues) => {
     console.log("Données soumises :", data);
+    setLoading(true);
+    const response = await savePret(data); // Envoie l'objet JSON directement
+
+    if (response.success) {
+      toast.success("Prêt bancaire creer avec succes.");
+      setLoading(false);
+      setShowForm(false); // Ferme le formulaire après succès
+    } else {
+      toast.error("Error lors de la création de prêt bancaire");
+    }
   };
   return (
     <>
@@ -54,10 +81,23 @@ export default function AddPret() {
                 <label className="block text-sm font-medium text-gray-700">Date de prêt</label>
                 <input
                   type="date"
-                  {...register("date_de_pret")}
+                  {...register("dateDePret")}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
                 />
-                {errors.date_de_pret && <p className="text-red-500 text-sm">{errors.date_de_pret.message}</p>}
+                {errors.dateDePret && <p className="text-red-500 text-sm">{errors.dateDePret.message}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Produit</label>
+                <select
+                  {...register("produit")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white">
+                  <option disabled>Selectionner un produit</option>
+                  {typeProduit?.map((produit, index) => (
+                    <option key={index} value={produit.id_produit}>{produit.nom_produit}</option>
+                  ))}
+                </select>
+                {errors.produit && <p className="text-red-500 text-sm">{errors.produit.message}</p>}
               </div>
 
               <div>
@@ -72,14 +112,26 @@ export default function AddPret() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Prix unitaire</label>
+                <label className="block text-sm font-medium text-gray-700">Unité</label>
+                <select
+                  {...register("unite")}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 bg-white"
+                >
+                  <option disabled>Sélectionnez une unité</option>
+                  <option value="KG">KG</option>
+                  <option value="T">T</option>
+                </select>
+                {errors.unite && <p className="text-red-500 text-sm">{errors.unite.message}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Prix/KG</label>
                 <input
                   type="number"
                   step="0.01"
-                  {...register("prix_unitaire", { valueAsNumber: true })}
+                  {...register("prixUnitaire", { valueAsNumber: true })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
                 />
-                {errors.prix_unitaire && <p className="text-red-500 text-sm">{errors.prix_unitaire.message}</p>}
+                {errors.prixUnitaire && <p className="text-red-500 text-sm">{errors.prixUnitaire.message}</p>}
               </div>
 
               <div>
@@ -87,10 +139,10 @@ export default function AddPret() {
                 <input
                   type="number"
                   step="0.001"
-                  {...register("taux_augmentation", { valueAsNumber: true })}
+                  {...register("tauxAugmentation", { valueAsNumber: true })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
                 />
-                {errors.taux_augmentation && <p className="text-red-500 text-sm">{errors.taux_augmentation.message}</p>}
+                {errors.tauxAugmentation && <p className="text-red-500 text-sm">{errors.tauxAugmentation.message}</p>}
               </div>
 
               <div>
@@ -98,27 +150,32 @@ export default function AddPret() {
                 <input
                   type="number"
                   step="0.001"
-                  {...register("taux_mensuel", { valueAsNumber: true })}
+                  {...register("tauxMensuel", { valueAsNumber: true })}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
                 />
-                {errors.taux_mensuel && <p className="text-red-500 text-sm">{errors.taux_mensuel.message}</p>}
+                {errors.tauxMensuel && <p className="text-red-500 text-sm">{errors.tauxMensuel.message}</p>}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">Date de remboursement</label>
                 <input
                   type="date"
-                  {...register("date_de_remboursement")}
+                  {...register("dateDeRemboursement")}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
                 />
-                {errors.date_de_remboursement && <p className="text-red-500 text-sm">{errors.date_de_remboursement.message}</p>}
+                {errors.dateDeRemboursement && <p className="text-red-500 text-sm">{errors.dateDeRemboursement.message}</p>}
               </div>
               <div className='flex justify-center gap-4'>
                 <button
                   type="submit"
                   className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+                  disabled={loading}
                 >
-                  Enregistrer
+                {loading ? <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>// Spinner
+                  :(
+                  "Enregistrer"
+                  )
+                }
                 </button>
                 <button
                   type="submit"

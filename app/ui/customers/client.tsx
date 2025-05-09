@@ -15,7 +15,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
         <div className="inline-block w-full align-middle">
           <div>
 
-            <div className="rounded-lg bg-teal-200 p-2 md:pt-0">
+            <div className="rounded-lg bg-teal-100 p-2 md:pt-0">
               <h2 className="flex justify-center text-lg font-medium">
                 Liste des tout les clients
               </h2>
@@ -49,7 +49,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
               </div>
               <div className="hidden custom-lg:hidden custom-sm:hidden md:block overflow-x-auto max-h-[400px]">
                 <table className="hidden min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
-                  <thead className="sticky top-0 bg-teal-200 text-left text-sm font-medium shadow-md">
+                  <thead className="sticky top-0 bg-teal-100 text-left text-sm font-medium shadow-md">
                     <tr>
                       <th scope="col" className="px-4 py-5">Nom Client</th>
                       <th scope="col" className="px-3 py-5">Prenom Client</th>
@@ -75,7 +75,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
             </div>
             {/* Affichage pour petits écrans (moins de 1341px de largeur OU 760px de hauteur) */}
 
-            <div className="rounded-lg bg-teal-200 p-2 md:pt-0 mt-4">
+            <div className="rounded-lg bg-teal-100 p-2 md:pt-0 mt-4">
               <h3 className="flex justify-center text-lg font-medium">
                 Liste des clients avec leur transaction
               </h3>
@@ -120,7 +120,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
                 ))}
               </div>
               <table className="hidden min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
-                <thead className="sticky top-0 bg-teal-200 text-left text-sm font-medium shadow-md">
+                <thead className="sticky top-0 bg-teal-100 text-left text-sm font-medium shadow-md">
                   <tr>
                     <th scope="col" className="px-4 py-5">Nom Client</th>
                     <th scope="col" className="px-3 py-5">Prenom Client</th>
