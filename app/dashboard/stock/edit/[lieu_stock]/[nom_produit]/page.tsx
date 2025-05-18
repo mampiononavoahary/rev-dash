@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getStockByLieuAndProduit2, updateQuantiteStock } from "@/app/ui/stock/get-stock"
+import { getStockByLieuAndProduit2, transformProduit, updateQuantiteStock } from "@/app/ui/stock/get-stock"
 import { getIdAndName } from "@/app/ui/produits/getproduits"
 import { toast } from "react-toastify"
 import { useRouter } from "next/navigation"
@@ -35,6 +35,8 @@ export default function Page({ params }: { params: Promise<{ lieu_stock: string;
   const [categorieProduit, setCategorieProduit] = useState<string | null>(null)
   const [produits, setProduits] = useState<{ id_produit: string; nom_detail: string }[]>([])
   const [quantiteTransform, setQuantiteTransform] = useState("")
+  const [idpremier, setIdPremier] = useState("")
+  const [idfinie, setIdFinie] = useState("")
   const [error, setError] = useState("")
   const [quantiteStock, setQuantiteStock] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -91,6 +93,22 @@ export default function Page({ params }: { params: Promise<{ lieu_stock: string;
     }
   }
 
+  const handleTransformProduit = async () => {
+    try {
+      const stockData = await getStockByLieuAndProduit2(lieu_stock, nom_produit)
+      const premier = stockData.id_produit_avec_detail;
+      await transformProduit(lieu_stock, Number(premier), Number(idfinie), Number(quantiteTransform));
+      toast.success("Transformation de produit reussie!")
+      const stock = await getStockByLieuAndProduit2(lieu_stock, nom_produit)
+      if (stock) {
+        setQuantiteStock(stock.quantite_stock.toString())
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error("Erreur lors de la transformation de produit")
+    }
+    setQuantiteTransform("");
+  }
   return (
     <div className="grid justify-center gap-6 mt-6">
       <h1 className="flex justify-center text-xl font-bold">Mettre à jour le stock</h1>
@@ -184,7 +202,7 @@ export default function Page({ params }: { params: Promise<{ lieu_stock: string;
       )}
 
       {/* Formulaire de transformation */}
-      {stocks && categorieProduit !== "PRODUIT_FINI" &&(
+      {stocks && categorieProduit !== "PRODUIT_FINI" && (
         <Card className="w-[350px]">
           <CardHeader>
             <CardTitle>{formattedNomProduit}</CardTitle>
@@ -193,9 +211,9 @@ export default function Page({ params }: { params: Promise<{ lieu_stock: string;
           <CardContent>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="quantite-transform">Quantité</Label>
+                <Label htmlFor="quantite">Quantité</Label>
                 <Input
-                  id="quantite-transform"
+                  id="quantite"
                   type="number"
                   placeholder="Quantité à transformer"
                   value={quantiteTransform}
@@ -216,14 +234,14 @@ export default function Page({ params }: { params: Promise<{ lieu_stock: string;
                 </Select>
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="produit">Produit fini</Label>
-                <Select>
-                  <SelectTrigger id="produit">
+                <Label htmlFor="id_finie">Produit fini</Label>
+                <Select onValueChange={(val) => setIdFinie(val)}>
+                  <SelectTrigger id="id_finie">
                     <SelectValue placeholder="Sélectionnez un produit" />
                   </SelectTrigger>
                   <SelectContent position="popper">
                     {produits.map((produit: any) => (
-                      <SelectItem key={produit.id_produit_avec_detail} value={produit.nom_detail}>
+                      <SelectItem key={produit.id_produit_avec_detail} value={produit.id_produit_avec_detail}>
                         {produit.nom_detail}
                       </SelectItem>
                     ))}
@@ -233,7 +251,7 @@ export default function Page({ params }: { params: Promise<{ lieu_stock: string;
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button className="bg-teal-200 text-gray-900 hover:text-white">Transformer</Button>
+            <Button disabled={isLoading || !quantiteTransform || !idfinie} className="bg-teal-200 text-gray-900 hover:text-white" onClick={handleTransformProduit}>Transformer</Button>
           </CardFooter>
         </Card>
       )}

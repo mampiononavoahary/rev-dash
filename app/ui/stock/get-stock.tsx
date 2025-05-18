@@ -103,7 +103,7 @@ export async function transformProduit(lieu_stock: string, id_premier: number, i
       console.warn('Token not found');
       return;
     }
-    const response = await axios.post(`${BASE_URL}/api/stock/transform`, {
+    const response = await axios.post(`${BASE_URL}/api/stock/transform`,{}, {
       headers: {
         Authorization: `Bearer ${token.value}`,
         "Content-Type": "application/json",

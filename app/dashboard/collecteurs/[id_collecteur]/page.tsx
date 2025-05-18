@@ -6,8 +6,6 @@ import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { Effectuer, EnAttent } from '@/app/ui/collecteurs/buttons';
 import { getIdAndName } from '@/app/ui/produits/getproduits';
-import { unique } from 'next/dist/build/utils';
-import { nullable, string } from 'zod';
 
 export default function PaymentPage({ params }: { params: Promise<{ id_collecteur: number }> }) {
   const [selectedCredit, setSelectedCredit] = useState<any>(null);
@@ -24,7 +22,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
   const [lieuCollection, setLieuCollection] = useState<string>("");
   const [referance, setReferance] = useState<string>("");
   const [produitsCollecter, setProduitsCollecter] = useState<any[]>([]);
-  const [produitFiltrer,setProduitFiltrer] = useState<any[]>([]);
+  const [produitFiltrer, setProduitFiltrer] = useState<any[]>([]);
 
   const [produitId, setProduitId] = useState('');
   const [quantite, setQuantite] = useState('');
@@ -43,7 +41,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
         setCollecteur(res);
         setCredits(credit);
         setProduits(fetchedProduits);
-        const produitsFiltrer = fetchedProduits.filter((e:any) => e.categorie === "PRODUIT_PREMIER");
+        const produitsFiltrer = fetchedProduits.filter((e: any) => e.categorie === "PRODUIT_PREMIER");
         setProduitFiltrer(produitsFiltrer);
       } catch (error) {
         console.error('Erreur lors de la récupération de collecteur,', error);
@@ -113,11 +111,15 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
     console.log("Valeur de la référence saisie :", referance);
     const idCreditList = await getCreditByRef(referance);
     const idCredit = idCreditList?.[0];
+
+    if (!idCredit || !idCredit.idCreditCollecteur) {
+      toast.error("Référence de crédit introuvable. Veuillez vérifier la référence saisie.");
+      return;
+    }
+
     const creditCollecteurId = Number(idCredit.idCreditCollecteur);
-    console.log(creditCollecteurId);
-    if (isNaN(creditCollecteurId)) {
-      return { success: false, error: 'ID du collecteur de crédit invalide.' };
-    } const formData = new FormData();
+
+    const formData = new FormData();
     formData.append('lieuDeCollection', lieuCollection);
     formData.append('dateDeDebit', dateDeDebit);
     formData.append('description', descriptionDebit);

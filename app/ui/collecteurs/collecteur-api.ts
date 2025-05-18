@@ -65,6 +65,25 @@ export async function getCreditByIdCollecteur(id_collecteur: number) {
     return [];
   }
 }
+export async function getCreditWithDebits() {
+  try {
+    const token = (await cookies()).get('token');
+    if (!token) {
+      console.warn('token introuvable dans les cookies');
+      return null;
+    }
+    const credits = await axios.get(`${BASE_URL}/api/credits/debits/collecteur`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      }
+    })
+    console.log("crédits récupérées: ", credits.data)
+    return credits.data || [];
+  } catch (error) {
+    console.error('Erreur lors de la récupération des credits:', error);
+    return [];
+  }
+}
 
 const formSchema = z.object({
   id_collecteur: z.number(),

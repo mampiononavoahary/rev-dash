@@ -49,26 +49,24 @@ export function Explorer({ id_collecteur }: { id_collecteur: number }) {
   );
 }
 export function Effectuer({ id_collecteur }: { id_collecteur: number }) {
-  return (<Link
-    href={`/dashboard/collecteurs/${id_collecteur}`}
+  return (<div
     className="relative group"
   >
     <button className="rounded-full border p-1 bg-green-300">
       <span className="sr-only">Leur débit et crédit</span>
       <CheckIcon className="w-5" />
     </button>
-  </Link>
+  </div>
   );
 }
 export function EnAttent({ id_collecteur }: { id_collecteur: number }) {
-  return (<Link
-    href={`/dashboard/collecteurs/${id_collecteur}`}
+  return (<div
     className="relative group"
   >
     <button className="rounded-full border p-1 bg-yellow-300">
       <span className="sr-only">Leur débit et crédit</span>
       <ClockIcon className="w-5" />
     </button>
-  </Link>
+  </div>
   );
 }
