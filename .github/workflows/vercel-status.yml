@@ -1,0 +1,52 @@
+
+name: Vercel Deployment Status
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger deployment on Vercel
+        id: deploy
+        run: |
+          RESPONSE=$(curl -s -X POST https://api.vercel.com/v13/deployments \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"projectId\": \"${{ secrets.VERCEL_PROJECT_ID }}\",
+              \"teamId\": \"${{ secrets.VERCEL_ORG_ID }}\"
+            }")
+
+          echo "$RESPONSE"
+          DEPLOYMENT_ID=$(echo "$RESPONSE" | jq -r '.id')
+          echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+
+      - name: Wait for deployment to be ready
+        run: |
+          DEPLOYMENT_ID=${{ steps.deploy.outputs.deployment_id }}
+          echo "Waiting for deployment ID: $DEPLOYMENT_ID..."
+
+          for i in {1..30}; do
+            STATUS=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+              https://api.vercel.com/v13/deployments/$DEPLOYMENT_ID | jq -r '.readyState')
+
+            echo "Current status: $STATUS"
+
+            if [ "$STATUS" = "READY" ]; then
+              echo "✅ Deployment successful for ZOARISOA VOAHARY MAMPIONONA!"
+              exit 0
+            elif [ "$STATUS" = "ERROR" ]; then
+              echo "❌ Deployment failed!"
+              exit 1
+            fi
+
+            sleep 10
+          done
+
+          echo "❌ Timeout waiting for deployment"
+          exit 1
