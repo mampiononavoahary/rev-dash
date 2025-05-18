@@ -1,34 +1,29 @@
 
-name: Vercel Deployment Status
+
+name: Check Vercel Deployment
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   check-deployment:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger deployment on Vercel
-        id: deploy
+      - name: Get latest deployment
+        id: get_deployment
         run: |
-          RESPONSE=$(curl -s -X POST https://api.vercel.com/v13/deployments \
-            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"projectId\": \"${{ secrets.VERCEL_PROJECT_ID }}\",
-              \"teamId\": \"${{ secrets.VERCEL_ORG_ID }}\"
-            }")
+          RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            "https://api.vercel.com/v6/deployments?projectId=${{ secrets.VERCEL_PROJECT_ID }}")
 
-          echo "$RESPONSE"
-          DEPLOYMENT_ID=$(echo "$RESPONSE" | jq -r '.id')
-          echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+          DEPLOYMENT_ID=$(echo "$RESPONSE" | jq -r '.deployments[0].uid')
 
-      - name: Wait for deployment to be ready
+          echo "Latest deployment ID: $DEPLOYMENT_ID"
+          echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
+
+      - name: Check deployment status
         run: |
-          DEPLOYMENT_ID=${{ steps.deploy.outputs.deployment_id }}
           echo "Waiting for deployment ID: $DEPLOYMENT_ID..."
 
           for i in {1..30}; do
@@ -38,7 +33,7 @@ jobs:
             echo "Current status: $STATUS"
 
             if [ "$STATUS" = "READY" ]; then
-              echo "✅ Deployment successful for ZOARISOA VOAHARY MAMPIONONA!"
+              echo "✅ Deployment successful for rev-dash!"
               exit 0
             elif [ "$STATUS" = "ERROR" ]; then
               echo "❌ Deployment failed!"
@@ -50,3 +45,4 @@ jobs:
 
           echo "❌ Timeout waiting for deployment"
           exit 1
+
