@@ -1,65 +1,69 @@
 
-name: Check Vercel Deployment Status
+name: Check Vercel Deployment
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   check-deployment:
+    name: Check Vercel Deployment Status
     runs-on: ubuntu-latest
 
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+
     steps:
-      - name: Get latest production deployment
+      - name: 📥 Récupérer le dernier déploiement
         id: get_deployment
         run: |
-          DEPLOYMENT=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v6/deployments?projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=5" \
-            | jq -c '.deployments[] | select(.target == "production")' | head -n 1)
+          DEPLOYMENT=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v6/deployments?projectId=$VERCEL_PROJECT_ID&limit=1")
+          
+          DEPLOYMENT_ID=$(echo "$DEPLOYMENT" | jq -r '.deployments[0].uid')
 
-          DEPLOYMENT_ID=$(echo "$DEPLOYMENT" | jq -r '.uid')
+          echo "Dernier déploiement ID: $DEPLOYMENT_ID"
+          echo "deployment_id=$DEPLOYMENT_ID" >> "$GITHUB_OUTPUT"
 
-          echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
-          echo "🟡 Checking deployment ID: $DEPLOYMENT_ID"
-
-      - name: Wait for deployment to be ready
+      - name: ⏳ Attendre que le déploiement soit prêt
         run: |
           DEPLOYMENT_ID=${{ steps.get_deployment.outputs.deployment_id }}
 
-          if [ "$DEPLOYMENT_ID" = "null" ] || [ -z "$DEPLOYMENT_ID" ]; then
-            echo "❌ No deployment ID found."
+          if [ -z "$DEPLOYMENT_ID" ] || [ "$DEPLOYMENT_ID" == "null" ]; then
+            echo "::error title=Erreur::Aucun ID de déploiement trouvé"
             exit 1
           fi
 
-          for i in {1..30}; do
-            STATUS=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-              "https://api.vercel.com/v13/deployments/$DEPLOYMENT_ID" | jq -r '.readyState')
+          echo "🔍 Vérification du statut du déploiement ID: $DEPLOYMENT_ID"
 
-            echo "⏳ Current status: $STATUS"
+          for i in {1..30}; do
+            RESPONSE=$(curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
+              "https://api.vercel.com/v13/deployments/$DEPLOYMENT_ID")
+
+            STATUS=$(echo "$RESPONSE" | jq -r '.readyState')
+            URL=$(echo "$RESPONSE" | jq -r '.url')
+            DOMAIN=$(echo "$RESPONSE" | jq -r '.alias[0] // "non disponible"')
+
+            echo "::notice title=Statut::$STATUS"
+            echo "🔄 Statut actuel: $STATUS"
 
             if [ "$STATUS" = "READY" ]; then
-              echo "✅ Deployment successful!"
+              echo "✅ Déploiement terminé avec succès!"
+              echo "🌐 Domaine : https://$DOMAIN"
+              echo "::notice title=Déploiement terminé::Domaine: https://$DOMAIN"
               exit 0
             elif [ "$STATUS" = "ERROR" ]; then
-              echo "❌ Deployment failed!"
+              echo "::error title=Échec du déploiement::Le déploiement a échoué ❌"
               exit 1
             fi
 
             sleep 10
           done
 
-          echo "❌ Timeout waiting for deployment"
+          echo "::error title=Délai dépassé::Le déploiement n'est pas prêt après 5 minutes"
           exit 1
-
-      - name: Get production domain
-        run: |
-          DOMAIN=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v9/projects/rev-dash/domains" \
-            | jq -r '.domains[] | select(.verified == true) | .name' | head -n 1)
-
-          if [ -z "$DOMAIN" ]; then
-            echo "❌ No production domain found."
-            exit 1
-          fi
-
-          echo "✅ Production domain: https://$DOMAIN"
 
