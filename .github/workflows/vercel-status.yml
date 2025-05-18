@@ -1,39 +1,57 @@
 
-
-name: Check Vercel Deployment
+name: Check Vercel Deployment Status
 
 on:
   push:
     branches: [main]
 
 jobs:
-  check-deployment:
+  check-vercel-deployment:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get latest deployment
+      - name: Get latest deployment for main branch
         id: get_deployment
         run: |
-          RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-            "https://api.vercel.com/v6/deployments?projectId=${{ secrets.VERCEL_PROJECT_ID }}")
+          echo "🔍 Fetching deployment for 'main' branch..."
 
-          DEPLOYMENT_ID=$(echo "$RESPONSE" | jq -r '.deployments[0].uid')
+          for i in {1..10}; do
+            DEPLOYMENT=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+              "https://api.vercel.com/v6/deployments?projectId=${{ secrets.VERCEL_PROJECT_ID }}&limit=5" \
+              | jq -c '.deployments[] | select(.meta.githubCommitRef == "main")' | head -n 1)
 
-          echo "Latest deployment ID: $DEPLOYMENT_ID"
-          echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
+            if [ -n "$DEPLOYMENT" ]; then
+              DEPLOYMENT_ID=$(echo "$DEPLOYMENT" | jq -r '.uid')
+              DEPLOYMENT_URL=$(echo "$DEPLOYMENT" | jq -r '.url')
+              echo "✅ Found deployment: $DEPLOYMENT_ID ($DEPLOYMENT_URL)"
 
-      - name: Check deployment status
+              echo "DEPLOYMENT_ID=$DEPLOYMENT_ID" >> $GITHUB_ENV
+              echo "DEPLOYMENT_URL=$DEPLOYMENT_URL" >> $GITHUB_ENV
+              break
+            fi
+
+            echo "⏳ Waiting for deployment to appear..."
+            sleep 5
+          done
+
+          if [ -z "$DEPLOYMENT_ID" ]; then
+            echo "❌ Failed to find deployment for 'main' branch"
+            exit 1
+          fi
+
+      - name: Wait for deployment to finish
         run: |
-          echo "Waiting for deployment ID: $DEPLOYMENT_ID..."
+          echo "🔄 Checking status for deployment ID: $DEPLOYMENT_ID"
 
           for i in {1..30}; do
             STATUS=$(curl -s -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
-              https://api.vercel.com/v13/deployments/$DEPLOYMENT_ID | jq -r '.readyState')
+              "https://api.vercel.com/v13/deployments/$DEPLOYMENT_ID" | jq -r '.readyState')
 
-            echo "Current status: $STATUS"
+            echo "🔁 Current status: $STATUS"
 
             if [ "$STATUS" = "READY" ]; then
-              echo "✅ Deployment successful for rev-dash!"
+              echo "✅ Deployment successful!"
+              echo "🔗 Link: https://${DEPLOYMENT_URL}"
               exit 0
             elif [ "$STATUS" = "ERROR" ]; then
               echo "❌ Deployment failed!"
@@ -43,6 +61,6 @@ jobs:
             sleep 10
           done
 
-          echo "❌ Timeout waiting for deployment"
+          echo "❌ Timeout: Deployment didn't finish in expected time."
           exit 1
 
