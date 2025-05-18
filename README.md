@@ -18,7 +18,7 @@
 ## 🚀 Installation locale
 
 ```bash
-git clone https://github.com/Voahary/gestionDeStockCollecteur.git
-cd gestionDeStockCollecteur
+git clone https://github.com/mampiononavoahary/rev-dash.git
+cd rev-dash
 npm install
 npm run dev
