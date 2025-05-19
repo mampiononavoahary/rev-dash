@@ -88,7 +88,6 @@ const formSchema = z.object({
   prix_d_achat: z.number().min(0, "Prix d'achat requis"),
   prix_de_vente: z.number().min(0, "Prix de vente requis"),
   unite: z.string().min(1, "Unité requise"),
-  image_url: z.instanceof(File).optional(),
 });
 
 export async function createProduit(formdata: FormData) {
@@ -109,7 +108,6 @@ export async function createProduit(formdata: FormData) {
       prix_d_achat,
       prix_de_vente,
       unite: formdata.get("unite"),
-      image_url: formdata.get("image_url"),
     });
 
     const token = (await cookies()).get("token");
@@ -136,10 +134,6 @@ export async function createProduit(formdata: FormData) {
     // Préparer FormData pour l'envoi
     const formDataToSend = new FormData();
     formDataToSend.append("produitAndDetail", JSON.stringify(requestData));
-
-    if (validatedData.image_url) {
-      formDataToSend.append("image_url", validatedData.image_url);
-    }
 
     console.log("Données de la requête:", requestData);
 

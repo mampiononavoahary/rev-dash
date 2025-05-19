@@ -23,12 +23,10 @@ interface ProduitFormData {
   prix_d_achat: number;
   prix_de_vente: number;
   unite: string;
-  image_url: string;
 }
 
 export default function CreateProduct() {
   const [roleUser, setRoleUser] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [produits, setProduits] = useState<any[]>([]);
   const [typeProduit, setTypeProduit] = useState<any[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
@@ -42,7 +40,6 @@ export default function CreateProduct() {
     prix_d_achat: 1500,
     prix_de_vente: 1700,
     unite: "KG",
-    image_url: "",
   });
 
   const router = useRouter();
@@ -85,34 +82,20 @@ export default function CreateProduct() {
     };
     fetchData();
   }, []);
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value === "" ? null : name === "type_produit" ? (value === "null" ? null : Number(value)) : value,
+      [name]:
+        name === "type_produit"
+          ? value === "" ? null : Number(value)
+          : value,
     }));
   };
 
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!imageFile) {
-      toast.error("Veuillez sélectionner une image");
-      return;
-    }
-
     const formDataToSend = new FormData();
 
     // Convertir les valeurs avant de les ajouter à FormData
@@ -129,8 +112,6 @@ export default function CreateProduct() {
       }
     });
 
-    // Ajouter le fichier image
-    formDataToSend.append("image_url", imageFile);
 
     try {
       const result = await createProduit(formDataToSend);
@@ -190,22 +171,16 @@ export default function CreateProduct() {
               <select
                 id="type_produit"
                 name="type_produit"
-                value={formData.type_produit === null ? "null" : formData.type_produit}
+                value={formData.type_produit !== null ? String(formData.type_produit) : ""}
                 onChange={handleInputChange}
                 className="w-full p-2 border border-gray-300 rounded-md"
               >
-                <option value="null">Null</option> {/* Option pour null */}
-                {Array.isArray(typeProduit) && typeProduit.length > 0 ? (
-                  typeProduit
-                    .filter((typeProduit) => typeProduit !== undefined && typeProduit !== null) // Filtrer les valeurs null/undefined
-                    .map((typeProduit) => (
-                      <option key={typeProduit.id_type_produit} value={typeProduit.id_type_produit}>
-                        {typeProduit.nom_type_produit}
-                      </option>
-                    ))
-                ) : (
-                  <option disabled>Aucun produit disponible</option>
-                )}
+                <option value="">Sélectionner un type</option>
+                {typeProduit.map((tp) => (
+                  <option key={tp.id_type_produit} value={tp.id_type_produit}>
+                    {tp.nom_type_produit}
+                  </option>
+                ))}
               </select>
               <AddType typeProduits={typeProduit} setTypeProduits={setTypeProduit} />
             </div>
@@ -317,27 +292,7 @@ export default function CreateProduct() {
               <option value="T">T</option>
             </select>
           </div>
-
-          {/* Image du produit */}
-          <div className="flex items-center space-x-4">
-            <input
-              type="file"
-              name="image_url"
-              id="image_url"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-            {preview && (
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-10 h-10 object-cover rounded-full border border-gray-300"
-              />
-            )}
-          </div>
         </div>
-
         <div className="flex justify-center gap-6 mt-6">
           <SubmitButton type="submit">Créer Produit</SubmitButton>
           <Link href="/dashboard/produits">

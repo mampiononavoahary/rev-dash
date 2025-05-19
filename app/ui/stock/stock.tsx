@@ -17,7 +17,6 @@ export default async function Stocks() {
               </h3>
               <div className="px-5 pb-5">
                 <div className="flex items-center mt-2.5 mb-5 gap-2">
-                  <img className="w-10 h-10 rounded-full" src={stock.image_url} alt="img" />
                   <h5 className="text-gray-900 dark:text-white">{stock.nom_detail}</h5>
                   <h5>{stock.symbole}</h5>
                 </div>
