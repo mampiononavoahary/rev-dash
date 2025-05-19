@@ -120,7 +120,7 @@ export async function createCredit(formdata: FormData) {
       return null;
     }
 
-    const credit = await axios.post(`${BASE_URL}/api/collecteur/credit`, creditRequest, {
+    const credit = await axios.post(`${BASE_URL}/api/collecteur/credit/savewithreste`, creditRequest, {
       headers: {
         Authorization: `Bearer ${token.value}`,
         "Content-Type": "application/json",
