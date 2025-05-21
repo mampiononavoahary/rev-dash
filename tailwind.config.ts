@@ -30,7 +30,7 @@ const config: Config = {
         },
       },
       screens: {
-        'custom-lg': { raw: '(max-width: 1341px)' },
+        'custom-lg': { raw: '(max-width: 1330px)' },
         'custom-sm': { raw: '(max-height: 760px)' },
         'custom-md': { raw: '(max-width: 892px)' },
         'lg-conf': { raw: '(max-width:1110px)' },

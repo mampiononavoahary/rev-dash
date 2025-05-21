@@ -37,10 +37,10 @@ export default function NavLinks() {
   const { logout } = useAuth();
 
   const handleLogout = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    event.preventDefault(); // Empêche la navigation par défaut
+    event.preventDefault();
     logout();
     setTimeout(() => {
-      router.push('/'); // Redirige vers la page d'accueil après la déconnexion
+      router.push('/');
     }, 1000);
   };
 
@@ -50,18 +50,17 @@ export default function NavLinks() {
         const LinkIcon = link.icon;
         const isActive = pathname === link.href || (pathname.startsWith(link.href + '/') && link.href !== '/dashboard');
 
-        // Vérifie si c'est le lien "Se déconnecter"
         const isLogout = link.name === 'Se déconnecter';
 
         return (
           <Link
             key={link.name}
             href={link.href}
-            onClick={isLogout ? handleLogout : undefined} // Ajoute le gestionnaire pour "Se déconnecter"
+            onClick={isLogout ? handleLogout : undefined}
             className={clsx(
               'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-cyan-200 hover:text-yellow-600 md:flex-none md:justify-start md:p-2 md:px-3',
               {
-                'bg-teal-100 text-yellow-600': isActive, // Applique les styles si actif
+                'bg-teal-100 text-yellow-600': isActive,
               },
             )}
           >

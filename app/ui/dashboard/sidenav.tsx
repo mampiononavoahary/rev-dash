@@ -16,7 +16,7 @@ export default function SideNav() {
     }, 1000)
   };
   return (
-    <div className="flex h-full flex-col px-2 py-2 md:px-2">
+    <div className="flex h-full flex-col px-2 py-2 md:px-2 overflow-y-auto">
       {/* Logo Link */}
       <Link
         href="/"
