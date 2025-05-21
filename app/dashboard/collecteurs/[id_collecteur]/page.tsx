@@ -30,6 +30,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
   const [lieuStock, setLieuStock] = useState('');
   const [prixUnitaire, setPrixUnitaire] = useState('');
   const [produits, setProduits] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
@@ -78,37 +79,47 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
   };
 
 
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
     const formData = new FormData();
     formData.append('collecteur', String(id || ''));
     formData.append('dateDeCredit', dateDeCredit);
     formData.append('montant', montant);
     formData.append('description', description);
 
-    const res = await createCredit(formData);
+    try {
+      const res = await createCredit(formData);
 
-    if (res?.success) {
-      toast.success("Crédit ajouté !");
-
-      try {
+      if (res?.success) {
+        toast.success("Crédit ajouté !");
         const updatedCredits = await getCreditByIdCollecteur(id_collecteur);
         setCredits(updatedCredits);
-      } catch (error) {
-        console.error("Erreur lors du rafraîchissement des crédits :", error);
-      }
 
-      setDateDeCredit("");
-      setMontant("");
-      setDescription("");
-    } else {
-      toast.error(res?.error || "Erreur");
+        setDateDeCredit("");
+        setMontant("");
+        setDescription("");
+      } else {
+        toast.error(res?.error || "Erreur lors de l'ajout du crédit.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la création du crédit :", error);
+      toast.error("Erreur inattendue lors de la création du crédit.");
+    } finally {
+      setLoading(false);
     }
   };
-  const handleSubmitDebit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
 
+  
+const handleSubmitDebit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
     console.log("Valeur de la référence saisie :", referance);
+
     const idCreditList = await getCreditByRef(referance);
     const idCredit = idCreditList?.[0];
 
@@ -133,34 +144,31 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
       lieu_stock: produit.lieu_stock
     }));
 
-    try {
-      console.log("formData: ", formData);
-      console.log("produitsRequests: ", produitRequests);
-      const res = await createDebit(formData, produitRequests);
-      console.log(res);
-      if (res?.success) {
-        try {
-          toast.success('Debit ajouter !');
-          const updateDebit = await getCreditByIdCollecteur(id_collecteur);
-          setCredits(updateDebit);
-        } catch (error) {
-          console.error('Erreur lors du rafraichissement des débits', error);
-        }
-        setProduitsCollecter([]);
-        setLieuCollection("");
-        setReferance("");
-        setDateDeDebit("");
-        setDescriptionDebit("");
-      } else {
-        toast.error('Débit non creer!');
-      }
-    } catch (error) {
-      console.error('Erreur lors de la création de débit', error);
-      toast.error('Erreur lors de la création de débit');
+    console.log("formData: ", formData);
+    console.log("produitRequests: ", produitRequests);
+
+    const res = await createDebit(formData, produitRequests);
+
+    if (res?.success) {
+      toast.success('Débit ajouté !');
+      const updateDebit = await getCreditByIdCollecteur(id_collecteur);
+      setCredits(updateDebit);
+
+      setProduitsCollecter([]);
+      setLieuCollection("");
+      setReferance("");
+      setDateDeDebit("");
+      setDescriptionDebit("");
+    } else {
+      toast.error(res?.error || 'Échec lors de la création du débit.');
     }
-
+  } catch (error) {
+    console.error('Erreur lors de la création du débit :', error);
+    toast.error('Erreur inattendue lors de la création du débit.');
+  } finally {
+    setLoading(false);
   }
-
+};
 
   return (
     <div className="flex justify-center">
@@ -395,9 +403,13 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
             ) : null}
             <button
               type="submit"
-              className="w-full bg-green-600 text-white py-3 rounded-md hover:bg-green-700"
+              className="w-full bg-green-600 text-white py-3 rounded-md hover:bg-green-700 flex items-center justify-center"
             >
-              Confirmer le {formType === 'credit' ? 'crédit' : 'debit'}
+              {loading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white "></div>
+              ) : (
+                <>Confirmer le {formType === 'credit' ? 'crédit' : 'débit'}</>
+              )}
             </button>
           </form>
         </div>

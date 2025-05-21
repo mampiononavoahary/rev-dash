@@ -19,7 +19,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
               <h2 className="flex justify-center text-lg font-medium">
                 Liste des tout les clients
               </h2>
-              <div className="custom-lg:block custom-sm:block xl:hidden space-y-4">
+              <div className="custom-lg:block custom-sm:block hidden space-y-4">
                 {clientsNoExtract?.map((client: any, index: string) => (
                   <div
                     key={client.id_client || index}
@@ -47,7 +47,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
                   </div>
                 ))}
               </div>
-              <div className="hidden custom-lg:hidden custom-sm:hidden md:block overflow-x-auto max-h-[400px]">
+              <div className="block custom-lg:hidden custom-sm:hidden md:block overflow-x-auto max-h-[400px]">
                 <table className="hidden min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
                   <thead className="sticky top-0 bg-teal-100 text-left text-sm font-medium shadow-md">
                     <tr>
@@ -80,7 +80,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
                 Liste des clients avec leur transaction
               </h3>
 
-              <div className="custom-lg:block custom-sm:block xl:hidden space-y-4 mt-6">
+              <div className="custom-lg:block custom-sm:block hidden space-y-4 mt-6">
                 {clients?.map((client: Clients, index: string) => (
                   <div
                     key={client.id_client || index}
@@ -119,10 +119,9 @@ export default async function Client({ query, currentPage }: { query: string, cu
                   </div>
                 ))}
               </div>
-              <table className="hidden min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
+              <table className="block min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
                 <thead className="sticky top-0 bg-teal-100 text-left text-sm font-medium shadow-md">
                   <tr>
-                    <th scope="col" className="px-4 py-5">Nom Client</th>
                     <th scope="col" className="px-3 py-5">Prenom Client</th>
                     <th scope="col" className="px-3 py-5">Total transaction</th>
                     <th scope="col" className="px-3 py-5">Total de vente</th>
@@ -139,7 +138,6 @@ export default async function Client({ query, currentPage }: { query: string, cu
                       key={client.id_client || index}
                       className="w-full border-b py-3 text-sm last-of-type:border-none"
                     >
-                      <td className="whitespace-nowrap px-3 py-3">{client.nom}</td>
                       <td className="whitespace-nowrap px-3 py-3">{client.prenom}</td>
                       <td className={clsx(
                         "whitespace-nowrap px-3 py-3",

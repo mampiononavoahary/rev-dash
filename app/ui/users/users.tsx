@@ -50,7 +50,7 @@ export default function Users() {
       <div className="inline-block w-full align-middle">
         <div className="rounded-lg bg-teal-100 p-2 md:pt-0">
           {/* Affichage pour petits écrans */}
-          <div className="custom-lg:block custom-sm:block xl:hidden space-y-4">
+          <div className="custom-lg:block custom-sm:block hidden space-y-4">
             {users?.map((user: any, index: number) => (
               <div
                 key={user.id_user || index}
@@ -75,7 +75,7 @@ export default function Users() {
           </div>
 
           {/* Affichage pour grands écrans */}
-          <table className="hidden min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
+          <table className="block min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
             <thead className="rounded-lg text-left text-sm font-medium">
               <tr>
                 <th scope="col" className="px-3 py-5">Profile</th>

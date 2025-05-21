@@ -14,7 +14,7 @@ export default async function Transactions({query,currentPage}:{query:string,cur
         <div className="inline-block w-full align-middle">
           <div className="rounded-lg bg-teal-100 p-2 md:pt-0">
             {/* Affichage pour petits écrans (moins de 1341px de largeur OU 760px de hauteur) */}
-            <div className="custom-lg:block custom-sm:block xl:hidden space-y-4">
+            <div className="custom-lg:block custom-sm:block hidden space-y-4">
               {transactions?.map((transaction: Transaction, index: string) => (
                 <div
                   key={transaction.id_transaction || index}
@@ -25,7 +25,7 @@ export default async function Transactions({query,currentPage}:{query:string,cur
                       {transaction.nom_client}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {transaction.date_transaction}
+                      {transaction.date_transaction.split('T')[0]}
                     </p>
                   </div>
                   <div className="text-sm">
@@ -44,7 +44,7 @@ export default async function Transactions({query,currentPage}:{query:string,cur
             </div>
 
             {/* Affichage pour grands écrans */}
-            <table className="hidden min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
+            <table className="block min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
               <thead className="rounded-lg text-left text-sm font-medium">
                 <tr>
                   <th scope="col" className="px-4 py-5 sm:pl-6">Nom Client</th>
@@ -64,7 +64,7 @@ export default async function Transactions({query,currentPage}:{query:string,cur
                   >
                     <td className="whitespace-nowrap px-3 py-3">{transaction.nom_client}</td>
                     <td className="whitespace-nowrap px-3 py-3">{transaction.nom_produit}</td>
-                    <td className="whitespace-nowrap px-3 py-3">{transaction.date_transaction}</td>
+                    <td className="whitespace-nowrap px-3 py-3">{transaction.date_transaction.split('T')[0]}</td>
                     <td className="whitespace-nowrap px-3 py-3">{transaction.lieu_transaction}</td>
                     <td className="whitespace-nowrap px-3 py-3">{transaction.quantite}</td>
                     <td className="whitespace-nowrap px-3 py-3">{transaction.unite}</td>

@@ -29,7 +29,7 @@ export default function Collecteurs() {
             <h2 className="flex justify-center text-lg font-medium">
               Liste des tout les collecteurs
             </h2>
-            <div className="custom-lg:block custom-sm:block xl:hidden space-y-4">
+            <div className="custom-lg:block custom-sm:block hidden space-y-4">
               {allCollecteur?.map((collecteur: any, index: number) => (
                 <div
                   key={collecteur.id_collecteur || index}
@@ -59,7 +59,7 @@ export default function Collecteurs() {
                 </div>
               ))}
             </div>
-            <div className="hidden custom-lg:hidden custom-sm:hidden md:block overflow-x-auto max-h-[400px]">
+            <div className="block custom-lg:hidden custom-sm:hidden md:block overflow-x-auto max-h-[400px]">
               <table className="hidden min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
                 <thead className="sticky top-0 bg-teal-100 text-left text-sm font-medium shadow-md">
                   <tr>

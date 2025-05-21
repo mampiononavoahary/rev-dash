@@ -30,9 +30,10 @@ const config: Config = {
         },
       },
       screens: {
-        'custom-lg': { raw: '(max-width: 1330px)' },
-        'custom-sm': { raw: '(max-height: 760px)' },
-        'custom-md': { raw: '(max-width: 892px)' },
+        'custom-lg': { raw: '(max-width: 1100px)' },
+        'custom-lg2': { raw: '(max-width: 1260px)' },
+        'custom-sm': { raw: '(max-height: 560px)' },
+        'custom-md': { raw: '(max-width: 692px)' },
         'lg-conf': { raw: '(max-width:1110px)' },
         'sm-conf': { raw: '(max-width:433px)' },
       },

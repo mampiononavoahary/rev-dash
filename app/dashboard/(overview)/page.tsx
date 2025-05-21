@@ -27,7 +27,7 @@ export default async function Page(props: {
   const date = searchParams?.date || "";
   const dateDebut = searchParams?.dateDebut || "";
   const dateFin = searchParams?.dateFin || "";
-  
+
   return (
     <main>
       <InitializeToken />
@@ -35,21 +35,20 @@ export default async function Page(props: {
         Tableau de bord
       </h1>
 
-      <Filter datePlaceholder="Filtrer par date" locationPlaceholder="Filtrer par point de vente ou point d'achat" dateDebutPlaceholder="Date début" dateFinPlaceholder="Date fin"/>
-      {/* Section des cartes */}
+      <Filter datePlaceholder="Filtrer par date" locationPlaceholder="Filtrer par point de vente ou point d'achat" dateDebutPlaceholder="Date début" dateFinPlaceholder="Date fin" />
+
       <div className="grid gap-6 sm-conf:grid-cols-1 lg-conf:grid-cols-2 lg:grid-cols-4 ">
-        <CardWrapper lieu={lieu} date={date} dateDebut={dateDebut} dateFin={dateFin}/>
+        <CardWrapper lieu={lieu} date={date} dateDebut={dateDebut} dateFin={dateFin} />
       </div>
 
-      {/* Section des graphiques et dernières transactions */}
-      <div className="mt-6 grid grid-cols-1 lg-conf:grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <div className="col-span-1 md:col-span-4 lg:col-span-6">
+      <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-4 lg:grid-cols-8 custom-lg2:grid-cols-4">
+        <div className="col-span-1 md:col-span-4 lg:col-span-6 custom-lg2:col-span-4">
           <Suspense fallback={<RevenueChartSkeleton />}>
             <RevenueChart />
           </Suspense>
         </div>
 
-        <div className="col-span-1 md:col-span-4 lg:col-span-2">
+        <div className="col-span-1 md:col-span-4 lg:col-span-2 custom-lg2:col-span-4">
           <Suspense fallback={<LatestInvoicesSkeleton />}>
             <LatestTransaction />
           </Suspense>
