@@ -1,4 +1,5 @@
-import { CheckIcon,PencilIcon, PlusIcon, TrashIcon, ArrowRightCircleIcon,ArrowPathIcon,ClockIcon } from "@heroicons/react/24/outline";
+'use client'
+import { CheckIcon, PencilIcon, PlusIcon, TrashIcon, ArrowRightCircleIcon, ArrowPathIcon, ClockIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { deleteCollecteur } from "../collecteurs/collecteur-api";
 
@@ -24,11 +25,20 @@ export function UpdateCollecteur({ id_collecteur }: { id_collecteur: string }) {
     </Link>
   );
 }
-export function DeleteCollecteur({ id_collecteur }: { id_collecteur: number }) {
-  const deleteCollecteurs = deleteCollecteur.bind(null, id_collecteur)
+export function DeleteCollecteur({ id_collecteur, onDelete }: { id_collecteur: number, onDelete: () => void }) {
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await deleteCollecteur(id_collecteur);
+      onDelete(); 
+    } catch (error) {
+      console.error("Erreur lors de la suppression du collecteur", error);
+    }
+  };
+
   return (
-    <form action={deleteCollecteurs}>
-      <button className="rounded-md border p-2 hover:bg-red-300">
+    <form onSubmit={handleDelete}>
+      <button type="submit" className="rounded-md border p-2 hover:bg-red-300">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>

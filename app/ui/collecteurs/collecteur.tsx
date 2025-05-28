@@ -8,6 +8,15 @@ export default function Collecteurs() {
   const [creditAndDebit, setCreditAndDebit] = useState<any[]>([]);
   const [allCollecteur, setAllCollecteur] = useState<any[]>([]);
 
+  const updateListCollecteur = async () => {
+    try {
+      const collecte = await getAllCollecteurs();
+      setAllCollecteur(collecte);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour des collecteurs :", error);
+    }
+  };
+
   useEffect(() => {
     const fetchCreditWithDebit = async () => {
       try {
@@ -30,7 +39,7 @@ export default function Collecteurs() {
               Liste des tout les collecteurs
             </h2>
             <div className="custom-lg:block custom-sm:block hidden space-y-4">
-              {allCollecteur?.map((collecteur: any, index: number) => (
+              {Array.isArray(allCollecteur) && allCollecteur.map((collecteur, index) => (
                 <div
                   key={collecteur.id_collecteur || index}
                   className="flex flex-col space-y-2 rounded-md bg-white p-4 shadow-md"
@@ -51,7 +60,7 @@ export default function Collecteurs() {
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateCollecteur id_collecteur={collecteur.idCollecteur} />
-                    <DeleteCollecteur id_collecteur={collecteur.idCollecteur} />
+                    <DeleteCollecteur id_collecteur={collecteur.idCollecteur} onDelete={updateListCollecteur}/>
                     <Explorer id_collecteur={collecteur.idCollecteur} />
                   </div>
 
@@ -73,7 +82,7 @@ export default function Collecteurs() {
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {allCollecteur?.map((collecteur: any, index: number) => (
+                  {Array.isArray(allCollecteur) && allCollecteur.map((collecteur, index) => (
                     <tr
                       key={collecteur.idCollecteur || index}
                       className="w-full border-b py-3 text-sm last-of-type:border-none"
@@ -85,7 +94,7 @@ export default function Collecteurs() {
                       <td className="whitespace-nowrap py-3 pl-6 pr-3">
                         <div className="flex justify-end gap-3">
                           <UpdateCollecteur id_collecteur={collecteur.idCollecteur} />
-                          <DeleteCollecteur id_collecteur={collecteur.idCollecteur} />
+                          <DeleteCollecteur id_collecteur={collecteur.idCollecteur} onDelete={updateListCollecteur} />
                           <Explorer id_collecteur={collecteur.idCollecteur} />
                         </div>
                       </td>

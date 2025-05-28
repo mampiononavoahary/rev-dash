@@ -94,7 +94,6 @@ export async function CreateCollecteurs(formData: FormData) {
       };
     }
 
-    // Gère les autres erreurs
     console.error('Erreur lors de la création du collecteur:', error.response?.data || error.message);
     return {
       success: false,
@@ -150,10 +149,9 @@ const formSchema = z.object({
 
 export async function createCredit(formdata: FormData) {
   try {
-    // Extraction et formatage
     const rawData = {
       id_collecteur: Number(formdata.get('collecteur')),
-      dateDeCredit: String(formdata.get('dateDeCredit')), // format: 'YYYY-MM-DD'
+      dateDeCredit: String(formdata.get('dateDeCredit')), 
       montant: Number(formdata.get('montant')),
       description: String(formdata.get('description')),
     };
@@ -161,7 +159,7 @@ export async function createCredit(formdata: FormData) {
     const parsed = formSchema.parse(rawData);
 
     const creditRequest = JSON.stringify({
-      dateDeCredit: parsed.dateDeCredit + "T00:00:00", // Convertir en LocalDateTime ISO
+      dateDeCredit: parsed.dateDeCredit + "T00:00:00",
       description: parsed.description,
       montant: parsed.montant,
       status: false,
@@ -252,7 +250,6 @@ export async function getCreditByRef(ref: string) {
   }
 }
 
-// Validation Zod
 const formSchemaDebit = z.object({
   lieuDeCollection: z.string(),
   dateDeDebit: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format de date invalide (YYYY-MM-DD)"),
@@ -268,44 +265,38 @@ const formSchemaProduits = z.object({
   lieu_stock: z.string()
 });
 
-// Fonction principale
 export async function createDebit(debitForm: FormData, produitsRequests: any[]) {
   try {
-    // Extraction + parsing des données
     const rawData = {
       lieuDeCollection: String(debitForm.get('lieuDeCollection')),
-      dateDeDebit: String(debitForm.get('dateDeDebit')), // 💡 bonne clé ici !
+      dateDeDebit: String(debitForm.get('dateDeDebit')), 
       description: String(debitForm.get('description')),
       creditCollecteur: Number(debitForm.get('creditCollecteur'))
     };
 
     const parsedDebit = formSchemaDebit.parse(rawData);
 
-    // Validation des produits
     const formatProduits = produitsRequests.map((produit) =>
       formSchemaProduits.parse(produit)
     );
 
-    // Formatage final de la requête
     const debitRequest = {
       debitCollecteur: {
         lieuDeCollection: parsedDebit.lieuDeCollection,
         dateDeDebit: parsedDebit.dateDeDebit + "T00:00:00",
         description: parsedDebit.description,
-        creditCollecteur: {
+        id_credit_collecteur: {
           idCreditCollecteur: parsedDebit.creditCollecteur
         },
       },
-           produitsCollecterRequests: formatProduits
+      produitsCollecterRequests: formatProduits
     };
 
-    // Auth
     const token = (await cookies()).get('token');
     if (!token?.value) {
       return { success: false, error: 'Token introuvable ou invalide.' };
     }
 
-    // Requête
     console.log("corps de la requette de debit", debitRequest);
     const response = await axios.post(`${BASE_URL}/api/debit/produitscollecter`, JSON.stringify(debitRequest), {
       headers: {
@@ -314,7 +305,6 @@ export async function createDebit(debitForm: FormData, produitsRequests: any[]) 
       },
     });
 
-    // Résultat
     if (response.status === 201 || response.status === 200) {
       return { success: true, data: response.data };
     } else {
