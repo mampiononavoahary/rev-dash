@@ -2,8 +2,9 @@
 
 import { BASE_URL } from "@/app/lib/db";
 import axios from "axios";
-import { cookies } from "next/headers"
-import { z, ZodError } from "zod";
+import { cookies, headers } from "next/headers"
+import { cache } from "react";
+import { number, z, ZodError } from "zod";
 
 export async function getAllCollecteurs() {
   try {
@@ -50,15 +51,17 @@ const formChema = z.object({
   prenom: z.string().optional(),
   adresse: z.string().nonempty('Adress requise.'),
   telephone: z.string().nonempty('Téléphone requise.'),
+  categorie: z.string().nonempty('categorie requise'),
 });
 
 export async function CreateCollecteurs(formData: FormData) {
   try {
-    const { nom, prenom, adresse, telephone } = formChema.parse({
+    const { nom, prenom, adresse, telephone, categorie } = formChema.parse({
       nom: formData.get('nom'),
       prenom: formData.get('prenom'),
       adresse: formData.get('adresse'),
       telephone: formData.get('telephone'),
+      categorie: formData.get('categorie'),
     });
     const token = (await cookies()).get('token');
 
@@ -70,6 +73,7 @@ export async function CreateCollecteurs(formData: FormData) {
       prenom,
       adresse,
       telephone,
+      categorie,
     }
 
     const save = await axios.post(`${BASE_URL}/api/collecteurs/save`, requestData, {
@@ -95,6 +99,59 @@ export async function CreateCollecteurs(formData: FormData) {
     }
 
     console.error('Erreur lors de la création du collecteur:', error.response?.data || error.message);
+    return {
+      success: false,
+      error: error.response?.data?.message || error.message,
+    };
+  }
+}
+const formSchemaUpdate = z.object({
+  nom: z.string().nonempty('Nom ne peut pas être vide'),
+  prenom: z.string().optional(),
+  adresse: z.string().nonempty('Adresse requise.'),
+  telephone: z.string().nonempty('Téléphone requis.'),
+});
+
+export async function UpdateOnCollecteur(id: number, formData: FormData) {
+  try {
+    const { nom, prenom, adresse, telephone } = formSchemaUpdate.parse({
+      nom: formData.get('nom'),
+      prenom: formData.get('prenom'),
+      adresse: formData.get('adresse'),
+      telephone: formData.get('telephone'),
+    });
+
+    const token = (await cookies()).get('token');
+
+    if (!token || !token.value) {
+      return { success: false, error: 'Token introuvable ou invalide.' };
+    }
+
+    const requestData = { nom, prenom, adresse, telephone };
+
+    const response = await axios.put(`${BASE_URL}/api/collecteurs/update/${id}`, requestData, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status === 200) {
+      return { success: true, data: response.data };
+    } else {
+      console.error('Erreur inattendue lors de la mise à jour du collecteur:', response);
+      return { success: false, error: 'Collecteur non mis à jour.' };
+    }
+  } catch (error: any) {
+    if (error instanceof ZodError) {
+      console.error('Erreur de validation:', error.errors);
+      return {
+        success: false,
+        error: 'Données invalides. Veuillez vérifier les champs du formulaire.',
+      };
+    }
+
+    console.error('Erreur lors de la mise à jour du collecteur:', error.response?.data || error.message);
     return {
       success: false,
       error: error.response?.data?.message || error.message,
@@ -151,7 +208,7 @@ export async function createCredit(formdata: FormData) {
   try {
     const rawData = {
       id_collecteur: Number(formdata.get('collecteur')),
-      dateDeCredit: String(formdata.get('dateDeCredit')), 
+      dateDeCredit: String(formdata.get('dateDeCredit')),
       montant: Number(formdata.get('montant')),
       description: String(formdata.get('description')),
     };
@@ -207,7 +264,6 @@ export async function createCredit(formdata: FormData) {
 }
 
 export async function deleteCollecteur(id_collecteur: number) {
-  // Exemple d'appel réseau
   const token = (await cookies()).get('token');
   if (!token) {
     console.warn('token introuvable dans les cookies ');
@@ -253,6 +309,7 @@ export async function getCreditByRef(ref: string) {
 const formSchemaDebit = z.object({
   lieuDeCollection: z.string(),
   dateDeDebit: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format de date invalide (YYYY-MM-DD)"),
+  depense: z.number(),
   description: z.string(),
   creditCollecteur: z.number()
 });
@@ -269,8 +326,9 @@ export async function createDebit(debitForm: FormData, produitsRequests: any[]) 
   try {
     const rawData = {
       lieuDeCollection: String(debitForm.get('lieuDeCollection')),
-      dateDeDebit: String(debitForm.get('dateDeDebit')), 
+      dateDeDebit: String(debitForm.get('dateDeDebit')),
       description: String(debitForm.get('description')),
+      depense: Number(debitForm.get('depense')),
       creditCollecteur: Number(debitForm.get('creditCollecteur'))
     };
 
@@ -284,6 +342,7 @@ export async function createDebit(debitForm: FormData, produitsRequests: any[]) 
       debitCollecteur: {
         lieuDeCollection: parsedDebit.lieuDeCollection,
         dateDeDebit: parsedDebit.dateDeDebit + "T00:00:00",
+        depense: parsedDebit.depense,
         description: parsedDebit.description,
         id_credit_collecteur: {
           idCreditCollecteur: parsedDebit.creditCollecteur
@@ -322,6 +381,37 @@ export async function createDebit(debitForm: FormData, produitsRequests: any[]) 
       success: false,
       error: error.response?.data?.message || error.message,
     };
+  }
+}
+
+export async function UpdateProduitsCollecter(
+  id_produit_collecter: number,
+  quantite: number,
+  unite: string,
+  prix_unitaire: number
+) {
+  try {
+    const token = (await cookies()).get('token');
+    if (!token || !token.value) {
+      console.warn("Token introuvable dans les cookies");
+      return;
+    }
+
+    const update = await axios.put(`${BASE_URL}/api/debit/produitscollecter/update/${id_produit_collecter}`,null, {
+      headers: {
+        "Authorization": `Bearer ${token?.value}`,
+        "Content-Type": "application/json",
+      },
+      params: {
+        quantite,
+        unite,
+        prix_unitaire
+      }
+    })
+    return update.data;
+  } catch (error: any) {
+    console.error("Erreur lors de la mise à jour :", error?.message || error);
+    throw error;
   }
 }
 

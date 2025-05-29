@@ -8,5 +8,5 @@ const client = new Pool({
     port: 5432,
   });
 
-  export const BASE_URL="https://gestionofstock.onrender.com"
+  export const BASE_URL="https://gestionofstock.onreder.com"
   export default client;

@@ -15,16 +15,16 @@ export default function CreateCollecteur() {
         const result = await CreateCollecteurs(formData);
         if (result.success) {
           toast.success('Collecteur creer avec succes');
-          setTimeout(()=>{
+          setTimeout(() => {
             router.push('/dashboard/collecteurs')
-          },2000)
+          }, 2000)
         } else {
           toast.error('Erreur lors de la creation du collecteur');
         }
       }}
     >
       <h2 className="flex justify-center">
-        Ajouter un nouveau collecteur
+        Ajouter un nouveau Collecteur/Client tantsaha
       </h2>
       <div className="flex flex-wrap -mx-3 mb-6 mt-6">
         <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -39,7 +39,7 @@ export default function CreateCollecteur() {
             id="nom"
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             type="text"
-            placeholder="Nom du collecteur..."
+            placeholder="Nom ..."
             required
           />
         </div>
@@ -55,7 +55,7 @@ export default function CreateCollecteur() {
             id="prenom"
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             type="text"
-            placeholder="Prénom du collecteur..."
+            placeholder="Prénom ..."
           />
         </div>
       </div>
@@ -72,7 +72,7 @@ export default function CreateCollecteur() {
             id="adresse"
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             type="text"
-            placeholder="Adresse du collecteur..."
+            placeholder="Adresse ..."
           />
         </div>
       </div>
@@ -89,8 +89,28 @@ export default function CreateCollecteur() {
             id="telephone"
             className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             type="text"
-            placeholder="Téléphone du collecteur..."
+            placeholder="Téléphone ..."
           />
+        </div>
+      </div>
+      <div className="flex flex-wrap -mx-3 mb-6">
+        <div className="w-full px-3">
+
+          <label
+            htmlFor="categorie"
+            className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+          >
+            Catégorie 
+          </label>          
+          <select
+            id="categorie"
+            name="categorie"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          >
+            <option value="COLLECTEUR">Collecteur</option>
+            <option value="CLIENT_TANTSAHA">Client tantsaha</option>
+          </select>
+
         </div>
       </div>
       <div className="flex flex-row justify-center gap-6 md:flex-col mb-6">
@@ -98,7 +118,7 @@ export default function CreateCollecteur() {
           className="mt-4 p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 mb-6"
           type="submit"
         >
-          Créer un collecteur
+          Ajouter 
         </SubmitButton>
         <Link href="/dashboard/collecteurs">
           <Button className="mt-4 mb-6">Annuler</Button>
@@ -107,4 +127,4 @@ export default function CreateCollecteur() {
     </form>
   );
 }
- 
+

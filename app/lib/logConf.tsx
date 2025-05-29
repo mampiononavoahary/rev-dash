@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'https://gestionofstock.onrender.com', 
+  baseURL: 'https://gestionofstock.onreder.com', 
   headers: {
     'Content-Type': 'application/json',
   },
@@ -14,7 +14,7 @@ export const login = async (username: string, password: string) => {
       username: username,
       password: password,
     });
-    return response.data; // Contient le token JWT
+    return response.data; 
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Erreur lors de la connexion');
   }
