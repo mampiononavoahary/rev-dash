@@ -283,21 +283,37 @@ export async function deleteCollecteur(id_collecteur: number) {
   return null;
 }
 
+export async function deleteProduitCollecter(id_produit_collecter: number) {
+  const token = (await cookies()).get('token');
+  if (!token) {
+    console.warn('token introuvable dans les cookies ');
+    return null;
+  }
+  const response = await fetch(`${BASE_URL}/api/debit/produitscollecter/delete/${id_produit_collecter}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token.value}`,
+    },
+  });
 
-export async function getCreditByRef(ref: string) {
+  if (!response.ok) {
+    throw new Error("Erreur lors de la suppression de produit collecter");
+  }
+
+  return null;
+}
+
+export async function getLastCredit(id_collecteur: number) {
   try {
     const token = (await cookies()).get('token');
     if (!token || !token.value) {
       return { success: false, error: 'Token introuvable ou invalide.' };
     }
 
-    const response = await axios.get(`${BASE_URL}/api/collecteur/credit/ref`, {
+    const response = await axios.get(`${BASE_URL}/api/collecteur/credit/lastcredit/${id_collecteur}`, {
       headers: {
         Authorization: `Bearer ${token.value}`,
-      },
-      params: {
-        referanceCredit: ref,
-      },
+      }
     });
     console.log("crédit récupérer", response.data);
     return response.data;
@@ -397,7 +413,7 @@ export async function UpdateProduitsCollecter(
       return;
     }
 
-    const update = await axios.put(`${BASE_URL}/api/debit/produitscollecter/update/${id_produit_collecter}`,null, {
+    const update = await axios.put(`${BASE_URL}/api/debit/produitscollecter/update/${id_produit_collecter}`, null, {
       headers: {
         "Authorization": `Bearer ${token?.value}`,
         "Content-Type": "application/json",

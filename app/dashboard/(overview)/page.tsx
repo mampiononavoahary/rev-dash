@@ -6,11 +6,12 @@ import { Suspense } from "react"
 import {
   RevenueChartSkeleton,
   LatestInvoicesSkeleton,
-  CardsSkeleton,
 } from "@/app/ui/skeletons"
 import InitializeToken from "@/app/lib/initializer"
 import LatestTransaction from "@/app/ui/dashboard/latest-transactions"
 import Filter from "@/app/ui/filter"
+import BilanCollecteur from "@/app/ui/dashboard/bilan-collecteur"
+import BilanFilter from "@/app/ui/bilan-filter"
 
 export const dynamic = "force-dynamic"
 
@@ -20,6 +21,8 @@ export default async function Page(props: {
     date?: string;
     dateDebut?: string;
     dateFin?: string;
+    startDate?: string;
+    endDate?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
@@ -27,6 +30,8 @@ export default async function Page(props: {
   const date = searchParams?.date || "";
   const dateDebut = searchParams?.dateDebut || "";
   const dateFin = searchParams?.dateFin || "";
+  const startDate = searchParams?.startDate || "";
+  const endDate = searchParams?.endDate || "";
 
   return (
     <main>
@@ -58,6 +63,10 @@ export default async function Page(props: {
         <StockRestantChart />
       </div>
 
+      <BilanFilter />
+      <div className="w-full mt-4">
+        <BilanCollecteur startDate={startDate} endDate={endDate} />
+      </div>
     </main>
   )
 }

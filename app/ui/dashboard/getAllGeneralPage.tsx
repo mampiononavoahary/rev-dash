@@ -104,3 +104,28 @@ export async function getStockRemaining(){
     throw error;
   }
 }
+export async function getBilanCollecteur(startDate:String,endDate:string){
+  try {
+    const token = (await cookies()).get('token');
+    
+    if(!token){
+      console.warn('Token introuvable dans les cookies. ');
+      return null;
+    }
+    const bilanCollecteur = await axios.get(`${BASE_URL}/api/extract/bilan/credits/collecteur`,{
+      headers:{
+        Authorization: `Bearer ${token?.value}`,
+      },
+      params:{
+        startDate,
+        endDate
+      }
+    });
+    const res = bilanCollecteur.data;
+    console.log(res);
+    return res;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des bilan collecteur.", error);
+    throw error;
+  }
+}

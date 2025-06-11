@@ -1,7 +1,7 @@
 'use client'
 import { CheckIcon, PencilIcon, PlusIcon, TrashIcon, ArrowRightCircleIcon, ArrowPathIcon, ClockIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { deleteCollecteur, UpdateProduitsCollecter } from "../collecteurs/collecteur-api";
+import { deleteCollecteur, deleteProduitCollecter, UpdateProduitsCollecter } from "../collecteurs/collecteur-api";
 import { useState } from "react";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,21 @@ export function UpdateCollecteur({ id_collecteur }: { id_collecteur: number }) {
     </Link>
   );
 }
+export function DeleteProduitCollecter({ id_produit_collecter, onDelete }: { id_produit_collecter: number, onDelete: () => void }) {
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await deleteProduitCollecter(id_produit_collecter);
+      onDelete();
+    } catch (error) {
+      console.error("Erreur lors de la suppression du produit collecter", error);
+    }
+  };
 
+  return (
+    <TrashIcon onClick={handleDelete} className="w-5 hover:cursor-pointer" />
+  );
+}
 
 export function UpdateProduitCollecter({
   id_produit_collecter,

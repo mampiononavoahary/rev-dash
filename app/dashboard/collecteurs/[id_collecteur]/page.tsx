@@ -1,10 +1,10 @@
 'use client'
 import React, { use, useEffect, useState } from 'react';
-import { createDebit, getCollecteursById, getCreditByIdCollecteur, getCreditByRef } from '@/app/ui/collecteurs/collecteur-api';
+import { createDebit, getCollecteursById, getCreditByIdCollecteur, getCreditByRef, getLastCredit } from '@/app/ui/collecteurs/collecteur-api';
 import { createCredit } from '@/app/ui/collecteurs/collecteur-api'; // ← ajuste ce chemin si besoin
 import { toast } from 'react-toastify';
 import Image from 'next/image';
-import { Effectuer, EnAttent, UpdateProduitCollecter } from '@/app/ui/collecteurs/buttons';
+import { DeleteProduitCollecter, Effectuer, EnAttent, UpdateProduitCollecter } from '@/app/ui/collecteurs/buttons';
 import { getIdAndName } from '@/app/ui/produits/getproduits';
 
 export default function PaymentPage({ params }: { params: Promise<{ id_collecteur: number }> }) {
@@ -21,7 +21,6 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
   const [description, setDescription] = useState<string>("");
   const [descriptionDebit, setDescriptionDebit] = useState<string>("");
   const [lieuCollection, setLieuCollection] = useState<string>("");
-  const [referance, setReferance] = useState<string>("");
   const [produitsCollecter, setProduitsCollecter] = useState<any[]>([]);
   const [produitFiltrer, setProduitFiltrer] = useState<any[]>([]);
 
@@ -149,21 +148,31 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
     }
   };
 
+  const handleUpdateListAfterDelete = async () => {
+    try {
+      const debits = await getCreditByIdCollecteur(id_collecteur);
+      setCredits(debits);
+    } catch (error) {
+      console.error("Erreur lors de la création du crédit :", error);
+    }
+  }
+
 
   const handleSubmitDebit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      console.log("Valeur de la référence saisie :", referance);
 
-      const idCreditList = await getCreditByRef(referance);
-      const idCredit = idCreditList?.[0];
+      const idCredit = await getLastCredit(id);
+
+      console.log("Credit recuperéé:  ", idCredit);
 
       if (!idCredit || !idCredit.idCreditCollecteur) {
-        toast.error("Référence de crédit introuvable. Veuillez vérifier la référence saisie.");
+        toast.error("Collecteur non trouvé ou aucun crédit disponible");
         return;
       }
+
 
       const creditCollecteurId = Number(idCredit.idCreditCollecteur);
 
@@ -194,7 +203,6 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
 
         setProduitsCollecter([]);
         setLieuCollection("");
-        setReferance("");
         setDepense("");
         setDateDeDebit("");
         setDescriptionDebit("");
@@ -255,11 +263,14 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                   <>
                     <label className="block text-sm font-medium mb-1">Lieu de collection</label>
                     <input
+                      name='lieuCollection'
+                      id='lieuCollection'
+                      autoComplete='on'
                       type="text"
                       value={lieuCollection}
                       onChange={(e) => setLieuCollection(e.target.value)}
                       className="w-full border rounded-md p-2"
-                      placeholder="Ex: Antanimena"
+                      placeholder="Lieu de collection"
                     />
                   </>
                 )}
@@ -297,16 +308,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                   value={montant}
                   onChange={(e) => setMontant(e.target.value)}
                 />
-              </div> : <div>
-                <label className="block text-sm font-medium mb-1">Référance de crédit</label>
-                <input
-                  type="text"
-                  value={referance}
-                  onChange={(e) => setReferance(e.target.value)}
-                  placeholder='CR-20250505-3585'
-                  className="w-full border rounded-md p-2"
-                />
-              </div>}
+              </div> : null}
               {formType == "debit" ? (
                 <div>
                   <label className="block text-sm font-medium mb-1">Depense</label>
@@ -554,13 +556,18 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                               </div>
                               <div className="text-sm text-gray-500">Prix/KG: {debits.prix_unitaire}</div>
                             </div>
-                            <UpdateProduitCollecter
-                              id_produit_collecter={debits.id_produit_collecter}
-                              initialQuantite={debits.quantite}
-                              initialUnite={debits.unite}
-                              initialPrix={debits.prix_unitaire}
-                              updateList={handleUpdateListAfterUpdate}
-                            />
+                            <div className='flex gap-4'>
+                              <UpdateProduitCollecter
+                                id_produit_collecter={debits.id_produit_collecter}
+                                initialQuantite={debits.quantite}
+                                initialUnite={debits.unite}
+                                initialPrix={debits.prix_unitaire}
+                                updateList={handleUpdateListAfterUpdate}
+                              />
+                              <DeleteProduitCollecter
+                                id_produit_collecter={debits.id_produit_collecter}
+                                onDelete={handleUpdateListAfterDelete} />
+                            </div>
                           </div>
                         )) : null}
                     </div>
