@@ -20,7 +20,6 @@ export default async function page(props: {
   const searchParams = await props.searchParams;
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = Number(await getCountTransactions(query)) || 1;
 
   return (
     <div>
@@ -35,9 +34,6 @@ export default async function page(props: {
       <Suspense fallback={<InvoicesTableSkeleton />}>
         <Client query={query} currentPage={currentPage} />
       </Suspense>
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
-      </div>
     </div>
   );
 }

@@ -308,6 +308,11 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                   value={montant}
                   onChange={(e) => setMontant(e.target.value)}
                 />
+                {montant && !isNaN(Number(montant)) && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    {Number(montant).toLocaleString('fr-FR')} Ar
+                  </p>
+                )}
               </div> : null}
               {formType == "debit" ? (
                 <div>
@@ -400,11 +405,8 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                       >
                         <option value="" disabled>Lieu de stock</option>
                         <option value="ITAOSY">ITAOSY</option>
-                        <option value="ANOSIZATO">ANOSIZATO</option>
-                        <option value="AMPASIKA">AMPASIKA</option>
-                        <option value="AMPANDRANA">AMPANDRANA</option>
-                        <option value="AMBATONDRAZAKA">AMBATONDRAZAKA</option>
-                        <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
+                        <option value="ANOSIZATO">IMERINTSIATOSIKA</option>
+                        <option value="AMPASIKA">ALATSINAINIKELY</option>
                       </select>
                     </div>
                     <button
@@ -477,12 +479,12 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
 
                     <Image className='rounded-full hover:cursor-pointer' src="/credit.png" alt='credit' width={60} height={60} />
                     <div>
-                      <div className="font-semibold">Ref: {credit.referance_credit}</div>
+                      <div className="font-semibold">Montant: {credit.montant_credit} Ar</div>
                       <div className="text-sm text-gray-500">{credit.date_de_credit.split('T')[0]}</div>
                     </div>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span>{credit.montant_credit} Ar</span>
+                    <span>M+R: {credit.montant_credit + credit.recentreste} Ar</span>
                     {credit.status == true ? (
                       <>
                         <Effectuer id_collecteur={1} />
@@ -660,7 +662,12 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                 </td>
 
                 <td className="whitespace-nowrap px-3 py-3">
-                  {credit.montant_credit}
+                  <p>
+                    M: {credit.montant_credit}
+                  </p>
+                  <p>
+                    M+R: {credit.montant_credit + credit.recentreste}
+                  </p>
                 </td>
 
                 <td className="whitespace-nowrap px-3 py-3">

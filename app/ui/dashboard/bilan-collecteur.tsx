@@ -38,7 +38,7 @@ export default function BilanCollecteur({
     const fetchData = async () => {
       try {
         const data = await getBilanCollecteur(startDate, endDate);
-        setBilan(data);
+        setBilan(Array.isArray(data) ? data : []);
 
         const totaux: ProduitTotal = {};
         let totalCredit = 0;

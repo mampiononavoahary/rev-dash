@@ -8,7 +8,7 @@ export default function Page() {
         {/* Section gauche */}
         <div className="flex flex-col justify-center items-center gap-4 rounded-lg bg-white px-2 py-6 md:w-2/5 shadow-lg bg-custom-bg bg-cover bg-center">
           <h1 className="text-3xl font-semibold text-gray-900 text-center">
-            Bienvenue chez <span className="text-blue-600">Mi-Kôlecta</span>
+            Bienvenue chez <span className="text-blue-600">ZOARYNAMBININA</span>
           </h1>
           <Photo />
           <p className="text-center text-gray-700 max-w-sm">

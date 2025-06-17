@@ -149,10 +149,8 @@ export default function CreateTransaction() {
             <select id="lieu_de_transaction" name="lieu_de_transaction" defaultValue="" className="w-full p-2 border border-gray-300 rounded-md">
               <option value="" disabled>Lieu de transaction</option>
               <option value="ITAOSY">ITAOSY</option>
-              <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
-              <option value="AMPASIKA">AMPASIKA</option>
-              <option value="AMBATONDRAZAKA">AMBATONDRAZAKA</option>
-              <option value="ANOSIZATO">ANOSIZATO</option>
+              <option value="ALATSINAINIKELY">IMERINTSIATOSIKA</option>
+              <option value="AMPASIKA">ALATSINAINIKELY</option>
             </select>
           </div>
         </div>
