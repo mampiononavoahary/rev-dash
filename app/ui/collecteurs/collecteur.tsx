@@ -1,12 +1,16 @@
 'use client'
 import React from "react";
 import { useEffect, useState } from "react";
-import { DeleteCollecteur, Explorer, UpdateCollecteur } from "./buttons";
+import { deleteCollecteurById, Explorer, UpdateCollecteur } from "./buttons";
 import { getAllCollecteurs, getCreditByIdCollecteur, getCreditWithDebits } from "./collecteur-api";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 export default function Collecteurs() {
   const [creditAndDebit, setCreditAndDebit] = useState<any[]>([]);
   const [allCollecteur, setAllCollecteur] = useState<any[]>([]);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const updateListCollecteur = async () => {
     try {
@@ -19,6 +23,14 @@ export default function Collecteurs() {
     }
   };
 
+  const handleConfirmDelete = async () => {
+    if (selectedId !== null) {
+      await deleteCollecteurById(selectedId);
+      setAlertOpen(false);
+      setSelectedId(null);
+      updateListCollecteur();
+    }
+  };
   useEffect(() => {
     const fetchCreditWithDebit = async () => {
       try {
@@ -66,8 +78,35 @@ export default function Collecteurs() {
                   </div>
                   <div className="flex justify-end gap-2">
                     <UpdateCollecteur id_collecteur={collecteur.idCollecteur} />
-                    <DeleteCollecteur id_collecteur={collecteur.idCollecteur} onDelete={updateListCollecteur} />
-                    <Explorer id_collecteur={collecteur.idCollecteur} />
+                    <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+                      <AlertDialogTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedId(collecteur.idCollecteur)}
+                          className="rounded-md border p-2 hover:bg-red-300"
+                        >
+                          <span className="sr-only">Supprimer</span>
+                          <TrashIcon className="w-5" />
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Êtes-vous sûr de supprimer ce collecteur ?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Cette action supprimera définitivement le collecteur ainsi que ses débits et crédits.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Annuler</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleConfirmDelete}
+                            className="bg-red-400 hover:bg-red-600"
+                          >
+                            Confirmer la suppression
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>                    <Explorer id_collecteur={collecteur.idCollecteur} />
                   </div>
 
 
@@ -102,7 +141,35 @@ export default function Collecteurs() {
                       <td className="whitespace-nowrap py-3 pl-6 pr-3">
                         <div className="flex justify-end gap-3">
                           <UpdateCollecteur id_collecteur={collecteur.idCollecteur} />
-                          <DeleteCollecteur id_collecteur={collecteur.idCollecteur} onDelete={updateListCollecteur} />
+                          <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+                            <AlertDialogTrigger asChild>
+                              <button
+                                type="button"
+                                onClick={() => setSelectedId(collecteur.idCollecteur)}
+                                className="rounded-md border p-2 hover:bg-red-300"
+                              >
+                                <span className="sr-only">Supprimer</span>
+                                <TrashIcon className="w-5" />
+                              </button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Êtes-vous sûr de supprimer ce collecteur ?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Cette action supprimera définitivement le collecteur ainsi que ses débits et crédits.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={handleConfirmDelete}
+                                  className="bg-red-400 hover:bg-red-600"
+                                >
+                                  Confirmer la suppression
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                           <Explorer id_collecteur={collecteur.idCollecteur} />
                         </div>
                       </td>

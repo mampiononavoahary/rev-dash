@@ -4,7 +4,7 @@ import { createDebit, getCollecteursById, getCreditByIdCollecteur, getCreditByRe
 import { createCredit } from '@/app/ui/collecteurs/collecteur-api'; // ← ajuste ce chemin si besoin
 import { toast } from 'react-toastify';
 import Image from 'next/image';
-import { DeleteProduitCollecter, Effectuer, EnAttent, UpdateProduitCollecter } from '@/app/ui/collecteurs/buttons';
+import { DeleteProduitCollecter, Effectuer, EnAttent, UpdateProduitCollecter, OptionsCredits } from '@/app/ui/collecteurs/buttons';
 import { getIdAndName } from '@/app/ui/produits/getproduits';
 
 export default function PaymentPage({ params }: { params: Promise<{ id_collecteur: number }> }) {
@@ -220,7 +220,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
   return (
     <div>
       <div className="flex justify-center">
-        <div className={`max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 ${selectedCredit && selectedCredit.debit_extract.length > 0 ? "blur-sm" : ""}`}>
+        <div className={`max-w-6xl w-full grid grid-cols-2 custom-lg:grid-cols-1 gap-8 ${selectedCredit && selectedCredit.debit_extract.length > 0 ? "blur-sm" : ""}`}>
 
           <div className={`bg-white p-8 rounded-lg shadow `}>
             <div className="flex justify-between items-center mb-2">
@@ -255,7 +255,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                       disabled
                     >
                       {collecteur && (
-                        <option value={id}>{collecteur.nom}</option>
+                        <option value={id}>{collecteur.prenom}</option>
                       )}
                     </select>
                   </>
@@ -466,13 +466,13 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
             </form>
           </div>
 
-          <div className="bg-white p-8 rounded-lg shadow">
+          <div className="bg-white p-2 rounded-lg shadow h-[500px] flex flex-col">
             <h2 className="text-2xl flex justify-center mb-6">Liste des crédits</h2>
             <input
               type="date"
               className="border rounded-md p-1"
             />
-            <div className="space-y-4 max-h-64 overflow-y-auto pr-2">
+            <div className="flex-1 space-y-2 overflow-y-auto pr-2">
               {credits?.map((credit: any) => (
                 <div key={credit.id_credit_collecteur} className="flex items-center justify-between" >
                   <div className="flex items-center gap-4" onClick={() => setSelectedCredit(credit)}>
@@ -483,6 +483,7 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                       <div className="text-sm text-gray-500">{credit.date_de_credit.split('T')[0]}</div>
                     </div>
                   </div>
+                  <OptionsCredits id_credit={1} />
                   <div className="flex flex-col items-end">
                     <span>M+R: {credit.montant_credit + credit.recentreste} Ar</span>
                     {credit.status == true ? (
@@ -500,31 +501,6 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                   </div>
                 </div>
               ))}
-            </div>
-
-            <h2 className="text-2xl flex justify-center mb-6">Liste des débits</h2>
-            <input
-              type="date"
-              className="border rounded-md p-1 mb-1"
-            />
-
-            <div className="space-y-4 max-h-64 overflow-y-auto pr-2">
-              {credits.map((credit: any) =>
-                Array.isArray(credit.debit_extract)
-                  ? credit.debit_extract.map((debit: any) => (
-                    <div key={debit.id_debit_collecteur} className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <Image className='rounded-full' src="/debit.png" alt='credit' width={60} height={60} />
-                        <div>
-                          <div className="font-semibold">{debit.lieu_de_collection}</div>
-                          <div className="text-sm text-gray-500">{debit.description}</div>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="flex flex-col items-end">{debit.date_de_debit.split('T')[0]}</div>
-                      </div>
-                    </div>
-                  )) : null)}
             </div>
           </div>
         </div >

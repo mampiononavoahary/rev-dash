@@ -1,5 +1,5 @@
 'use client'
-import { CheckIcon, PencilIcon, PlusIcon, TrashIcon, ArrowRightCircleIcon, ArrowPathIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, PencilIcon, PlusIcon, TrashIcon, ArrowRightCircleIcon, ArrowPathIcon, ClockIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { deleteCollecteur, deleteProduitCollecter, UpdateProduitsCollecter } from "../collecteurs/collecteur-api";
 import { useState } from "react";
@@ -160,26 +160,15 @@ export function UpdateProduitCollecter({
 }
 
 
-export function DeleteCollecteur({ id_collecteur, onDelete }: { id_collecteur: number, onDelete: () => void }) {
-  const handleDelete = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await deleteCollecteur(id_collecteur);
-      onDelete();
-    } catch (error) {
-      console.error("Erreur lors de la suppression du collecteur", error);
-    }
-  };
 
-  return (
-    <form onSubmit={handleDelete}>
-      <button type="submit" className="rounded-md border p-2 hover:bg-red-300">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
-    </form>
-  );
+export async function deleteCollecteurById(id_collecteur: number) {
+  try {
+    await deleteCollecteur(id_collecteur);
+  } catch (error) {
+    console.error("Erreur lors de la suppression du collecteur", error);
+  }
 }
+
 export function Explorer({ id_collecteur }: { id_collecteur: number }) {
 
   return (<Link
@@ -215,3 +204,58 @@ export function EnAttent({ id_collecteur }: { id_collecteur: number }) {
   </div>
   );
 }
+
+
+export function OptionsCredits({ id_credit }: { id_credit: number }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative inline-block text-left">
+      <div>
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+          id="menu-button"
+          aria-expanded={open}
+          aria-haspopup="true"
+        >
+          <Cog6ToothIcon className="w-5" />
+        </button>
+      </div>
+
+      {open && (
+        <div
+          className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="menu-button"
+          tabIndex={-1}
+        >
+          <div className="py-1" role="none">
+            <a
+              href="#"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-200"
+              role="menuitem"
+              tabIndex={-1}
+              id="menu-item-0"
+            >
+              Modifier
+            </a>
+            <a
+              href="#"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-200"
+              role="menuitem"
+              tabIndex={-1}
+              id="menu-item-1"
+            >
+              Supprimer
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+

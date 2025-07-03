@@ -25,13 +25,20 @@ export default async function Page(props: {
     endDate?: string;
   }>;
 }) {
+
+  const today = new Date();
+  const seveDaysAgo = new Date();
+  seveDaysAgo.setDate(today.getDate() - 7);
+
+  const formatDate = (date: Date) => date.toISOString().split("T")[0];
+
   const searchParams = await props.searchParams;
   const lieu = searchParams?.location || "";
   const date = searchParams?.date || "";
-  const dateDebut = searchParams?.dateDebut || "";
-  const dateFin = searchParams?.dateFin || "";
-  const startDate = searchParams?.startDate || "";
-  const endDate = searchParams?.endDate || "";
+  const dateDebut = searchParams?.dateDebut || formatDate(seveDaysAgo);
+  const dateFin = searchParams?.dateFin || formatDate(today);
+  const startDate = searchParams?.startDate || formatDate(seveDaysAgo);
+  const endDate = searchParams?.endDate || formatDate(today);
 
   return (
     <main>
