@@ -20,7 +20,7 @@ export default function SideNav() {
       {/* Logo Link */}
       <Link
         href="/"
-        className="mb-1 lg-conf:mb-0 mt-2 flex h-20 items-end justify-start p-2 md:h-40 md:justify-center"
+        className="mb-1 lg-conf:mb-0 mt-2 flex h-20 items-end justify-start p-2 md:h-40 md:justify-center hover:animate-spin"
       >
         <Logo />
       </Link>

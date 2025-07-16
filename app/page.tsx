@@ -20,7 +20,7 @@ export default function Page() {
         <div className="flex flex-col items-center justify-center p-2 md:w-3/5 rounded-lg bg-custom-bg2 bg-cover bg-center relative">
           {/* Effet de verre (Glassmorphism) */}
           <div className="bg-white bg-opacity-20 backdrop-blur-md shadow-lg rounded-xl p-4 w-full max-w-sm md:max-w-md">
-            <h2 className="text-lg font-semibold text-center text-green-800 mb-4">Connectez-vous</h2>
+            <h2 className="text-lg font-semibold text-center text-green-800 mb-4 animate-bounce">Connectez-vous</h2>
             <Login />
           </div>
         </div>

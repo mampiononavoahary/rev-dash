@@ -149,8 +149,8 @@ export default function CreateTransaction() {
             <select id="lieu_de_transaction" name="lieu_de_transaction" defaultValue="" className="w-full p-2 border border-gray-300 rounded-md">
               <option value="" disabled>Lieu de transaction</option>
               <option value="ITAOSY">ITAOSY</option>
-              <option value="ALATSINAINIKELY">IMERINTSIATOSIKA</option>
-              <option value="AMPASIKA">ALATSINAINIKELY</option>
+              <option value="IMERINTSIATOSIKA">IMERINTSIATOSIKA</option>
+              <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
             </select>
           </div>
         </div>
@@ -220,9 +220,7 @@ export default function CreateTransaction() {
               onChange={(e) => setStatus(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"
             >
-              <option value="" disabled>Status</option>
-              <option value="PAYE">PAYE</option>
-              <option value="EN_ATTENTE">EN ATTENTE</option>
+              <option value="" disabled>Status</option> <option value="PAYE">PAYE</option> <option value="EN_ATTENTE">EN ATTENTE</option>
             </select>
             <select
               id="lieu_stock"
@@ -233,11 +231,7 @@ export default function CreateTransaction() {
             >
               <option value="" disabled>Lieu de stock</option>
               <option value="ITAOSY">ITAOSY</option>
-              <option value="ANOSIZATO">ANOSIZATO</option>
-              <option value="AMPASIKA">AMPASIKA</option>
-              <option value="AMPANDRANA">AMPANDRANA</option>
-              <option value="AMBATONDRAZAKA">AMBATONDRAZAKA</option>
-              <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
+              <option value="IMERINTSIATOSIKA">IMERINTSIATOSIKA</option>
             </select>
           </div>
           <button

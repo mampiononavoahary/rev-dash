@@ -43,8 +43,8 @@ export default async function Page(props: {
   return (
     <main>
       <InitializeToken />
-      <h1 className={`${lusitana.className} mb-2 mt-0 text-xl md:text-2xl`}>
-        Tableau de bord
+      <h1 className={`${lusitana.className} mb-4 mt-0 text-xl text-gray-500 md:text-2xl flex justify-center hover:animate-bounce`}>
+        TABLEAU DE BORD
       </h1>
 
       <Filter datePlaceholder="Filtrer par date" locationPlaceholder="Filtrer par point de vente ou point d'achat" dateDebutPlaceholder="Date début" dateFinPlaceholder="Date fin" />

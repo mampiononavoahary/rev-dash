@@ -15,7 +15,7 @@ export function CreateCollecteurs() {
   return (
     <Link
       href="/dashboard/collecteurs/create"
-      className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 hover:animate-pulse"
     >
       <span className="hidden md:block">Ajouter Collecteur/Client Tantsaha</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
@@ -173,7 +173,7 @@ export function Explorer({ id_collecteur }: { id_collecteur: number }) {
 
   return (<Link
     href={`/dashboard/collecteurs/${id_collecteur}`}
-    className="relative group"
+    className="relative group hover:animate-pulse"
   >
     <button className="rounded-md border p-2 hover:bg-green-300">
       <span className="sr-only">Leur débit et crédit</span>
