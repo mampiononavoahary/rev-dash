@@ -1,6 +1,6 @@
 'use client'
 import React, { use, useEffect, useState } from 'react';
-import { createDebit, getCollecteursById, getCreditByIdCollecteur, getCreditByRef, getLastCredit } from '@/app/ui/collecteurs/collecteur-api';
+import { createDebit, getCollecteursById, getCreditByIdCollecteur, getLastCredit } from '@/app/ui/collecteurs/collecteur-api';
 import { createCredit } from '@/app/ui/collecteurs/collecteur-api'; // ← ajuste ce chemin si besoin
 import { toast } from 'react-toastify';
 import Image from 'next/image';
