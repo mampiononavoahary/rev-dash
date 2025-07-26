@@ -2,6 +2,7 @@
 
 import { BASE_URL } from "@/app/lib/db";
 import axios from "axios";
+import { error } from "console";
 import { cookies, headers } from "next/headers"
 import { cache } from "react";
 import { number, z, ZodError } from "zod";
@@ -431,3 +432,27 @@ export async function UpdateProduitsCollecter(
   }
 }
 
+export async function deleteCreditCollecteur(id_credit_collecteur: number) {
+  try {
+    const token = (await cookies()).get('token');
+    if (!token || !token.value) {
+      console.warn("Token introuvable dans les cookies");
+      return;
+    }
+
+    const deleteCredit = await fetch(`${BASE_URL}/api/collecteur/credit/delete/${id_credit_collecteur}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    if (deleteCredit.ok) {
+      throw new Error("Erreur lors de la suppression de crédit!");
+    }
+
+    return null;
+  } catch (error: any) {
+    console.error("Erreur lors de la suppression :", error?.message || error);
+    throw error;
+  }
+}

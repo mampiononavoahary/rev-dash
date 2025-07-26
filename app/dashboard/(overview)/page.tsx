@@ -43,7 +43,7 @@ export default async function Page(props: {
   return (
     <main>
       <InitializeToken />
-      <h1 className={`${lusitana.className} mb-4 mt-0 text-xl text-gray-500 md:text-2xl flex justify-center hover:animate-bounce`}>
+      <h1 className={`${lusitana.className} mb-4 mt-0 text-xl text-gray-500 md:text-2xl flex justify-center animate-bounce`}>
         TABLEAU DE BORD
       </h1>
 

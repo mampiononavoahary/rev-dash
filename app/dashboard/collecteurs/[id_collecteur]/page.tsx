@@ -1,6 +1,6 @@
 'use client'
 import React, { use, useEffect, useState } from 'react';
-import { createDebit, getCollecteursById, getCreditByIdCollecteur, getLastCredit } from '@/app/ui/collecteurs/collecteur-api';
+import { createDebit, deleteCreditCollecteur, getCollecteursById, getCreditByIdCollecteur, getLastCredit } from '@/app/ui/collecteurs/collecteur-api';
 import { createCredit } from '@/app/ui/collecteurs/collecteur-api'; // ← ajuste ce chemin si besoin
 import { toast } from 'react-toastify';
 import Image from 'next/image';
@@ -31,6 +31,8 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
   const [prixUnitaire, setPrixUnitaire] = useState('');
   const [produits, setProduits] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
 
   useEffect(() => {
@@ -57,7 +59,13 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
   };
 
 
-
+  const handleDeleteCredit = async () => {
+    if (selectedId !== null) {
+      await deleteCreditCollecteur(selectedId);
+      setAlertOpen(false);
+      setSelectedId(null);
+    }
+  }
 
   const handleUpdateListAfterUpdate = (updatedItem: {
     id_produit_collecter: number;
