@@ -413,8 +413,8 @@ export default function PaymentPage({ params }: { params: Promise<{ id_collecteu
                       >
                         <option value="" disabled>Lieu de stock</option>
                         <option value="ITAOSY">ITAOSY</option>
-                        <option value="ANOSIZATO">IMERINTSIATOSIKA</option>
-                        <option value="AMPASIKA">ALATSINAINIKELY</option>
+                        <option value="IMERINTSIATOSIKA">IMERINTSIATOSIKA</option>
+                        <option value="ALATSINAINIKELY">ALATSINAINIKELY</option>
                       </select>
                     </div>
                     <button

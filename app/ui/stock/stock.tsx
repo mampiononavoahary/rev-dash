@@ -33,12 +33,6 @@ export default async function Stocks() {
           ))
         }
       </div>
-      <div>
-        <h2 className="text-center text-xl text-gray-900 font-medium mb-4">
-          Autres produits dans le stock
-        </h2>
-
-      </div>
     </div>
   );
 
