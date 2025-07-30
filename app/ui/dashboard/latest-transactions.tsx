@@ -28,7 +28,7 @@ export default function LatestTransaction() {
     return (
       <div className="flex flex-col md:col-span-4">
         <h2 className={`${lusitana.className} mb-2 text-xl md:text-2xl`}>
-          Les trois dernières transactions
+           Voici la liste des trois dernières transactions.
         </h2>
         <div className="flex grow flex-col justify-between rounded-xl bg-teal-100 p-2 w-full">
           <div className="bg-white px-2 py-6">Chargement...</div>
@@ -40,7 +40,7 @@ export default function LatestTransaction() {
   return (
     <div className="flex flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-2 text-xl md:text-2xl`}>
-        Les trois dernières transactions
+        Voici la liste des trois dernières transactions.
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-teal-100 p-2 w-full">
         <div className="bg-white px-2 py-6">

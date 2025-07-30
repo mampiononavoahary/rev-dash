@@ -69,7 +69,7 @@ export function StockRestantChart() {
   return (
     <div>
       <h2 className={`${lusitana.className} mb-2 text-xl md:text-2xl`}>
-        Stock restant par point de vente
+        Quantité restante par point de vente
       </h2>
       <Card>
         <CardHeader>

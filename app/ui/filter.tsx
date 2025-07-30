@@ -25,7 +25,7 @@ export default function Filter({ datePlaceholder, locationPlaceholder,dateDebutP
     <div className='grid grid-cols-2 custom-md:grid-cols-1 gap-2'>
       <div className="flex flex-col gap-2 mb-2 bg-gray-100 px-4 py-2">
         {/* Filter by Location */}
-        <h4 className='flex justify-center text-center'>Filtrer par point de vente et date de transaction</h4>
+        <h4 className='flex justify-center text-center'>Filtrer par point de vente et/ou date de transaction</h4>
         <div className="relative flex flex-1 flex-shrink-0">
           <label htmlFor="location" className="sr-only">
             Location

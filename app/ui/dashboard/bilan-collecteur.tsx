@@ -132,9 +132,6 @@ export default function BilanCollecteur({
   };
   return (
     <div>
-      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Bilan des crédits et débits collecteur/clients tantsaha
-      </h2>
 
       <div className='flex'>
         <button

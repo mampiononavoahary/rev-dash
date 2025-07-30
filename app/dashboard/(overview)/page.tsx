@@ -70,8 +70,11 @@ export default async function Page(props: {
         <StockRestantChart />
       </div>
 
-      <BilanFilter />
       <div className="w-full mt-4">
+        <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
+          Synthèse des crédits et débits pour les collecteurs et clients Tantsaha
+        </h2>
+        <BilanFilter />
         <BilanCollecteur startDate={startDate} endDate={endDate} />
       </div>
     </main>
