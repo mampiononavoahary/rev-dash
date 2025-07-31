@@ -27,10 +27,10 @@ export default async function Client({ query, currentPage }: { query: string, cu
                   >
                     <div className="text-sm">
                       <p>
-                        <span className="font-medium">Nom Client :</span> {client.nom}
+                        <span className="font-medium">Nom :</span> {client.nom}
                       </p>
                       <p>
-                        <span className="font-medium">Prenom Client :</span> {client.prenom}
+                        <span className="font-medium">Prenom(s):</span> {client.prenom}
                       </p>
                       <p>
                         <span className="font-medium">Addresse :</span> {client.adresse}
@@ -51,8 +51,8 @@ export default async function Client({ query, currentPage }: { query: string, cu
                 <table className="hidden min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
                   <thead className="sticky top-0 bg-teal-100 text-left text-sm font-medium shadow-md">
                     <tr>
-                      <th scope="col" className="px-4 py-5">Nom Client</th>
-                      <th scope="col" className="px-3 py-5">Prenom Client</th>
+                      <th scope="col" className="px-4 py-5">Nom</th>
+                      <th scope="col" className="px-3 py-5">Prenom(s)</th>
                       <th scope="col" className="px-3 py-5">Adresse</th>
                       <th scope="col" className="px-3 py-5">Contact</th>
                     </tr>
@@ -88,10 +88,10 @@ export default async function Client({ query, currentPage }: { query: string, cu
                   >
                     <div className="text-sm">
                       <p>
-                        <span className="font-medium">Nom Client :</span> {client.nom}
+                        <span className="font-medium">Nom :</span> {client.nom}
                       </p>
                       <p>
-                        <span className="font-medium">Prenom Client :</span> {client.prenom}
+                        <span className="font-medium">Prenom(s):</span> {client.prenom}
                       </p>
 
                       <p className="font-medium">
@@ -119,10 +119,11 @@ export default async function Client({ query, currentPage }: { query: string, cu
                   </div>
                 ))}
               </div>
-              <table className="block min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
+              {clients.length > 0 && (
+            <table className="block min-w-full text-gray-900 custom-lg:hidden custom-sm:hidden md:table">
                 <thead className="sticky top-0 bg-teal-100 text-left text-sm font-medium shadow-md">
                   <tr>
-                    <th scope="col" className="px-3 py-5">Prenom Client</th>
+                    <th scope="col" className="px-3 py-5">Prenom</th>
                     <th scope="col" className="px-3 py-5">Total transaction</th>
                     <th scope="col" className="px-3 py-5">Total de vente</th>
                     <th scope="col" className="px-3 py-5">Q/té vente payé en KG</th>
@@ -175,6 +176,7 @@ export default async function Client({ query, currentPage }: { query: string, cu
                 </tbody>
               </table>
 
+              )}
             </div>
             {/* Affichage pour grands écrans */}
           </div>

@@ -79,8 +79,8 @@ export default function Users() {
             <thead className="rounded-lg text-left text-sm font-medium">
               <tr>
                 <th scope="col" className="px-3 py-5">Profile</th>
-                <th scope="col" className="px-4 py-5 sm:pl-6">Nom Employé</th>
-                <th scope="col" className="px-3 py-5">Prénom Employé</th>
+                <th scope="col" className="px-4 py-5 sm:pl-6">Nom</th>
+                <th scope="col" className="px-3 py-5">Prénom(s)</th>
                 <th scope="col" className="px-3 py-5">Adresse</th>
                 <th scope="col" className="px-3 py-5">Contact</th>
                 <th scope="col" className="px-3 py-5">Rôle</th>

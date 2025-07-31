@@ -73,7 +73,7 @@ export default function AddPret() {
           <div className='fixed inset-0 bg-black bg-opacity-50 p-6'>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="max-w-lg mx-auto p-6 rounded-lg shadow-md space-y-4 bg-white"
+              className="max-w-lg mx-auto max-h-[800px] overflow-y-auto p-6 rounded-lg shadow-md space-y-auto bg-white"
             >
               <h2 className="text-xl font-bold text-gray-900">Nouveau Prêt Bancaire</h2>
 

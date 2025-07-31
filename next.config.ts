@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "file-upload-mi-collecte.s3.amazonaws.com",
+        hostname: 'wzdaypnhnfqcqhhoipdk.supabase.co',
+        pathname: '/storage/v1/object/public/**',
       },
     ],
   },
