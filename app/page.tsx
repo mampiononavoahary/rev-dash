@@ -4,15 +4,32 @@ import Login from './ui/form/login';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+function isTokenValid(token: string | null): boolean {
+  if (!token) return false;
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp > currentTime;
+  } catch (err) {
+    console.error("Erreur de décodage du token :", err);
+    return false;
+  }
+}
+
 export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); // ou cookies.get('token') si tu as accès
-    if (token) {
+    const token = localStorage.getItem('token'); 
+
+    if (isTokenValid(token)) {
       router.push('/dashboard');
+    } else {
+      localStorage.removeItem('token'); // Supprimer token expiré
     }
   }, []);
+
   return (
     <main className="flex min-h-screen flex-col p-4 overflow-x-hidden !overflow-y-auto bg-gray-100">
       <div className="flex grow flex-col gap-4 md:flex-row md:overflow-auto">
